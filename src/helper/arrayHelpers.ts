@@ -9,7 +9,7 @@ export default class ArrayHelpers
 
     public static remove(source: any[], item: any): void
     {
-        for(let i = source.length - 1; i => 0; i--)
+        for(let i = source.length - 1; i >= 0; i--)
         {
             if (source[i] == item)
             {
@@ -20,7 +20,12 @@ export default class ArrayHelpers
 
     public static removeMany(source: any[], items: any[]): void
     {
-        for(let i = source.length - 1; i => 0; i--)
+        if (items.length == 0)
+        {
+            return;
+        }
+
+        for(let i = source.length - 1; i >= 0; i--)
         {
             for(let j = 0; j < items.length; j++)
             {

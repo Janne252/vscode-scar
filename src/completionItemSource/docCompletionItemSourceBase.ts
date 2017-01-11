@@ -12,7 +12,12 @@ import LuaEnumCompletionItem from '../completionItem/luaEnumCompletionItem';
 
 export abstract class DocCompletionItemSourceBase<T> extends CompletionItemSourceBase implements IStaticCompletionItemSource
 {
-    protected data: T = undefined;
+    protected _data: T = undefined;
+    public get data(): T
+    {
+        return this._data;
+    }
+    
     protected _filepath : string;
     public get filepath() : string 
     {
@@ -35,7 +40,7 @@ export abstract class DocCompletionItemSourceBase<T> extends CompletionItemSourc
 
     protected processData(data: string)
     {
-        this.data = JSON.parse(data);
+        this._data = JSON.parse(data);
     }
 
     public init(): Thenable<void>

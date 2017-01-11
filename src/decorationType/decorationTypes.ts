@@ -1,0 +1,44 @@
+'use strict';
+
+import {window} from 'vscode';
+
+export const SCARDocFunctionDecorationType = window.createTextEditorDecorationType({
+    light: {
+        color: '#008000',
+        
+    },
+    dark: {
+        color: '#008000; font-weight: bold;'
+    },
+});
+
+export const SCARDocEnumDecorationType = window.createTextEditorDecorationType({
+    light: {
+        color: '#FF8C00',
+        
+    },
+    dark: {
+        color: '#FF8C00; font-weight: bold;'
+    },
+});
+
+export const LuaConstsAutoBlueprintDecorationType = window.createTextEditorDecorationType({
+    light: {
+        color: '#d54500',
+        
+    },
+    dark: {
+        color: '#d54500; font-weight: bold;'
+    },
+});
+
+export const UserDefinedFunctionDecorationStyle = window.createTextEditorDecorationType({
+    light: {
+        color: '#c23aff',
+        
+    },
+    dark: {
+        color: '#7e3878; font-weight: bold;'
+    },
+});
+

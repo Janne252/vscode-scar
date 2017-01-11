@@ -2,7 +2,7 @@
 
 import {CompletionItem} from 'vscode';
 import {ICompletionItemSourceMerger, ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource} from '../completionItemSource/completionItemSource';
-import ArrayHelpers from '../helpers/arrayHelpers';
+import ArrayHelpers from '../helper/arrayHelpers';
 
 export default class CompletionItemSourceMerger implements ICompletionItemSourceMerger
 {

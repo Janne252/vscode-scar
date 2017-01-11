@@ -1,0 +1,9 @@
+
+local player = World_GetPlayerAt(1)
+local other = BT_General
+
+local bp = SBP.WEST_GERMAN.ASSAULT_PIONEER_SQUAD_MP
+local bp2 = SBP.AEF.RIFLEMEN_SQUAD_VETERAN_MP
+
+
+local hue = UPG.BRITISH.PIAT_UNLOCK_MP

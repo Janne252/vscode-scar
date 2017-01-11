@@ -5,7 +5,7 @@ import LuaEnumCompletionItem from './completionItem/luaEnumCompletionItem';
 import SCAREnumCompletionItem from './completionItem/scarEnumCompletionItem';
 
 import {CompletionItemSourceBase} from './completionItemSource/completionItemSourceBase';
-import {ActiveCompletionItemSourceBase} from './completionItemSource/activeCompletionItemSourceBase';
+import ActiveCompletionItemSource from './completionItemSource/activeCompletionItemSource';
 import {ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource, ICompletionItemSourceMerger} from './completionItemSource/completionItemSource';
 import {DocCompletionItemSourceBase} from './completionItemSource/docCompletionItemSourceBase';
 import LuaDocCompletionItemSource from './completionItemSource/luaDocCompletionItemSource';
@@ -56,7 +56,7 @@ export interface ISCAREnumDefinition
 
 export {
     CompletionItemBase, LuaFunctionCompletionItem, LuaEnumCompletionItem, SCAREnumCompletionItem,
-    CompletionItemSourceBase, ActiveCompletionItemSourceBase, 
+    CompletionItemSourceBase, ActiveCompletionItemSource, 
     ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource, ICompletionItemSourceMerger,
     DocCompletionItemSourceBase, LuaDocCompletionItemSource, SCARDocCompletionItemSource,
     CompletionItemSourceMerger

@@ -7,7 +7,7 @@ import {CompletionItemSourceBase} from './completionItemSourceBase';
 /**
  * Abstract base class for providing a source for active completion items.
  */
-export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourceBase implements IActiveCompletionItemSource
+export default class ActiveCompletionItemSource extends CompletionItemSourceBase implements IActiveCompletionItemSource
 {
     protected previousCompletionItems: CompletionItem[];
     

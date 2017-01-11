@@ -22,17 +22,17 @@ export default class LuaDocCompletionItemSource extends DocCompletionItemSourceB
         super.processData(data);
 
          let func: ILuaFunctionDefinition;
-        for(let i = 0; i < this.data.functions.length; i++)
+        for(let i = 0; i < this._data.functions.length; i++)
         {
-            func = this.data.functions[i];
+            func = this._data.functions[i];
 
             this.completionItems.push(new LuaFunctionCompletionItem(func));
         }
 
         let luaEnum: ILuaEnumDefinition;
-        for(let i = 0; i < this.data.enums.length; i++)
+        for(let i = 0; i < this._data.enums.length; i++)
         {
-            luaEnum = this.data.enums[i];
+            luaEnum = this._data.enums[i];
 
             this.completionItems.push(new LuaEnumCompletionItem(luaEnum));
         }
