@@ -19,5 +19,5 @@
     - [x] LuaConstsAuto.scar blueprints
     - [ ] Lua standard library functions
     - [ ] Workspace user-defined global functions 
-- [ ] Misc 
+ - [ ] Misc 
     - [ ] Find LuaConstsAuto.scar blueprint 
