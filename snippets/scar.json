@@ -1,0 +1,109 @@
+{
+    /*
+        Common lua snippets
+    */
+    "Function": {
+        "prefix": "function",
+        "body": [
+            "function ${name}(${params})",
+            "\t$0",
+            "end"
+        ],
+        "description": "Function, eg. function foo(param) .. end"
+    },
+    "For Loop": {
+        "prefix": "for",
+        "body": [
+            "for ${index0} = ${index1}, ${index2} do",
+            "\t$0",
+            "end"
+        ],
+        "description": "For Loop, e.g. for i = 1, 10 do ... end"
+    },
+    "Stepped For Loop": {
+        "prefix": "stepped_for",
+        "body": [
+            "for ${index0} = ${index1}, ${index2}, ${index3} do",
+            "\t$0",
+            "end"
+        ],
+        "description": "Stepped For Loop, e.g. for i = 1, 10, 2 do ... end"
+    },
+    "For ipairs": {
+        "prefix": "for_ipairs",
+        "body": [
+            "for ${key}, ${value} in ipairs(${source}) do",
+            "\t$0",
+            "end"
+        ],
+        "description": "Iterate over a table with ipairs, e.g. for key, value in ipairs(t) do .. end"
+    },
+    "For pairs": {
+        "prefix": "for_pairs",
+        "body": [
+            "for ${key}, ${value} in pairs(${source}) do",
+            "\t$0",
+            "end"
+        ],
+        "description": "Iterate over a table with pairs, e.g. for key, value in pairs(t) do .. end"
+    },
+    /*
+        Common SCAR Snippets
+    */
+    "Basic Scenario script": {
+        "prefix": "scenario_OnInit",
+        "body": [
+            "function ${Map}_OnInit()",
+             "",
+             "\t-- TODO: Do things",
+             "\t$0",
+            "end",
+            "",
+            "Scar_AddInit(${Map}_OnInit)",
+            ""
+        ],
+        "description": "Basic snippet for a new scenario script."
+    },
+    "For Each Players": {
+        "prefix": "players_foreach",
+        "body": [
+            "for $0 = 1, World_GetPlayerCount() do",
+            "\tlocal player = World_GetPlayerAt($0)",
+            "\t$1",
+            "end"
+        ],
+        "description": "For each player, e.g. for i = 1, World_GetPlayerCount() do local player = World_GetPlayerAt(i) .. end"
+    },
+    "New SGroup": {
+        "prefix": "sgroup_create",
+        "body": [
+            "local sg_${squads} = SGroup_CreateIfNotFound(\"sg_${squads}\")$0"
+        ],
+        "description": "New SGroup, eg. local sg_squads = SGroup_CreateIfNotFound(\"sg_squads\")"
+    },
+    "New EGroup": {
+        "prefix": "egroup_create",
+        "body": [
+            "local eg_${entities} = EGroup_CreateIfNotFound(\"eg_${entities}\")$0"
+        ],
+        "description": "New EGroup, eg. local eg_entities = EGroup_CreateIfNotFound(\"eg_entities\")"
+    }, 
+    "ForEach SGroup": {
+        "prefix": "sgroup_foreach",
+        "body": [
+            "SGroup_ForEach(${sg_squads}, function(sgid, idx, squad)",
+            "\t$0",
+            "end)"
+        ],
+        "description": "Iterate over squads in SGroup, e.g. SGroup_ForEach(sg_squads, function(sgid, idx, squad) .. end)"
+    },
+    "ForEach EGroup": {
+        "prefix": "egroup_foreach",
+        "body": [
+            "EGroup_ForEach(${eg_entities}, function(egid, idx, entity)",
+            "\t$0",
+            "end)"
+        ],
+        "description": "Iterate over entity in EGroup, e.g. EGroup_ForEach(eg_entities, function(egid, idx, squad) .. end)"
+    }
+}

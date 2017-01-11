@@ -1,0 +1,58 @@
+{
+    "name": "scar",
+    "displayName": "scar",
+    "description": "Support for Relic's SCAR scripting language",
+    "version": "0.0.1",
+    "publisher": "Janne252",
+    "engines": {
+        "vscode": "^1.5.0"
+    },
+    "main": "./out/src/extension",
+	"categories": [
+		"Languages"
+	],
+	"activationEvents": [
+		"onLanguage:scar"
+	],
+	"contributes": {
+        "languages": [{
+			"id": "scar",
+			"aliases": ["SCAR", "scar"],
+			"extensions": [".scar",".events", ".lua"],
+			"configuration": "./configurations/scar.configuration.json"
+		}],
+        "grammars": [{
+            "language": "scar",
+            "scopeName": "source.lua",
+            "path": "./syntaxes/scar.tmLanguage"
+        }],
+        "snippets": [{
+            "language": "scar",
+            "path": "./snippets/scar.json"
+        }],
+		"configuration": {
+			"type": "object",
+			"title": "SCAR Language Server configuration",
+			"properties": {
+				"scarLanguageServer.maxNumberOfProblems": {
+					"type": "number",
+					"default": 100,
+					"description": "Controls the maximum number of problems produced by the server."
+				}
+			}
+		}
+	},	
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "mocha": "^2.3.3",
+        "@types/node": "^6.0.40",
+        "@types/mocha": "^2.2.32"
+    }
+}
