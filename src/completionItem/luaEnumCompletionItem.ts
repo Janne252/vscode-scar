@@ -7,7 +7,7 @@ import {
 
 import {
     ILuaEnumDefinition
-} from '../types';
+} from '../scar';
 
 import CompletionItemBase from './completionItemBase';
 

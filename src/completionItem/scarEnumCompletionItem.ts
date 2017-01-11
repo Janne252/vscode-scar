@@ -6,12 +6,12 @@ import {
 } from 'vscode';
 
 import {
-    ILuaFunctionDefinition
+    ISCAREnumDefinition
 } from '../scar';
 
 import CompletionItemBase from './completionItemBase';
 
-export default class LuaFunctionCompletionItem extends CompletionItemBase
+export default class SCAREnumCompletionItem extends CompletionItemBase
 {
 	/**
 	 * Creates a new completion item.
@@ -21,11 +21,11 @@ export default class LuaFunctionCompletionItem extends CompletionItemBase
 	 *
 	 * @param func The ILuaFunctionDefinition.
 	 */
-	constructor(luaFunc: ILuaFunctionDefinition)
+	constructor(scarEnum: ISCAREnumDefinition)
 	{
-		super(luaFunc.name, CompletionItemKind.Function);
+		super(scarEnum.name, CompletionItemKind.Enum);
 
-		this.documentation = luaFunc.description;
-		this.detail = luaFunc.signature;
+		this.documentation = `${scarEnum.name} of type ${scarEnum.type}`;
+		this.detail = scarEnum.type;
 	}
 }

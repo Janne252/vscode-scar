@@ -5,7 +5,7 @@ import {CompletionList} from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {ILuaDoc, ILuaFunctionDefinition, ILuaEnumDefinition} from '../types';
+import {ILuaDoc, ILuaFunctionDefinition, ILuaEnumDefinition} from '../scar';
 import LuaFunctionCompletionItem from '../completionItem/luaFunctionCompletionItem';
 import LuaEnumCompletionItem from '../completionItem/luaEnumCompletionItem';
 import {DocCompletionItemSourceBase} from './docCompletionItemSourceBase';

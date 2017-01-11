@@ -1,7 +1,8 @@
 'use strict';
 
 import {CompletionItem} from 'vscode';
-import {ICompletionItemSourceMerger, ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource} from './completionItemSource';
+import {ICompletionItemSourceMerger, ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource} from '../completionItemSource/completionItemSource';
+import ArrayHelpers from '../helpers/arrayHelpers';
 
 export default class CompletionItemSourceMerger implements ICompletionItemSourceMerger
 {
@@ -22,16 +23,7 @@ export default class CompletionItemSourceMerger implements ICompletionItemSource
 
     protected removeCompletionItems(items: CompletionItem[]): void
     {
-        for(let i = this.completionItems.length - 1; i <= 0; i--)
-        {
-            for(let item of items)
-            {
-                if (this.completionItems[i] == item)
-                {
-                    this.completionItems.splice(i, 1);
-                }
-            }
-        }
+        ArrayHelpers.removeMany(this.completionItems, items);
     }
 
     public addStaticSource(source: IStaticCompletionItemSource): Thenable<void>
@@ -52,14 +44,8 @@ export default class CompletionItemSourceMerger implements ICompletionItemSource
     public removeStaticSource(source: IStaticCompletionItemSource): void
     {
         this.removeCompletionItems(source.getCompletionItems());
-        
-        for(let i = this.staticSources.length - 1; i >= 0; i--)
-        {
-            if (this.activeSources[i] == source)
-            {
-                this.activeSources.splice(i, 1);
-            }
-        }
+       
+        ArrayHelpers.remove(this.staticSources, source);
     }
 
     public addActiveSource(source: IActiveCompletionItemSource): Thenable<void>
@@ -82,14 +68,8 @@ export default class CompletionItemSourceMerger implements ICompletionItemSource
     {
         source.merger = undefined;
         this.removeCompletionItems(source.getCompletionItems());
-        
-        for(let i = this.activeSources.length - 1; i >= 0; i--)
-        {
-            if (this.activeSources[i] == source)
-            {
-                this.activeSources.splice(i, 1);
-            }
-        }
+
+        ArrayHelpers.remove(this.activeSources, source);
     }
 
     public init()

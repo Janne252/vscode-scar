@@ -4,9 +4,13 @@ import {CompletionItem} from 'vscode';
 import {IActiveCompletionItemSource, ICompletionItemSourceMerger} from './completionItemSource';
 import {CompletionItemSourceBase} from './completionItemSourceBase';
 
+/**
+ * Abstract base class for providing a source for active completion items.
+ */
 export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourceBase implements IActiveCompletionItemSource
 {
     protected previousCompletionItems: CompletionItem[];
+    
     public merger: ICompletionItemSourceMerger;
     
     constructor()

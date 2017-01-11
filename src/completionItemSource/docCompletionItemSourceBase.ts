@@ -5,7 +5,7 @@ import {CompletionItemSourceBase} from './completionItemSourceBase';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {ISCARDoc, ILuaFunctionDefinition, ILuaEnumDefinition} from '../types';
+import {ISCARDoc, ILuaFunctionDefinition, ILuaEnumDefinition} from '../scar';
 import {IStaticCompletionItemSource} from './completionItemSource';
 import LuaFunctionCompletionItem from '../completionItem/luaFunctionCompletionItem';
 import LuaEnumCompletionItem from '../completionItem/luaEnumCompletionItem';

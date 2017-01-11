@@ -7,6 +7,9 @@ import * as path from 'path';
 
 import {ICompletionItemSource} from './completionItemSource';
 
+/**
+ * Abstract base class for providing a source for static completion items.
+ */
 export abstract class CompletionItemSourceBase implements ICompletionItemSource
 {
     protected completionItems: CompletionItem[];

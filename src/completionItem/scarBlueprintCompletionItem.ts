@@ -6,12 +6,12 @@ import {
 } from 'vscode';
 
 import {
-    ILuaFunctionDefinition
+    ISCAREnumDefinition
 } from '../scar';
 
 import CompletionItemBase from './completionItemBase';
 
-export default class LuaFunctionCompletionItem extends CompletionItemBase
+export default class SCARBlueprintCompletionItem extends CompletionItemBase
 {
 	/**
 	 * Creates a new completion item.
@@ -21,11 +21,11 @@ export default class LuaFunctionCompletionItem extends CompletionItemBase
 	 *
 	 * @param func The ILuaFunctionDefinition.
 	 */
-	constructor(luaFunc: ILuaFunctionDefinition)
+	constructor(blueprint: string)
 	{
-		super(luaFunc.name, CompletionItemKind.Function);
+		super(blueprint, CompletionItemKind.Reference);
 
-		this.documentation = luaFunc.description;
-		this.detail = luaFunc.signature;
+		this.documentation = blueprint;
+		this.detail = blueprint;
 	}
 }
