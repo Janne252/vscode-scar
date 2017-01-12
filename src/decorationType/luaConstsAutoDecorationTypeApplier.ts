@@ -17,7 +17,7 @@ export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeAp
 
     public update(textEditor: TextEditor): void
     {
-        console.log('highligting file (LuaConstsAuto): ' + textEditor.document.uri.path);
+        //console.log('highligting file (LuaConstsAuto): ' + textEditor.document.uri.path);
 
         let blueprintRanges: Range[] = [];
         let text = this.luaParser.textDocument.getText();
