@@ -16,7 +16,7 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
 
     public update(textEditor: TextEditor): void
     {
-        console.log('highligting file (SCAR): ' + textEditor.document.uri.path);  
+        //console.log('highligting file (SCAR): ' + textEditor.document.uri.path);  
 
         let callExpressions: LuaParserCallExpression[] = [];
         let identifiers: ILuaParserTreeNode[] = [];

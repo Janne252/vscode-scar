@@ -16,7 +16,7 @@ export default class LocDocDecorationTypeApplier extends DecorationTypeApplierBa
 
     public update(textEditor: TextEditor): void
     {
-        console.log('highligting file (LuaDoc): ' + textEditor.document.uri.path);  
+        //console.log('highligting file (LuaDoc): ' + textEditor.document.uri.path);  
 
         let callExpressions: LuaParserCallExpression[] = [];
         let identifiers: ILuaParserTreeNode[] = [];
