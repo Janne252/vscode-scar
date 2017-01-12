@@ -17,7 +17,7 @@
     - [x] SCARDOC functions
     - [x] SCARDOC enums
     - [x] LuaConstsAuto.scar blueprints
-    - [ ] Lua standard library functions
+    - [x] Lua standard library functions
     - [ ] Workspace user-defined global functions 
  - [ ] Misc 
     - [ ] Find LuaConstsAuto.scar blueprint 
