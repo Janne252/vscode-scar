@@ -2,12 +2,12 @@
 
 import {CompletionItem, TextDocument} from 'vscode';
 import DocumentWordCompletionItem from '../completionItem/documentWordCompletionItem';
-import ActiveCompletionItemSource from './activeCompletionItemSource';
+import {ActiveCompletionItemSourceBase} from './activeCompletionItemSourceBase';
 
 /**
  * Abstract base class for providing a source for active completion items.
  */
-export default class DocumentCompletionItemSource extends ActiveCompletionItemSource
+export default class DocumentCompletionItemSource extends ActiveCompletionItemSourceBase
 {
     constructor()
     {
