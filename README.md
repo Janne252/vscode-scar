@@ -3,6 +3,7 @@
 (Company of Heroes 2)
 
 ## Features
+ - [x] Lua syntax check (based on [oxyc/luaparse](https://github.com/oxyc/luaparse))
  - [x] Autocompletion
     - [x] SCARDOC functions
     - [x] SCARDOC enums
