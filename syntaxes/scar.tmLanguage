@@ -211,18 +211,6 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|loadfile|loadstring|module|next|pairs|pcall|print|rawequal|rawget|rawset|require|select|setfenv|setmetatable|tonumber|tostring|type|unpack|xpcall)\b</string>
-			<key>name</key>
-			<string>support.function.library.lua</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\b(math.abs|math.acos|math.asin|math.atan|math.ceil|math.cos|math.deg|math.exp|math.floor|math.fmod|math.huge|math.log|math.max|math.maxinteger|math.min|math.mininteger|math.modf|math.pi|math.rad|math.random|math.randomseed|math.sin|math.sqrt|math.tan|math.tointeger|math.type|math.ult|table.concat|table.foreach|table.foreachi|table.getn|table.sort|table.insert|table.remove|table.setn|table.maxn|string.byte|string.char|string.dump|string.find|string.len|string.lower|string.rep|string.sub|string.upper|string.format|string.gfind|string.gsub|string.gmatch|string.match|string.reverse)\b</string>
-			<key>name</key>
-			<string>support.function.library.lua</string>
-		</dict>
-		<dict>
-			<key>match</key>
 			<string>\b(and|or|not)\b</string>
 			<key>name</key>
 			<string>keyword.operator.lua</string>

@@ -7,3 +7,18 @@ local bp2 = SBP.AEF.RIFLEMEN_SQUAD_VETERAN_MP
  
 
 local hue = UPG.BRITISH.PIAT_UNLOCK_MP
+
+local t = {}
+
+for i = 1, 10 do
+    local player = World_GetPlayerAt(i)
+
+    local squads = Player_GetSquads(player)
+
+    for key, squad in pairs(squads) do
+        local t = {
+            [1] = "dd",
+            ["name"] = "Jonhn"
+        }
+    end
+end

@@ -1,27 +1,27 @@
 'use strict';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
-import ScarDocCompletionItemSource from '../completionItemSource/scarDocCompletionItemSource';
+import LuaDocCompletionItemSource from '../completionItemSource/luaDocCompletionItemSource';
 import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
-import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from '../decorationType/decorationTypes';
+import {LuaDocEnumDecorationType, LuaDocFunctionDecorationType} from '../decorationType/decorationTypes';
 
-export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierBase<ScarDocCompletionItemSource>
+export default class LocDocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocCompletionItemSource>
 {
-    constructor(source: ScarDocCompletionItemSource, luaParser: LuaParser)
+    constructor(source: LuaDocCompletionItemSource, luaParser: LuaParser)
     {
         super(source, luaParser);
     }
 
     public update(textEditor: TextEditor): void
     {
-        console.log('highligting file (SCAR): ' + textEditor.document.uri.path);  
+        console.log('highligting file (LuaDoc): ' + textEditor.document.uri.path);  
 
         let callExpressions: LuaParserCallExpression[] = [];
         let identifiers: ILuaParserTreeNode[] = [];
-        let scarDocFunctionRanges: Range[] = [];
-        let scarDocEnumRanges: Range[] = [];
+        let luaDocFunctionRanges: Range[] = [];
+        let luaDocEnumRanges: Range[] = [];
 
         if (this.luaParser.valid)
         {
@@ -47,7 +47,7 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
                 {
                     if (func.name == call.base.name)
                     {
-                        scarDocFunctionRanges.push(call.getIdentifierRange());
+                        luaDocFunctionRanges.push(call.getIdentifierRange());
                     }
                 }
             }
@@ -58,13 +58,13 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
                 {
                     if (scarDocEnum.name == identifier.name)
                     {
-                        scarDocEnumRanges.push(LuaParserTreeLocationToRange(identifier.loc));
+                        luaDocEnumRanges.push(LuaParserTreeLocationToRange(identifier.loc));
                     }
                 }
             }
                                     
-            textEditor.setDecorations(SCARDocFunctionDecorationType, scarDocFunctionRanges);
-            textEditor.setDecorations(SCARDocEnumDecorationType, scarDocEnumRanges);
+            textEditor.setDecorations(LuaDocFunctionDecorationType, luaDocFunctionRanges);
+            textEditor.setDecorations(LuaDocEnumDecorationType, luaDocEnumRanges);
         }
     }
 }

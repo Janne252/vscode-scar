@@ -18,6 +18,7 @@ import ObjectIterator from './helper/objectIterator';
 import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from './decorationType/decorationTypes';
 import SCARDocDecorationTypeApplier from './decorationType/scarDocDecorationTypeApplier';
 import LuaConstsAutoDecorationTypeApplier from './decorationType/luaConstsAutoDecorationTypeApplier';
+import LuaDocDecorationTypeApplier from './decorationType/luaDocDecorationTypeApplier';
 import DecorationTypeApplierCollection from './decorationType/decorationTypeApplierCollection';
 
 const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
@@ -45,6 +46,7 @@ export function activate(context: vscode.ExtensionContext)
 
     decorationTypeAppliers.addApplier(new SCARDocDecorationTypeApplier(scarDocCompletionItemSource, diagnosticProvider.luaParser));
     decorationTypeAppliers.addApplier(new LuaConstsAutoDecorationTypeApplier(luaConstsAutoCompletionItemSource, diagnosticProvider.luaParser));
+    decorationTypeAppliers.addApplier(new LuaDocDecorationTypeApplier(luaDocCompletionItemSource, diagnosticProvider.luaParser));
 
     let completionItemSources = [
         completionItemMerger.addStaticSource(luaDocCompletionItemSource),
@@ -91,6 +93,11 @@ export function activate(context: vscode.ExtensionContext)
             diagnosticProvider.update(textEditor.document);
             decorationTypeAppliers.update(textEditor);
         }
+
+        setInterval(() =>
+        {
+            
+        }, 1000);
     });
 }
 

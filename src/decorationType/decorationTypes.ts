@@ -42,3 +42,22 @@ export const UserDefinedFunctionDecorationStyle = window.createTextEditorDecorat
     },
 });
 
+export const LuaDocFunctionDecorationType = window.createTextEditorDecorationType({
+    light: {
+        color: '#00CED1',
+        
+    },
+    dark: {
+        color: '#00CED1; font-weight: bold;'
+    },
+});
+
+export const LuaDocEnumDecorationType = window.createTextEditorDecorationType({
+    light: {
+        color: '#00CED1',
+        
+    },
+    dark: {
+        color: '#00CED1; font-weight: bold;'
+    },
+});
