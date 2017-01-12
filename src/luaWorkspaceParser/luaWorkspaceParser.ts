@@ -24,7 +24,7 @@ export default class LuaWorkspaceParser
         {
             for(let file of files)
             {
-                if (path.extname(file) == )
+                //if (path.extname(file) == )
             }
         })
     }

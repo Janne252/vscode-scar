@@ -19,6 +19,10 @@ export default class LuaFunctionSignatureInformation extends SignatureInformatio
 
             signature = `${luaFunction.name}(${paramNames.join(', ')})`;
         }
+        else
+        {
+            signature = luaFunction.signature;
+        }
 
         super(signature, luaFunction.description);
 

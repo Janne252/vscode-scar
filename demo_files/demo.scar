@@ -23,3 +23,9 @@ for i = 1, 10 do
         }
     end
 end
+
+string.byte()
+
+one.two.three.four()
+
+pairs(2)

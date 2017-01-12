@@ -42,6 +42,21 @@ export default class LuaParserCallExpression implements ILuaParserCallExpression
         );
     }
 
+    public isPositionInArgumentsRange(position: Position): boolean
+    {
+        let range = this.getArgumentsRange();
+
+        let start = range.start;
+        let end = range.end;
+
+        let lineCount = end.line - start.line + 1;
+
+        return  (lineCount == 1 && position.line == start.line && position.character >= start.character && position.character <= end.character) ||
+                (lineCount > 1 && position.line == start.line && position.character >= start.character) || 
+                (lineCount > 1 && position.line == end.line && position.character <= end.character) || 
+                (lineCount > 1 && position.line > start.line && position.line < end.line);
+    }
+
     /**
      * Finds the index of the argument at a given position.
      * @param pos The position to get the argument index from.
@@ -68,5 +83,30 @@ export default class LuaParserCallExpression implements ILuaParserCallExpression
         }
 
         return defaultTo;
+    }
+
+    public getMemberCallExpressionName(): string
+    {
+        let base = this.base;
+        let parts = [];
+
+        while(true)
+        {
+            if (base.base !== undefined)
+            {
+                parts.push(base.identifier.name);
+            }
+            else
+            {
+                parts.push(base.name);
+                break;
+            }
+
+            base = base.base;
+        }
+
+        parts.reverse();
+
+        return parts.join('.');
     }
 }

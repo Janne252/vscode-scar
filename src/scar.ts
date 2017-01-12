@@ -65,3 +65,10 @@ export {
     DocCompletionItemSourceBase, LuaDocCompletionItemSource, SCARDocCompletionItemSource,
     CompletionItemSourceMerger
 }
+
+import * as fs from 'fs';
+
+export function DumpJSON(data: any): void
+{
+    fs.writeFileSync('E:/vscode-ext-dev/scar/demo_files/dump.txt', JSON.stringify(data), {encoding: 'utf-8'});
+}

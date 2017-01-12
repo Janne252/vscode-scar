@@ -6,6 +6,7 @@ import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../lu
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {LuaDocEnumDecorationType, LuaDocFunctionDecorationType} from '../decorationType/decorationTypes';
+import {DumpJSON} from '../scar';
 
 export default class LocDocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocCompletionItemSource>
 {
@@ -32,6 +33,12 @@ export default class LocDocDecorationTypeApplier extends DecorationTypeApplierBa
                     if (value.type === 'CallExpression')
                     {
                         let expression = new LuaParserCallExpression(value);
+
+                        if (expression.base.name === undefined && expression.base.type == 'MemberExpression')
+                        {
+                            expression.base.name = expression.getMemberCallExpressionName();
+                        }
+
                         callExpressions.push(expression);
                     }
                     else if (value.type == 'Identifier')

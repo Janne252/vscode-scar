@@ -4,6 +4,7 @@ import {SignatureHelp, SignatureInformation} from 'vscode';
 import {ILuaFunctionDefinition} from '../scar';
 import LuaFunctionSignatureInformation from '../signatureInformation/luaFunctionSignatureInformation';
 import NamedSignatureHelp from './namedSignatureHelp';
+import LuaFunctionParameterInformation from '../parameterInformation/luaFunctionParameterInformation';
 
 export default class LuaFunctionSignatureHelp extends NamedSignatureHelp
 {

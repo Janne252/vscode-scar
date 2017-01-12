@@ -1,7 +1,7 @@
 'use strict';
 
 import {
-    CompletionItemProvider, CompletionList, CompletionItem, CompletionItemKind,
+    CompletionItemProvider as ICompletionItemProvider, CompletionList, CompletionItem, CompletionItemKind,
     TextDocument, Position, CancellationToken
 } from 'vscode';
 
@@ -14,10 +14,8 @@ import CompletionItemSourceMerger from './completionItemSourceMerger/completionI
 import * as fs from 'fs';
 import * as path from 'path';
 
-export default class CompletionItemProver implements CompletionItemProvider
+export default class CompletionItemProvider implements ICompletionItemProvider
 {
-    public luaDocData: ILuaDoc = undefined;
-
     protected merger: CompletionItemSourceMerger;
     constructor(merger: CompletionItemSourceMerger)
     {

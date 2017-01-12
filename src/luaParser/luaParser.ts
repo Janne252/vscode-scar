@@ -4,6 +4,7 @@ import ObjectIterator from '../helper/objectIterator';
 var parser = require('luaparse');
 
 import LuaParserCallExpression from './luaParserCallExpression';
+import {DumpJSON} from '../scar';
 
 export default class LuaParser
 {
@@ -67,19 +68,24 @@ export default class LuaParser
         return result;
     }
     
-    public getCallExpressionAt(pos: Position): LuaParserCallExpression
+    public getCallExpressionAt(position: Position): LuaParserCallExpression
     {
         let result: LuaParserCallExpression;
         
+        DumpJSON(this.ast);
+
         ObjectIterator.each(this.ast, function(key, value: ILuaParserCallExpression)
         {
-            let item = new LuaParserCallExpression(value);
-
-            if (item !== null && item.type === 'CallExpression')
+            if (value !== null && value.type === 'CallExpression')
             {
-                let argumentsRange = item.getArgumentsRange();
-
-                if (argumentsRange.contains(pos))
+                let item = new LuaParserCallExpression(value);
+                
+                if (item.base.name === undefined && item.base.type == 'MemberExpression')
+                {
+                    item.base.name = item.getMemberCallExpressionName();
+                }
+                
+                if (item.isPositionInArgumentsRange(position))
                 {
                     result = item;
                 }
@@ -167,6 +173,8 @@ export interface ILuaParserCallExpressionBase
     type: string;
     name: string;
     loc: ILuaParserTreeLocation;
+    base?: ILuaParserCallExpressionBase;
+    identifier: ILuaParserCallExpressionBaseIdenfier;
 }
 export interface ILuaParserCallExpressionArgument
 {
@@ -179,11 +187,18 @@ export interface ILuaParserCallExpressionArgument
 export interface ILuaParserFunctionDeclaration
 {
     type: string;
-    identifier: {type: string, name: string};
+    identifier: ILuaParserCallExpressionBaseIdenfier
     isLocal: boolean;
     parameters: ILuaParserFunctionDeclarationParameter[];
     loc: ILuaParserTreeLocation;
     range: ILuaParserTreeRange;
+}
+
+export interface ILuaParserCallExpressionBaseIdenfier
+{
+    type: string;
+    indexer?: string;
+    name?: string;
 }
 
 export interface ILuaParserFunctionDeclarationParameter

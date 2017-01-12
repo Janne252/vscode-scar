@@ -23,6 +23,8 @@ import DecorationTypeApplierCollection from './decorationType/decorationTypeAppl
 import SignatureHelpSourceMerger from './signatureHelpSourceMerger/signatureHelpSourceMerger';
 import LuaDocSignatureHelpSource from './signatureHelpSource/luaDocSignatureHelpSource';
 import SCARDocSignatureHelpSource from './signatureHelpSource/scarDocSignatureHelpSource';
+import LuaFunctionSignatureHelp from './signatureHelp/luaFunctionSignatureHelp';
+import SignatureHelpProvider from './signatureHelpProvider';
 
 const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
 	comments: false,
@@ -68,12 +70,10 @@ export function activate(context: vscode.ExtensionContext)
 
         Promise.all(signatureHelpSources).then(() => 
         {
-            let finder = signatureHelpSourceMerger;
-            console.log('signature help merger ready to serve.');
+            context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));
         });
 
-        let completionItemProvider = vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger));
-        context.subscriptions.push(completionItemProvider);
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger)));
         
         workspace.onDidSaveTextDocument((textDocument: TextDocument) =>
         {
