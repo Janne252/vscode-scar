@@ -12,6 +12,12 @@ import {ICompletionItemSource} from './completionItemSource';
  */
 export abstract class CompletionItemSourceBase implements ICompletionItemSource
 {
+    protected _isReady: boolean = false;
+    public get isReady():boolean
+    {
+        return this._isReady;
+    }
+
     protected completionItems: CompletionItem[];
 
     constructor()
@@ -19,7 +25,7 @@ export abstract class CompletionItemSourceBase implements ICompletionItemSource
         this.completionItems = [];
     }
 
-    public init(): Thenable<void>
+    public load(): Thenable<void>
     {
         return new Promise<void>((resolve, reject) => 
         {
