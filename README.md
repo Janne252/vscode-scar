@@ -21,8 +21,9 @@
     - [x] LuaConstsAuto.scar blueprints
     - [x] Lua standard library functions
     - [x] Workspace user-defined global functions 
- - [ ] Misc 
-    - [ ] Find LuaConstsAuto.scar blueprint 
+ - [x] Misc 
+    - [x] Reload workspace user-defined functions
+    - [x] Find LuaConstsAuto.scar blueprint 
 
 ## Syntax Highlighting
 ![](https://raw.githubusercontent.com/Janne252/scar/master/images/promo_highlight.png)
