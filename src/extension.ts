@@ -69,7 +69,7 @@ export function activate(context: vscode.ExtensionContext)
         Promise.all(signatureHelpSources).then(() => 
         {
             let finder = signatureHelpSourceMerger;
-            console.log('signature help provider ready to serve.');
+            console.log('signature help merger ready to serve.');
         });
 
         let completionItemProvider = vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger));
