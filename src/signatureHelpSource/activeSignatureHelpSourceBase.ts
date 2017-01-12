@@ -22,6 +22,14 @@ export abstract class ActiveSignatureHelpSourceBase implements IActiveSignatureH
         this.signatureHelpItems = [];
     }
 
+    protected notifyMerger(): void
+    {
+        if (this.merger !== undefined)
+        {
+            this.merger.activeSourceUpdated(this);
+        }
+    }
+
     public getPreviousSignatureHelpItems(): NamedSignatureHelp[]
     {
         return this.signatureHelpItems;
@@ -32,10 +40,7 @@ export abstract class ActiveSignatureHelpSourceBase implements IActiveSignatureH
         this.previousSignatureHelpItems = this.signatureHelpItems;
         this.signatureHelpItems = items;
 
-        if (this.merger !== undefined)
-        {
-            this.merger.activeSourceUpdated(this);
-        }
+        this.notifyMerger();
     }
 
     public getSignatureHelpItems(): NamedSignatureHelp[]
@@ -83,5 +88,13 @@ export abstract class ActiveSignatureHelpSourceBase implements IActiveSignatureH
         }
        
        this.updateSignatureHelpItems(newItems);
+    }
+
+    public clear(): void
+    {
+        this.previousSignatureHelpItems = this.signatureHelpItems;
+        this.signatureHelpItems = [];
+
+        this.notifyMerger();
     }
 }

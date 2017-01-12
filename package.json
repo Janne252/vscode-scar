@@ -31,6 +31,28 @@
             "language": "scar",
             "path": "./snippets/scar.json"
         }],
+        "commands": [
+            {
+                "command": "scar.reloadWorkspace",
+                "title": "[SCAR] Reload Workspace",
+                "description": "Reloads the Workspace user-defined functions."
+            },
+            {
+                "command": "scar.findBlueprint",
+                "title": "[SCAR] Find a Blueprint",
+                "description": "Search Blueprints"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "scar.reloadWorkspace",
+                "key": "Ctrl+Shift+R"
+            },
+            {
+                "command": "scar.findBlueprint",
+                "key": "Ctrl+Tab"
+            }
+        ],
 		"configuration": {
 			"type": "object",
 			"title": "SCAR Configuration",

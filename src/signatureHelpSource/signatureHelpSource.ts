@@ -23,6 +23,7 @@ export interface IActiveSignatureHelpSource extends IStaticSignatureHelpSource
 
     addSignatureHelpItem(item: NamedSignatureHelp): void;
     removeSignatureHelpItem(item: NamedSignatureHelp): void;
+    clear(): void;
 }
 
 export interface ISignatureHelpSourceMerger

@@ -14,6 +14,7 @@ export default class LuaConstsAutoCompletionItemSource extends DocCompletionItem
     private combinedList: string;
     private rawList: string[];
     private _matchAllRegexString: string;
+
     public get matchAllRegexString(): string
     {
         return this._matchAllRegexString;
@@ -51,5 +52,10 @@ export default class LuaConstsAutoCompletionItemSource extends DocCompletionItem
     public getMatchAllRegExp(): RegExp
     {
         return new RegExp(this._matchAllRegexString, 'g');
+    }
+
+    public getWordList(): string[]
+    {
+        return this.rawList;
     }
 }

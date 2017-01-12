@@ -5,7 +5,7 @@ import {CompletionItem} from 'vscode';
 export interface ICompletionItemSource
 {
     isReady: boolean;
-    getCompletionItems(): CompletionItem[]
+    getCompletionItems(): CompletionItem[];
     load(): Thenable<void>;
 }
 
@@ -20,6 +20,7 @@ export interface IActiveCompletionItemSource extends IStaticCompletionItemSource
     updateCompletionItems(items: CompletionItem[]): void;
     addCompletionItem(item: CompletionItem): void;
     removeCompletionItem(item: CompletionItem): void;
+    clear(): void;
     merger: ICompletionItemSourceMerger;
 }
 

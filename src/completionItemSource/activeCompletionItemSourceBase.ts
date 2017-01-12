@@ -26,6 +26,14 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
         this.previousCompletionItems = [];
     }
 
+    protected notifyMerger(): void
+    {
+        if (this.merger !== undefined)
+        {
+            this.merger.activeSourceUpdated(this);
+        }
+    }
+
     /**
      * Retrieves the previous (before update) completion items.
      * @returns The previous completion items.
@@ -43,10 +51,7 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
         this.previousCompletionItems = this.completionItems;
         this.completionItems = items;
 
-        if (this.merger !== undefined)
-        {
-            this.merger.activeSourceUpdated(this);
-        }
+        this.notifyMerger();
     }
     /**
      * Adds a completion item.
@@ -85,5 +90,13 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
         }
        
        this.updateCompletionItems(newItems);
+    }
+
+    public clear(): void
+    {
+        this.previousCompletionItems = this.completionItems;
+        this.completionItems = [];
+
+        this.notifyMerger();
     }
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor} from 'vscode';
+import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit} from 'vscode';
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
 import CompletionItemProvider from './completionItemProvider';
@@ -117,6 +117,30 @@ export function activate(context: vscode.ExtensionContext)
                 decorationTypeAppliers.update(e);
             }
         });
+
+        context.subscriptions.push(commands.registerCommand('scar.findBlueprint', (args: any[]) => 
+        {
+            let result = window.showQuickPick(luaConstsAutoCompletionItemSource.getWordList());
+            result.then((value: string) =>
+            {
+                let textEditor = window.activeTextEditor;
+                if (textEditor)
+                {
+                    textEditor.edit((editBuilder: vscode.TextEditorEdit) => 
+                    {
+                        editBuilder.insert(textEditor.selection.start, value); 
+                    });
+                }
+            }); 
+        }));
+
+        context.subscriptions.push(commands.registerCommand('scar.reloadWorkspace', (args: any[]) =>
+        {
+            workspaceParser.reload().then(() => 
+            {
+                console.log('Workspace reloaded!');
+            });
+        }));
 
         // Kick-off
         if (window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')

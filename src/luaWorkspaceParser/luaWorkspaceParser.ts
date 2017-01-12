@@ -91,6 +91,14 @@ export default class LuaWorkspaceParser
         this.log = [];
     }
 
+    public reload(): Thenable<void>
+    {
+        this._completionItemSource.clear();
+        this._signatureHelpSource.clear();
+        
+        return this.load();
+    }
+
     public load(): Thenable<void>
     {
         return new Promise<void>((resolve, reject) => 
