@@ -1,7 +1,7 @@
 'use strict';
 
 import {CompletionList} from 'vscode';
-import {CompletionItemSourceBase} from './completionItemSourceBase';
+import {StaticCompletionItemSourceBase} from './staticCompletionItemSourceBase';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -13,7 +13,7 @@ import LuaEnumCompletionItem from '../completionItem/luaEnumCompletionItem';
 /**
  * Represents abstract CompletionItemProviderSource for sources that rely on reading contents of a file.
  */
-export abstract class DocCompletionItemSourceBase<T> extends CompletionItemSourceBase implements IStaticCompletionItemSource
+export abstract class DocCompletionItemSourceBase<T> extends StaticCompletionItemSourceBase implements IStaticCompletionItemSource
 {
     /**
      * The data that was read from the file.

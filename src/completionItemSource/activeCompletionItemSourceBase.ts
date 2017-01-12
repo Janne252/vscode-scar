@@ -2,12 +2,12 @@
 
 import {CompletionItem} from 'vscode';
 import {IActiveCompletionItemSource, ICompletionItemSourceMerger} from './completionItemSource';
-import {CompletionItemSourceBase} from './completionItemSourceBase';
+import {StaticCompletionItemSourceBase} from './staticCompletionItemSourceBase';
 
 /**
  * Abstract base class for providing a source for active completion items.
  */
-export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourceBase implements IActiveCompletionItemSource
+export abstract class ActiveCompletionItemSourceBase extends StaticCompletionItemSourceBase implements IActiveCompletionItemSource
 {
     protected previousCompletionItems: CompletionItem[];
     

@@ -3,7 +3,7 @@ import LuaFunctionCompletionItem from './completionItem/luaFunctionCompletionIte
 import LuaEnumCompletionItem from './completionItem/luaEnumCompletionItem';
 import SCAREnumCompletionItem from './completionItem/scarEnumCompletionItem';
 
-import {CompletionItemSourceBase} from './completionItemSource/completionItemSourceBase';
+import {StaticCompletionItemSourceBase} from './completionItemSource/staticCompletionItemSourceBase';
 import {ActiveCompletionItemSourceBase} from './completionItemSource/activeCompletionItemSourceBase';
 import {ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource, ICompletionItemSourceMerger} from './completionItemSource/completionItemSource';
 import {DocCompletionItemSourceBase} from './completionItemSource/docCompletionItemSourceBase';
@@ -60,7 +60,7 @@ export interface ILoadableSource<T>
 
 export {
     LuaFunctionCompletionItem, LuaEnumCompletionItem, SCAREnumCompletionItem,
-    CompletionItemSourceBase, ActiveCompletionItemSourceBase, 
+    StaticCompletionItemSourceBase, ActiveCompletionItemSourceBase, 
     ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource, ICompletionItemSourceMerger,
     DocCompletionItemSourceBase, LuaDocCompletionItemSource, SCARDocCompletionItemSource,
     CompletionItemSourceMerger

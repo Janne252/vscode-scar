@@ -5,12 +5,12 @@ import {CompletionItem} from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {ICompletionItemSource} from './completionItemSource';
+import {IStaticCompletionItemSource} from './completionItemSource';
 
 /**
  * Abstract base class for providing a source for static completion items.
  */
-export abstract class CompletionItemSourceBase implements ICompletionItemSource
+export abstract class StaticCompletionItemSourceBase implements IStaticCompletionItemSource
 {
     protected _isReady: boolean = false;
     /**

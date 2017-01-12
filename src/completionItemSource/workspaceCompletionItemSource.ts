@@ -10,7 +10,7 @@ import LuaFunctionCompletionItem from '../completionItem/luaFunctionCompletionIt
 import {ActiveCompletionItemSourceBase} from './activeCompletionItemSourceBase';
 
 /**
- * Represents a Workspace completionItem source.
+ * Represents a Workspace completionItem source. Currently used to autocomplete words.
  */
 export default class WorkspaceCompletionItemSource extends ActiveCompletionItemSourceBase
 {

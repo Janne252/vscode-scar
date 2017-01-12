@@ -20,7 +20,7 @@ export default class SignatureHelpProvider implements ISignatureHelpProvider
 
     public provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken): Thenable<NamedSignatureHelp>
     {
-        console.log(`Attempting to provide help at ${position.line}, ${position.character}`);
+        //console.log(`Attempting to provide help at ${position.line}, ${position.character}`);
         return new Promise((resolve, reject) => 
         {
             try
