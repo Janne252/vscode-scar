@@ -93,11 +93,6 @@ export function activate(context: vscode.ExtensionContext)
             diagnosticProvider.update(textEditor.document);
             decorationTypeAppliers.update(textEditor);
         }
-
-        setInterval(() =>
-        {
-            
-        }, 1000);
     });
 }
 
