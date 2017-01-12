@@ -34,7 +34,7 @@ function Player_ResetResources(player)
     }
 
     for key, resourceType in pairs(resourceTypes) do
-        Player_ResetResource(player, resourceType)
+        
     end
 end
 
