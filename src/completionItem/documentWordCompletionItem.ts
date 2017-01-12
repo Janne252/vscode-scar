@@ -9,6 +9,9 @@ import {
     ILuaEnumDefinition
 } from '../scar';
 
+/**
+ * Represents a CompletionItem for a document word.
+ */
 export default class DocumentWordCompletionItem extends CompletionItem
 {
 	/**
@@ -17,7 +20,7 @@ export default class DocumentWordCompletionItem extends CompletionItem
 	 * Completion items must have at least a [label](#CompletionItem.label) which then
 	 * will be used as insert text as well as for sorting and filtering.
 	 *
-	 * @param func The ILuaFunctionDefinition.
+	 * @param word The word.
 	 */
 	constructor(word: string)
 	{

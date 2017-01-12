@@ -9,6 +9,9 @@ import {
     ISCAREnumDefinition
 } from '../scar';
 
+/**
+ * Represents a CompletionItem for a SCAR/LuaConstsAuto.scar Blueprint.
+ */
 export default class SCARBlueprintCompletionItem extends CompletionItem
 {
 	/**
@@ -17,7 +20,7 @@ export default class SCARBlueprintCompletionItem extends CompletionItem
 	 * Completion items must have at least a [label](#CompletionItem.label) which then
 	 * will be used as insert text as well as for sorting and filtering.
 	 *
-	 * @param func The ILuaFunctionDefinition.
+	 * @param blueprint The blueprint.
 	 */
 	constructor(blueprint: string)
 	{
