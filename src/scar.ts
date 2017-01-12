@@ -53,6 +53,11 @@ export interface ISCAREnumDefinition
     type: string;
 }
 
+export interface ILoadableSource<T>
+{
+    load(): Thenable<T>;
+}
+
 export {
     LuaFunctionCompletionItem, LuaEnumCompletionItem, SCAREnumCompletionItem,
     CompletionItemSourceBase, ActiveCompletionItemSourceBase, 

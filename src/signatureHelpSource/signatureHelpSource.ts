@@ -4,7 +4,9 @@ import {SignatureHelp, SignatureInformation} from 'vscode';
 
 export interface ISignatureHelpSource
 {
+    isReady: boolean;
     getSignatureHelp(name: string): SignatureHelp;
+    load(): Thenable<void>;
 }
 
 export interface IStaticSignatureHelpSource extends ISignatureHelpSource
