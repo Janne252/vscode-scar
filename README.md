@@ -10,9 +10,9 @@
     - [x] Lua standard library functions
     - [ ] Workspace user-defined global functions
  - [ ] Intellisense (function parameter autocompletion)
-    - [ ] SCARDOC functions
-    - [ ] Lua standard library functions
-    - [ ] Workspace user-defined global functions
+    - [x] SCARDOC functions
+    - [x] Lua standard library functions
+    - [x] Workspace user-defined global functions
  - [ ] Dynamic syntax highlighting
     - [x] SCARDOC functions
     - [x] SCARDOC enums
