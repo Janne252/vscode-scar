@@ -7,7 +7,7 @@
     - [x] SCARDOC enums
     - [x] LuaConstsAuto.scar blueprints
     - [x] Current document words
-    - [ ] Lua standard library functions
+    - [x] Lua standard library functions
     - [ ] Workspace user-defined global functions
  - [ ] Intellisense (function parameter autocompletion)
     - [ ] SCARDOC functions
