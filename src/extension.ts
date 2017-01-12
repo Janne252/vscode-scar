@@ -19,12 +19,14 @@ import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoB
 import SCARDocDecorationTypeApplier from './decorationType/scarDocDecorationTypeApplier';
 import LuaConstsAutoDecorationTypeApplier from './decorationType/luaConstsAutoDecorationTypeApplier';
 import LuaDocDecorationTypeApplier from './decorationType/luaDocDecorationTypeApplier';
+import WorkspaceDecorationTypeApplier from './decorationType/workspaceDecorationTypeApplier';
 import DecorationTypeApplierCollection from './decorationType/decorationTypeApplierCollection';
 import SignatureHelpSourceMerger from './signatureHelpSourceMerger/signatureHelpSourceMerger';
 import LuaDocSignatureHelpSource from './signatureHelpSource/luaDocSignatureHelpSource';
 import SCARDocSignatureHelpSource from './signatureHelpSource/scarDocSignatureHelpSource';
 import LuaFunctionSignatureHelp from './signatureHelp/luaFunctionSignatureHelp';
 import SignatureHelpProvider from './signatureHelpProvider';
+import LuaWorkspaceParser from './luaWorkspaceParser/luaWorkspaceParser';
 
 const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
 	comments: false,
@@ -39,10 +41,13 @@ let luaDocCompletionItemSource: LuaDocCompletionItemSource;
 let luaConstsAutoCompletionItemSource: LuaConstsAutoCompletionItemSource;
 let decorationTypeAppliers = new DecorationTypeApplierCollection();
 let signatureHelpSourceMerger = new SignatureHelpSourceMerger();
+let workspaceParser: LuaWorkspaceParser;
 
 export function activate(context: vscode.ExtensionContext) 
 {
     diagnosticProvider = new DiagnosticProvider(new LuaParser(LUA_PARSER_OPTIONS), languages.createDiagnosticCollection());
+
+    workspaceParser = new LuaWorkspaceParser(workspace.rootPath, diagnosticProvider.luaParser);
 
     let completionItemMerger = new CompletionItemMerger();
     
@@ -63,6 +68,18 @@ export function activate(context: vscode.ExtensionContext)
 
     Promise.all(completionItemSources).then((values: any[]) =>
     {
+        let textEditor = window.activeTextEditor;
+
+        workspaceParser.load().then(() => 
+        {
+            completionItemMerger.addActiveSource(workspaceParser.completionItemSource);
+            signatureHelpSourceMerger.addActiveSource(workspaceParser.signatureHelpSource);
+
+            decorationTypeAppliers.addApplier(new WorkspaceDecorationTypeApplier(workspaceParser.completionItemSource, diagnosticProvider.luaParser));
+
+            decorationTypeAppliers.update(textEditor);
+        });
+
         let signatureHelpSources = [
             signatureHelpSourceMerger.addStaticSource(new LuaDocSignatureHelpSource(luaDocCompletionItemSource)),
             signatureHelpSourceMerger.addStaticSource(new SCARDocSignatureHelpSource(scarDocCompletionItemSource))
@@ -78,6 +95,8 @@ export function activate(context: vscode.ExtensionContext)
         workspace.onDidSaveTextDocument((textDocument: TextDocument) =>
         {
             currentDocumentCompletionItemSource.update(textDocument);
+
+            workspaceParser.reparseFile(textDocument.fileName);
         });
 
         workspace.onDidChangeTextDocument((e) => 
@@ -102,11 +121,8 @@ export function activate(context: vscode.ExtensionContext)
         // Kick-off
         if (window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
         {
-            let textEditor = window.activeTextEditor;
-
             currentDocumentCompletionItemSource.update(textEditor.document);
             diagnosticProvider.update(textEditor.document);
-            decorationTypeAppliers.update(textEditor);
         }
     });
 }

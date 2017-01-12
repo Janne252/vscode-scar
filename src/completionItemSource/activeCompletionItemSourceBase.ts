@@ -35,4 +35,36 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
             this.merger.activeSourceUpdated(this);
         }
     }
+
+    public addCompletionItem(item: CompletionItem): void
+    {
+        let newItems = Array.from(this.completionItems);
+
+        for(let i = newItems.length - 1; i >= 0; i--)
+        {
+            if (newItems[i].label == item.label && newItems[i].kind == item.kind)
+            {
+                newItems.splice(i, 1);
+            }
+        }
+
+        newItems.push(item);
+
+        this.updateCompletionItems(newItems);
+    }
+
+    public removeCompletionItem(item: CompletionItem): void
+    {
+        let newItems = Array.from(this.completionItems);
+
+        for(let i = newItems.length - 1; i >= 0; i--)
+        {
+            if (newItems[i] == item)
+            {
+                newItems.splice(i, 1);
+            }
+        }
+       
+       this.updateCompletionItems(newItems);
+    }
 }

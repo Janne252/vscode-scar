@@ -1,0 +1,1587 @@
+--[[
+Copyright (c) 2016 Janne Varjo
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+ 
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgement in the product documentation would be
+   appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.
+
+--]]
+
+function CCM_Init()
+    Lib_SetupMod("5ed2ead7bbf94c01833685dfa1f23ac1", "CCMII", DEV_MODE)
+    
+    if DEV_MODE then
+        AI_EnableAll(false)
+        FOW_Enable(false)
+    end
+    
+	CCM_ConfigInit()
+	
+	CCM_Command = {
+		KillSquad = 1,
+		DeleteSquad = 2,
+		
+		KillEntity = 3,
+		DeleteEntity = 4,
+		
+		FOW_Enable = 5,
+		FOW_Disable = 6,
+		
+		AI_Enable = 7,
+		AI_Disable = 8,
+		
+		AI_SetDifficulty = 9,
+		
+		Squad_SetHealthPercentage = 10,
+		Entity_SetHealthPercentage = 11,
+		
+		Squad_AddHealthPercentage = 12,
+		Entity_AddHealthPercentage = 13,
+		
+		Squad_AddHealthPoints = 14,
+		Entity_AddHealthPoints = 15,
+		
+		Squad_SetInvulnerable = 16,
+		Entity_SetInvulnerable = 17,
+		
+		Squad_SetPlayerOwner = 18,
+		Entity_SetPlayerOwner = 19,
+		
+		Squad_SetWorldOwned = 20,
+		Entity_SetWorldOwned = 21,
+		
+		Squad_Abandon = 22,
+		Entity_Abandon = 23,
+		
+		AddResource = 24,
+		ResetResource = 25,
+		
+		AddPopulationCap = 26,
+		
+		SetInstantProductionEnabed = 27,
+		SetInstantConstructionEnabled = 28,
+		SetInstantAbilityRechargeEnabled = 29,
+		
+		SpawnSquad = 30,
+		SpawnEntity = 31,
+		SpawnAbility = 32,
+		
+		IncreaseSquadVeterancyExperience = 33,
+		IncreaseSquadVeterancyLevel = 34,
+		
+		InstantReinforceSquad = 35,
+		SplitSquad = 36,
+		
+		RemoveSquadCriticals = 37,
+		RemoveEntityCriticals = 38,
+		
+		ApplyCriticalToSquad = 39,
+		ApplyCriticalToEntity = 40,
+		
+		RemoveSquadCritical = 41,
+		RemoveEntityCritical = 42,
+		
+		Squad_SetAutoTargetting = 43,
+		
+		RemoveSquadUpgrade = 44,
+		RemoveEntityUpgrade = 45,
+		
+		RemoveSquadSlotItem = 46,
+		
+		SpawnSlotItem = 47,
+		
+		TeleportSquad = 48,
+		TeleportEntity = 49,
+		
+		SetSquadFacing = 50,
+		
+		KillEverything = 51,
+		DeleteEverything = 52,
+		
+		RotateEntity = 53,
+		
+		ClearClipboard = 54,
+		AddSquadToClipBoard = 55,
+		AddEntityToClipboard = 56,
+		PasteClipboard = 57,
+		
+		SetHealthMonitorEnabled = 58,
+		
+		SetGarrisonedTeamWeaponFacing = 59,
+		CancelGarrisonedTeamWeaponFacing = 60,
+		
+		AddSelectionSuppression = 61,
+		
+		SetAllAIPlayersEnabled = 62,
+		
+		SetPlayerResourceIncomeEnabled = 63,
+		
+		SetSuppressionMonitorEnabled = 64,
+		
+		SetHealthMonitorUpdateRate = 65,
+		SetSuppressionMonitorUpdateDate = 66,
+		
+        CompletePlayerUpgrade = 67,
+        AddPlayerAbility = 68,
+        ClearCommanderAbilities = 69,
+        UnlockCommanderAbility = 70,
+        
+        ModifySquadMovementSpeed = 71,
+        
+		SquadToEntity = 72,
+		
+		SetEntityAnimatorState = 73,
+		SetSquadAnimatorState = 74,
+		SetEntitySkinType = 75,
+		
+		DropSquadWeapons = 76,
+
+		CaptureAllTerritorySectors = 77,
+		NeutralizeAllTerritorySectors = 78,
+
+		SquadToSkinPreviewEntity = 79,
+		DummyCommand = 100,
+		
+	}
+    
+	Rule_AddOneShot(CCM_UIInit, 1)
+	Rule_AddGlobalEvent(CCM_BroadcastMessageReceived, GE_BroadcastMessage)
+	
+    CCM_HealthMonitorInit()
+	CCM_SuppressionMonitorInit() 
+end
+
+function CCM_UIInit()
+	ControlDefaults.Width = 150
+	
+	CCM_Menu = Menu(__ccm_menu_data)
+	local width = UI_GetViewportWidth()
+	local height = UI_GetViewportHeight()
+	  
+	--[==[local numericUpDown = NumericUpDown({
+		x = 300,
+		y = 300,
+		width = 100,
+		height = 32,
+		icons = NumericUpDown_CreateIconConfig("icon_numeric_up_down", 32, 16, BIS_IconState),
+		value = {
+			value = 0,
+			min = 0,
+			max = 100,
+			step = 1,
+			prepend = "",
+			append = " %",
+		},
+		label = {
+			--[[fontSize = ControlDefaults.FontSize,
+			bold = ControlDefaults.Bold,
+			italic = ControlDefaults.Italic,
+			labelAlignHorizontal = ControlDefaults.LabelAlignHorizontal,
+			labelAlignVertical = ControlDefaults.LabelAlignVertical,--]]
+			fontSize = 16,
+			labelAlignVertical = LAV_Center,
+			labelAlignHorizontal = LAH_Right,
+			color =	Colors.White,
+		},
+		labelMargin = Margin({right = 3}),
+		
+	})--]==]
+	--Squad_CreateAndSpawnToward(nil, nil, nil, nil, nil)
+	if DEV_MODE then
+		local clearButton = Button({
+			text = "Clear console",
+			x = width - 150,
+			y = 0,
+			width = 150, 
+			height = 40, 
+			icon = CCM_ICON.BUTTON_ICON_DEFAULT,
+			callback = function(button)
+				g_text = ""
+				Msg("")
+			end,
+		})
+	end
+	
+	
+	CCM_Crosshair = Icon({
+		x = (width / 2) - 32,
+		y = (height / 2) - 32,
+		width = 64,
+		height = 64,
+		icon = Mod_GetIcon("icon_crosshair"),
+	})
+	CCM_Crosshair.Hide()
+end
+
+function CCM_BroadcastMessageReceived(player, command, data)
+	local playerData = Player_FromStringData(player)
+    
+    if command == CCM_Command.KillSquad or command == CCM_Command.DeleteSquad then		
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			
+			if command == CCM_Command.KillSquad then
+				CCM_EventMessage(playerData.name .. " Killed " .. squadData.name, squadData.pos)
+				Squad_Kill(squadData.squad)
+			elseif command == CCM_Command.DeleteSquad then
+				CCM_EventMessage(playerData.name .. " Deleted " .. squadData.name, squadData.pos)
+				Squad_Destroy(squadData.squad)
+			end
+		end
+		
+	elseif command == CCM_Command.KillEntity or command == CCM_Command.DeleteEntity then
+		local entityData = Entity_FromStringData(data)
+		
+		if entityData.isValid then
+			if command == CCM_Command.KillEntity then
+				CCM_EventMessage(playerData.name .. " Killed " .. entityData.name, entityData.pos)
+				Entity_Kill(entityData.entity)
+			elseif command == CCM_Command.DeleteEntity then
+				CCM_EventMessage(playerData.name .. " Deleted " .. entityData.name, entityData.pos)
+				Entity_Destroy(entityData.entity)
+			end	
+		end
+	
+	elseif command == CCM_Command.FOW_Enable then
+		CCM_GLOBAL.FOW_Enabled = true
+		CCM_EventMessage(playerData.name .. " Enabled Fog of War")
+		FOW_Enable(true)
+	
+	elseif command == CCM_Command.FOW_Disable then
+		CCM_GLOBAL.FOW_Enabled = false
+		CCM_EventMessage(playerData.name .. " Disabled Fog of War")
+		FOW_Enable(false)
+		
+	elseif command == CCM_Command.AI_Enable then
+		local aiPlayerData = Player_FromStringData(data, true)
+		CCM_EventMessage(playerData.name .. " Enabled AI player " .. aiPlayerData.nameWithFaction, aiPlayerData.pos)
+		AI_Enable(aiPlayerData.player, true)
+	elseif command == CCM_Command.AI_Disable then
+		local aiPlayerData = Player_FromStringData(data, true)
+		CCM_EventMessage(playerData.name .. " Disabled AI player " .. aiPlayerData.nameWithFaction, aiPlayerData.pos)
+		AI_Enable(aiPlayerData.player, false)
+	
+	elseif command == CCM_Command.AI_SetDifficulty then
+		local aiPlayerData = Player_FromStringData(data, true)
+		CCM_EventMessage(playerData.name .. " Set AI player difficulty " .. aiPlayerData.nameWithFaction .. " to " .. AIDifficulty_Tostring(aiPlayerData.difficulty), aiPlayerData.pos)
+		AI_SetDifficulty(aiPlayerData.player, aiPlayerData.difficulty)
+		
+	elseif command == CCM_Command.Squad_SetHealthPercentage then
+		local squadData = Squad_FromStringData(data)
+		
+		if squadData.isValid then
+			CCM_EventMessage(Data_GetHealthModifiedString(playerData, squadData, "squad", "%", true), squadData.pos)
+			Squad_SetHealth(squadData.squad, squadData.percentage)
+
+			CCM_EventKickerHealthMessageEval(
+				math.abs(squadData.percentage * 100) .. " % HP",
+				squadData.pos,
+				true,
+				"",
+				""
+			)
+		end
+		
+	elseif command == CCM_Command.Entity_SetHealthPercentage then
+		local entityData = Entity_FromStringData(data)
+		
+		if entityData.isValid then
+			CCM_EventMessage(Data_GetHealthModifiedString(playerData, entityData, "entity", "%", true), entityData.pos)
+			Entity_SetHealth(entityData.entity, entityData.percentage)
+			
+			CCM_EventKickerHealthMessageEval(
+				math.abs(entityData.percentage * 100) .. " % HP",
+				entityData.pos,
+				true,
+				"",
+				""
+			)
+		end
+		
+	elseif command == CCM_Command.Squad_AddHealthPercentage then
+		local squadData = Squad_FromStringData(data)
+		
+		if squadData.isValid then
+			local action = "Incrased"
+			if squadData.percentage < 0 then
+				action = "Decreased"
+			end
+			Squad_AddHealthPercentage(squadData.squad, squadData.percentage)
+
+			CCM_EventMessage(Data_GetHealthModifiedString(playerData, squadData, "squad", "%"), squadData.pos)
+			CCM_EventKickerHealthMessageEval(
+				math.abs(squadData.percentage * 100) .. " % HP",
+				squadData.pos,
+				squadData.percentage > 0,
+				"+ ",
+				"- "
+			)
+		end
+		
+	elseif command == CCM_Command.Entity_AddHealthPercentage then
+		local entityData = Entity_FromStringData(data)
+		
+		if entityData.isValid then
+			local action = "Incrased"
+			if entityData.percentage < 0 then
+				action = "Decreased"
+			end
+			Entity_AddHealthPercentage(entityData.entity, entityData.percentage)
+
+			CCM_EventMessage(Data_GetHealthModifiedString(playerData, entityData, "entity", "%"), entityData.pos)
+			CCM_EventKickerHealthMessageEval(
+				math.abs(entityData.percentage * 100) .. " % HP",
+				entityData.pos,
+				entityData.percentage > 0,
+				"+ ",
+				"- "
+			)
+		end
+        
+	elseif command == CCM_Command.Squad_AddHealthPoints then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			local action = "Incrased"
+			if squadData.points < 0 then
+				action = "Decreased"
+			end
+			Squad_AddHealthPoints(squadData.squad, squadData.points)
+
+			CCM_EventMessage(Data_GetHealthModifiedString(playerData, squadData, "squad", "HP"), squadData.pos)
+			CCM_EventKickerHealthMessageEval(
+				math.abs(squadData.points) .. " HP",
+				squadData.pos,
+				squadData.points > 0,
+				"+ ",
+				"- "
+			)
+		end
+        
+	elseif command == CCM_Command.Entity_AddHealthPoints then
+		local entityData = Entity_FromStringData(data)
+		
+		if entityData.isValid then
+			local action = "Incrased"
+			if entityData.points < 0 then
+				action = "Decreased"
+			end
+			Entity_AddHealthPoints(entityData.entity, entityData.points)
+
+			CCM_EventMessage(Data_GetHealthModifiedString(playerData, entityData, "entity", "HP"), entityData.pos)
+			CCM_EventKickerHealthMessageEval(
+				math.abs(entityData.points) .. " HP",
+				entityData.pos,
+				entityData.points > 0,
+				"+ ",
+				"- "
+			)
+		end
+        
+	elseif command == CCM_Command.Squad_SetInvulnerable then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			Squad_SetInvulnerable(squadData.squad, squadData.enabled, 0)
+			local enabledString = (squadData.enabled and "Enabled" or "Disabled")
+			CCM_EventMessage(playerData.name .. " set squad " .. squadData.name .. " invulnerability to " .. enabledString, squadData.pos)
+			CCM_EventKickerMessage("Invulnerability: " .. enabledString, squadData.pos, (squadData.enabled and Colors.Green or Colors.Red))
+		end
+		
+	elseif command == CCM_Command.Entity_SetInvulnerable then
+		local entityData = Entity_FromStringData(data)
+		if entityData.isValid then
+			Entity_SetInvulnerable(entityData.entity, entityData.enabled, 0)
+			local enabledString = (entityData.enabled and "Enabled" or "Disabled")
+			CCM_EventMessage(playerData.name .. " set entity " .. entityData.name .. " invulnerability to " .. enabledString, entityData.pos)
+			CCM_EventKickerMessage("Invulnerability: " .. enabledString, entityData.pos, (entityData.enabled and Colors.Green or Colors.Red))
+		end
+		
+	elseif command == CCM_Command.Squad_SetPlayerOwner then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			local newOwner = World_GetPlayerAt(squadData.playerIndex)
+			local isNeutral = World_OwnsSquad(squadData.squad)	
+			if isNeutral or (not isNeutral and Squad_GetPlayerOwner(squadData.squad) ~= newOwner) then
+				CCM_EventMessage(Data_GetOwnerChangedString(playerData, squadData, newOwner), squadData.pos)
+				Squad_SetPlayerOwner(squadData.squad, newOwner)
+			end
+		end
+        
+		
+	elseif command == CCM_Command.Entity_SetPlayerOwner then
+		local entityData = Entity_FromStringData(data)
+		if entityData.isValid then
+			local newOwner = World_GetPlayerAt(entityData.playerIndex)
+			local isNeutral = World_OwnsEntity(entityData.entity)
+			
+			if isNeutral or(not isNeutral and Entity_GetPlayerOwner(entityData.entity) ~= newOwner) then			
+				CCM_EventMessage(Data_GetOwnerChangedString(playerData, entityData, newOwner), entityData.pos)
+				
+				if Entity_IsStrategicPoint(entityData.entity) then
+					Entity_InstantCaptureStrategicPoint(entityData.entity, newOwner)
+				else
+					Entity_SetPlayerOwner(entityData.entity, newOwner)
+				end
+			end
+		end
+        
+	elseif command == CCM_Command.Squad_SetWorldOwned then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			if not World_OwnsSquad(squadData.squad) then				
+				CCM_EventMessage(Data_GetOwnerChangedString(playerData, squadData, "World"), squadData.pos)
+				Squad_SetWorldOwned(squadData.squad)
+			end
+		end
+	elseif command == CCM_Command.Entity_SetWorldOwned then
+		local entityData = Entity_FromStringData(data)
+		if entityData.isValid then
+			if not World_OwnsEntity(entityData.entity) then
+
+				if Entity_IsStrategicPoint(entityData.entity) then
+					Entity_SetStrategicPointNeutral(entityData.entity)
+				else
+					Entity_SetWorldOwned(entityData.entity)
+				end
+				
+				CCM_EventMessage(Data_GetOwnerChangedString(playerData, entityData, "World"), entityData.pos)
+			end
+		end
+        
+	elseif command == CCM_Command.Squad_Abandon then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			CCM_EventMessage(Data_GetOwnerChangedString(playerData, squadData, "Abandoned"), squadData.pos)
+			Squad_Abandon(squadData.squad)
+		end
+        
+	elseif command == CCM_Command.Entity_Abandon then
+		-- Don't handle!
+	
+	elseif command == CCM_Command.AddResource then
+		local targetPlayerData = Player_FromStringData(data)
+		local resourceType = ResourceType_FromString(targetPlayerData.resourceType)
+		Player_AddResource(targetPlayerData.player, resourceType, targetPlayerData.amount)
+		
+		CCM_EventMessage(playerData.name .. " added " .. targetPlayerData.amount .. " " .. ResourceType_ToDisplayString(resourceType) .. " for " .. targetPlayerData.name, targetPlayerData.pos)
+		
+	elseif command == CCM_Command.ResetResource then
+		local targetPlayerData = Player_FromStringData(data)
+		local resourceType = ResourceType_FromString(targetPlayerData.resourceType)
+		Player_ResetResource(targetPlayerData.player, resourceType)
+		
+		CCM_EventMessage(playerData.name .. " resetted " .. String_AddGenetive(targetPlayerData.name, "´") .. " " .. ResourceType_ToDisplayString(resourceType), targetPlayerData.pos)
+		
+	elseif command == CCM_Command.AddPopulationCap then
+		local targetPlayerData = Player_FromStringData(data)
+		local currentPop = Player_GetMaxPopulation(targetPlayerData.player, CT_Personnel)
+		
+		local newPop = currentPop + targetPlayerData.amount
+		
+		if newPop < 0 then
+			newPop = 0
+		end
+		local action = "Incrased"
+		if targetPlayerData.amount < 0 then
+			action = "Decreased"
+		end
+			
+		Player_SetPopCapOverride(targetPlayerData.player, newPop)
+		CCM_EventMessage(playerData.name .. " " .. action .. " " .. String_AddGenetive(targetPlayerData.name, "´") .. " population cap by " .. targetPlayerData.amount .. " (result: " .. newPop .. ")", targetPlayerData.pos)
+		
+	elseif command == CCM_Command.SetInstantProductionEnabed then
+		local targetPlayerData = Player_FromStringData(data)
+		local enabled = Player_GetSetting(targetPlayerData.player, targetPlayerData.setting)
+		
+		if enabled ~= targetPlayerData.enabled then
+			Player_SetSetting(targetPlayerData.player, targetPlayerData.setting, targetPlayerData.enabled)
+			local result
+			if targetPlayerData.enabled then
+				Modify_PlayerProductionRate(targetPlayerData.player, CCM_Scalefactor.Production.Instant)
+				result = "Instant"
+			else
+				Modify_PlayerProductionRate(targetPlayerData.player, CCM_Scalefactor.Production.Normal)
+				result = "Normal"
+			end
+			
+			CCM_EventMessage(playerData.name .. " set " .. String_AddGenetive(targetPlayerData.name, "´") .. " production speed to " .. result, targetPlayerData.pos)		
+		end
+        
+	elseif command == CCM_Command.SetInstantConstructionEnabled then
+		local targetPlayerData = Player_FromStringData(data)
+		local enabled = Player_GetSetting(targetPlayerData.player, targetPlayerData.setting)
+		
+		if enabled ~= targetPlayerData.enabled then
+			Player_SetSetting(targetPlayerData.player, targetPlayerData.setting, targetPlayerData.enabled)
+			local result
+			local scalefactor
+			if targetPlayerData.enabled then
+				scalefactor = CCM_Scalefactor.Construction.Instant
+				result = "Instant"
+			else
+				scalefactor = CCM_Scalefactor.Construction.Normal
+				result = "Normal"
+			end
+			
+			for raceKey, raceEBSs in pairs(EBP) do
+				for key, ebp in pairs(raceEBSs) do
+					local ebpName = BP_GetName(ebp)
+					if EBP_HasExtension(ebpName, "ebpextensions\\construction_ext") then
+						Modify_EntityBuildTime(targetPlayerData.player, ebp, scalefactor)
+					end
+				end
+			end
+			
+			CCM_EventMessage(playerData.name .. " set " .. String_AddGenetive(targetPlayerData.name, "´") .. " construction speed to " .. result, targetPlayerData.pos)	
+		end
+        
+	elseif command == CCM_Command.SetHealthMonitorEnabled then
+		local targetSettings = Parameters_FromStringData(data)
+		local enabled = Player_GetSetting(playerData.player, targetSettings.setting)
+		
+		if enabled ~= targetSettings.enabled then
+			Player_SetSetting(playerData.player, targetSettings.setting, targetSettings.enabled)
+			
+			local result = (targetSettings.enabled and "enabled" or "disabled")
+			
+			CCM_EventMessage(playerData.name .. " set their " .. " health monitor to " .. result, playerData.pos)	
+		end
+
+	elseif command == CCM_Command.SetSuppressionMonitorEnabled then
+		local targetSettings = Parameters_FromStringData(data)
+		local enabled = Player_GetSetting(playerData.player, targetSettings.setting)
+		
+		if enabled ~= targetSettings.enabled then
+			Player_SetSetting(playerData.player, targetSettings.setting, targetSettings.enabled)
+			
+			local result = (targetSettings.enabled and "enabled" or "disabled")
+			
+			CCM_EventMessage(playerData.name .. " set their " .. " suppression monitor to " .. result, playerData.pos)	
+		end
+        
+	elseif command == CCM_Command.SetInstantAbilityRechargeEnabled then
+		local targetPlayerData = Player_FromStringData(data)
+		local enabled = Player_GetSetting(targetPlayerData.player, targetPlayerData.setting)
+		
+		if enabled ~= targetPlayerData.enabled then
+			Player_SetSetting(targetPlayerData.player, targetPlayerData.setting, targetPlayerData.enabled)
+			local result
+			local scalefactor 
+			if targetPlayerData.enabled then
+				scalefactor = CCM_Scalefactor.AbilityRecharge.Instant
+				result = "Instant"
+			else
+				scalefactor = CCM_Scalefactor.AbilityRecharge.Normal
+				result = "Normal"
+			end
+			
+			for raceKey, race in pairs(ABILITY) do
+				for key, abp in pairs(race) do
+					Modify_AbilityRechargeTime(targetPlayerData.player, abp, scalefactor)	
+				end
+			end
+			
+			CCM_EventMessage(playerData.name .. " set " .. String_AddGenetive(targetPlayerData.name, "´") .. " ability recharge speed to " .. result, targetPlayerData.pos)
+		end
+        
+	elseif command == CCM_Command.SpawnSquad then
+		local targetPlayerData = Player_FromStringData(data)
+		local sbp = BP_GetSquadBlueprint(targetPlayerData.sbp)
+		local pos = World_Pos(targetPlayerData.x, targetPlayerData.y, targetPlayerData.z)
+		Squad_CreateAndSpawnToward(sbp, targetPlayerData.player, 0, pos, pos)
+		local sbpName = SBP_GetScreenName(targetPlayerData.sbp)
+
+		local msg = playerData.name .. " spawned squad " 
+		msg = msg .. sbpName
+		msg = msg .. " for "
+		msg = msg .. targetPlayerData.name
+		CCM_EventMessage(msg, pos)
+		
+	elseif command == CCM_Command.SpawnEntity then
+		local targetPlayerData = Player_FromStringData(data)
+		local ebp = BP_GetEntityBlueprint(targetPlayerData.ebp)
+		local pos = World_Pos(targetPlayerData.x, targetPlayerData.y, targetPlayerData.z)
+		Entity_CreateAndSpawnToward(ebp, targetPlayerData.player, pos, pos, true)
+		local ebpName = EBP_GetScreenName(targetPlayerData.ebp)
+
+		local msg = playerData.name .. " spawned entity " 
+		msg = msg .. ebpName
+		msg = msg .. " for "
+		msg = msg .. targetPlayerData.name
+		CCM_EventMessage(msg, pos)	
+		
+	elseif command == CCM_Command.SpawnSlotItem then
+		local targetPlayerData = Player_FromStringData(data)
+		local slotItem = BP_GetSlotItemBlueprint(targetPlayerData.slotItem)
+		local pos = World_Pos(targetPlayerData.x, targetPlayerData.y, targetPlayerData.z)
+		Misc_SpawnSlotItemOnGround(slotItem, pos, pos)
+		local slotItemName = SlotItem_GetScreenName(targetPlayerData.slotItem)
+
+		local msg = playerData.name .. " spawned slot item " .. slotItemName
+		CCM_EventMessage(msg, pos)			
+        
+	elseif command == CCM_Command.IncreaseSquadVeterancyExperience then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			Squad_IncreaseVeterancyExperience(squadData.squad, squadData.amount, false, true)
+			CCM_EventMessage(playerData.name .. " increased squad " .. squadData.name .. " veterancy XP by " .. squadData.amount .. " (result: " .. Squad_GetVeterancyExperience(squadData.squad) .. ")", squadData.pos)
+		end
+        
+	elseif command == CCM_Command.IncreaseSquadVeterancyLevel then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			Squad_IncreaseVeterancyRank(squadData.squad, squadData.amount, false)
+			CCM_EventMessage(playerData.name .. " increased squad " .. squadData.name .. " veterancy level by " .. squadData.amount .. " (result: " .. Squad_GetVeterancyRank(squadData.squad) .. ")", squadData.pos)
+		end
+        
+	elseif command == CCM_Command.InstantReinforceSquad then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			for i = 1, squadData.amount do 
+				Command_SquadPosExt(
+					playerData.player,
+					Squad_GetTempSGroup(squadData.squad),
+					SCMD_InstantReinforceUnit,
+					Squad_GetPosition(squadData.squad),
+					0,
+					false
+				)
+			end
+			CCM_EventMessage(playerData.name .. " reinforced squad " .. squadData.name .. " by " .. squadData.amount .. " (result: " .. Squad_CountSpawned(squadData.squad) .. "/" .. Squad_Count(squadData.squad) .. " members alive)", squadData.pos)
+		end
+        
+	elseif command == CCM_Command.SplitSquad then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid and Squad_CountSpawned(squadData.squad) > 1 then
+			Squad_Split(squadData.squad, 1)
+			CCM_EventMessage(playerData.name .. " splitted squad " .. squadData.name, squadData.pos)
+		end
+        
+	elseif command == CCM_Command.ApplyCriticalToSquad then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			local critBP = BP_GetCriticalBlueprint(squadData.critBP)
+			
+			Cmd_CriticalHit(playerData.player, squadData.squad, critBP, 1)
+			
+			CCM_EventMessage(playerData.name .. " added critical " .. Crit_GetScreenName(squadData.critBP) .. " for squad " .. squadData.name, squadData.pos)
+		end
+        
+	elseif command == CCM_Command.ApplyCriticalToEntity then
+		local entityData = Entity_FromStringData(data)
+		if entityData.isValid then
+			local critBP = BP_GetCriticalBlueprint(entityData.critBP)
+			
+			Cmd_CriticalHit(playerData.player, entityData.entity, critBP, 1)
+			
+			CCM_EventMessage(playerData.name .. " added critical " .. Crit_GetScreenName(entityData.critBP) .. " for entity " .. entityData.name, entityData.pos)
+		end
+        
+	elseif command == CCM_Command.RemoveSquadCritical then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			local critBP = BP_GetCriticalBlueprint(squadData.critBP)
+			
+			Squad_RemoveCritical(squadData.squad, critBP)
+			
+			CCM_EventMessage(playerData.name .. " removed critical " .. Crit_GetScreenName(squadData.critBP) .. " from squad " .. squadData.name, squadData.pos)
+		end
+        
+	elseif command == CCM_Command.RemoveEntityCritical then
+		local entityData = Entity_FromStringData(data)
+		if entityData.isValid then
+			local critBP = BP_GetCriticalBlueprint(entityData.critBP)
+			
+			Entity_RemoveCritical(entityData.entity, critBP)
+			
+			CCM_EventMessage(playerData.name .. " removd critical " .. Crit_GetScreenName(entityData.critBP) .. " from entity " .. entityData.name, entityData.pos)
+		end
+        
+	elseif command == CCM_Command.RemoveSquadCriticals then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			local critBP = BP_GetCriticalBlueprint(squadData.critBP)
+			
+			local remCount = Squad_RemoveCriticals(squadData.squad)
+			
+			CCM_EventMessage(playerData.name .. " removed " .. remCount .. " criticals from squad " .. squadData.name, squadData.pos)
+		end
+        
+	elseif command == CCM_Command.RemoveEntityCriticals then
+		local entityData = Entity_FromStringData(data)
+		if entityData.isValid then
+			local critBP = BP_GetCriticalBlueprint(entityData.critBP)
+			
+			local remCount = Entity_RemoveCriticals(entityData.entity)
+			
+			CCM_EventMessage(playerData.name .. " removed " .. remCount .. " criticals from entity " .. entityData.name, entityData.pos)
+		end
+        
+	elseif command == CCM_Command.Squad_SetAutoTargetting then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			Squad_SetAllAutoTargetting(squadData.squad, squadData.enabled)
+			local enabled = "Enabled"
+			if not squadData.enabled then
+				enabled = "Disabled"
+			end
+			CCM_EventMessage(playerData.name .. " set squad " .. squadData.name .. " weapons autotargetting to " .. enabled, squadData.pos)
+		end
+        
+	elseif command == CCM_Command.RemoveSquadUpgrade then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			local upgrade = BP_GetUpgradeBlueprint(squadData.upgrade)
+			
+			if Squad_HasUpgrade(squadData.squad, upgrade) then
+				Squad_RemoveUpgradeFully(squadData.squad, upgrade)
+				CCM_EventMessage(playerData.name .. " removed squad " .. squadData.name .. " upgrade " .. squadData.upgrade, squadData.pos)
+			end
+		end
+        
+	elseif command == CCM_Command.RemoveEntityUpgrade then
+		local entityData = Entity_FromStringData(data)
+		if entityData.isValid then
+			local upgrade = BP_GetUpgradeBlueprint(entityData.upgrade)
+			
+			if Entity_HasUpgrade(entityData.entity, upgrade) then
+				Entity_RemoveUpgrade(entityData.entity, upgrade)
+				CCM_EventMessage(playerData.name .. " removed entity " .. entityData.name .. " upgrade " .. entityData.upgrade, entityData.pos)
+			end
+		end
+        
+	elseif command == CCM_Command.RemoveSquadSlotItem then
+		local squadData = Squad_FromStringData(data)
+		if squadData.isValid then
+			local slotItem = BP_GetSlotItemBlueprint(squadData.slotItem)
+			
+			if Squad_HasSlotItem(squadData.squad, slotItem) then
+				Squad_RemoveSlotItem(squadData.squad, slotItem)
+				CCM_EventMessage(playerData.name .. " removed squad " .. squadData.name .. " slot item " .. squadData.slotItem, squadData.pos)
+			end
+		end
+        
+	elseif command == CCM_Command.TeleportSquad then
+		local squadData = Squad_FromStringData(data)
+		local pos = World_Pos(squadData.x, squadData.y, squadData.z)
+		
+		if squadData.isValid then
+			Squad_SetPosition(squadData.squad, pos, pos)
+			
+			CCM_EventMessage(playerData.name .. " teleported squad " .. squadData.name .. " to position " .. Pos_GetString(pos), pos)
+		end
+        
+	elseif command == CCM_Command.TeleportEntity then
+		local entityData = Entity_FromStringData(data)
+		local pos = World_Pos(entityData.x, entityData.y, entityData.z)
+		
+		if entityData.isValid then
+			Entity_SetPosition(entityData.entity, pos)
+			local msg = playerData.name .. " teleported entity "
+			msg = msg .. entityData.name .. " to position "
+			msg = msg .. Pos_GetString(pos)
+			
+			CCM_EventMessage(msg, pos)
+		end
+        
+	elseif command == CCM_Command.SetSquadFacing then
+		local squadData = Squad_FromStringData(data)
+		local pos = World_Pos(squadData.x, squadData.y, squadData.z)
+		
+		if squadData.isValid then
+			Squad_FacePosition(squadData.squad, pos)
+			CCM_EventMessage(playerData.name .. " set squad " .. squadData.name .. " facing position to " .. Pos_GetString(pos), pos)
+		end
+        
+	elseif command == CCM_Command.RotateEntity then
+		local entityData = Entity_FromStringData(data)
+		
+		if entityData.isValid then
+			Entity_Rotate(entityData.entity, math.rad(entityData.amount))
+			
+			CCM_EventMessage(playerData.name .. " rotated entity " .. entityData.name .. " by " .. entityData.amount .. "°", pos)
+		end
+        
+	elseif command == CCM_Command.KillEverything then
+		local targetData = Parameters_FromStringData(data)
+		
+		local pos = World_Pos(targetData.x, targetData.y, targetData.z)
+		local radius = targetData.radius
+		
+		local items = World_GetEverythingNearPoint(pos, radius)
+		
+		EGroup_Kill(items.Entities)
+		EGroup_Kill(items.NeutralEntities)
+		
+		SGroup_Kill(items.Squads)
+		SGroup_Kill(items.NeutralSquads)
+		
+		CCM_EventMessage(playerData.name .. " killed everything at " .. Pos_GetString(pos) .. " with the radius of " .. radius, pos)
+		
+	elseif command == CCM_Command.DeleteEverything then
+		local targetData = Parameters_FromStringData(data)
+		
+		local pos = World_Pos(targetData.x, targetData.y, targetData.z)
+		local radius = targetData.radius
+		
+		local items = World_GetEverythingNearPoint(pos, radius)
+		
+		EGroup_ForEach(items.Entities, function(egid, idx, entity)
+			if not Entity_IsStrategicPoint(entity) then
+				Entity_Destroy(entity)
+			end
+		end)
+		
+		EGroup_ForEach(items.NeutralEntities, function(egid, idx, entity)
+			if not Entity_IsStrategicPoint(entity) then
+				Entity_Destroy(entity)
+			end
+		end)
+		
+		SGroup_DestroyAllSquads(items.Squads)
+		SGroup_DestroyAllSquads(items.NeutralSquads)
+		
+		CCM_EventMessage(playerData.name .. " deleted everything at " .. Pos_GetString(pos) .. " with the radius of " .. radius, pos)
+        
+	elseif command == CCM_Command.ClearClipboard then
+		CCM_PlayerClipboard[Player_GetUniqueKey(playerData.player)] = {}
+		
+	elseif command == CCM_Command.AddSquadToClipBoard then
+		local playerKey = Player_GetUniqueKey(playerData.player)
+		local squadData = Squad_FromStringData(data)
+		local squad = squadData.squad
+
+        local squadClipboardData = Squad_ToClipboardData(squad)
+        
+		CCM_EventMessage(playerData.name .. " added squad " .. SBP_GetScreenName(squadClipboardData.sbp) .. " to the clipboard", Squad_GetPosition(squad))
+		
+		table.insert(CCM_PlayerClipboard[playerKey], squadClipboardData)
+		
+	elseif command == CCM_Command.AddEntityToClipboard then
+		local playerKey = Player_GetUniqueKey(playerData.player)
+		local entityData = Entity_FromStringData(data)
+		local entity = entityData.entity
+		local owner = "world"
+		
+		if not World_OwnsEntity(entity) then
+			owner = Entity_GetPlayerOwner(entity)
+		end
+
+		local new = {
+			ebp = Entity_GetBlueprint(entity),
+			health = Entity_GetHealthPercentage(entity),
+			upgrades = Entity_GetUpgrades(entity),
+			owner = owner,
+			criticals = Entity_GetCriticals(entity),
+			heading = Entity_GetHeading(entity),
+		}
+		
+		CCM_EventMessage(playerData.name .. " added entity " .. EBP_GetScreenName(new.ebp) .. " to the clipboard", Entity_GetPosition(entity))
+		table.insert(CCM_PlayerClipboard[playerKey], new)
+		
+	elseif command == CCM_Command.PasteClipboard then
+		local targetData = Parameters_FromStringData(data)
+		local pos = World_Pos(targetData.x, targetData.y, targetData.z)
+		local playerKey = Player_GetUniqueKey(playerData.player)
+		
+		--Msg("Reading stuff from clipboard " .. playerKey)
+		for key, item in pairs(CCM_PlayerClipboard[playerKey]) do
+			if item.sbp then
+				
+                local squad = Squad_FromClipboardData(item, pos)
+                
+				CCM_EventMessage(playerData.name .. " pasted a squad at " .. Pos_GetString(pos), pos)
+			elseif item.ebp then
+				
+                local entity = Entity_FromClipboardData(item, pos)
+				
+				CCM_EventMessage(playerData.name .. " pasted an entity at " .. Pos_GetString(pos), pos)
+			end
+		end
+        
+	elseif command == CCM_Command.SetGarrisonedTeamWeaponFacing then
+		local squadData = Squad_FromStringData(data)
+		local pos = World_Pos(squadData.x, squadData.y, squadData.z)
+		
+		if squadData.isValid and not World_OwnsSquad(squadData.squad) and Squad_IsInHoldEntity(squadData.squad) then
+			Cmd_Ability(Squad_GetTempSGroup(squadData.squad), ABILITY.GLOBAL.GARRISONED_SQUAD_FACING, pos)
+			CCM_EventMessage(playerData.name .. " set garrisoned team weapon facing to " .. Pos_GetString(pos), squadData.pos)
+		end
+		
+	elseif command == CCM_Command.CancelGarrisonedTeamWeaponFacing then
+		local squadData = Squad_FromStringData(data)
+		
+		if squadData.isValid and not World_OwnsSquad(squadData.squad) and Squad_IsInHoldEntity(squadData.squad) then
+			Cmd_Ability(Squad_GetTempSGroup(squadData.squad), ABILITY.GLOBAL.GARRISONED_SQUAD_FACING_UNSET)
+			CCM_EventMessage(playerData.name .. " cancelled garrisoned team weapon facing order", squadData.pos)
+		end
+        
+	elseif command == CCM_Command.AddSelectionSuppression then
+		local squadData = Squad_FromStringData(data)
+		
+		if squadData.isValid then
+			local current = Squad_GetSuppression(squadData.squad)
+			local newSuppression = Percentage_Normalize(current + squadData.amount)
+			Squad_SetSuppression(squadData.squad, newSuppression)
+			
+			CCM_EventMessage(playerData.name .. " set squad " .. squadData.name .. " suppression to " .. Round(newSuppression, 4) * 100 .. " %", squadData.pos)
+		end
+        
+	elseif command == CCM_Command.SetAllAIPlayersEnabled then
+		local enabledData = Parameters_FromStringData(data)
+		
+		AI_EnableAll(enabledData.enabled)
+		
+		CCM_EventMessage(playerData.name .. " " .. (enabledData.enabled and "enabled" or "disabled") .. " all AI Players", playerData.pos)
+		
+	elseif command == CCM_Command.SetPlayerResourceIncomeEnabled then
+		local targetPlayerData = Player_FromStringData(data)
+		local enabled = targetPlayerData.enabled
+		local playerSettings = Player_GetSettings(targetPlayerData.player)
+		if enabled ~= playerSettings.ResourceIncomeEnabled then
+			playerSettings.ResourceIncomeEnabled = enabled
+			Player_SetResourcesEnabled(targetPlayerData.player, targetPlayerData.enabled, false)
+			CCM_EventMessage(playerData.name .. " " .. (targetPlayerData.enabled and "enabled" or "disabled") .. " resource income for " .. targetPlayerData.name, targetPlayerData.pos)	
+		end
+        
+	elseif command == CCM_Command.SetHealthMonitorUpdateRate then
+		local targetPlayerData = Player_FromStringData(data)
+		local playerSettings = Player_GetSettings(targetPlayerData.player)
+		
+		if playerSettings.HealthMonitorUpdateRate ~= targetPlayerData.rate then
+			playerSettings.HealthMonitorUpdateRate = targetPlayerData.rate
+			
+			Player_ExecuteLocally(targetPlayerData.player, function()
+				Rule_ChangeIntervalIfExists(CCM_HealthMonitor_Tick, targetPlayerData.rate)			
+			end)
+			
+			--CCM_EventMessage(targetPlayerData.name .. " set their Health Monitor Update rate to " .. targetPlayerData.rate .. " seconds", targetPlayerData.pos)
+		end
+        
+	elseif command == CCM_Command.SetSuppressionMonitorUpdateDate then
+		local targetPlayerData = Player_FromStringData(data)
+		local playerSettings = Player_GetSettings(targetPlayerData.player)
+		
+		if playerSettings.SuppressionMonitorUpdateRate ~= targetPlayerData.rate then
+			playerSettings.SuppressionMonitorUpdateRate = targetPlayerData.rate
+			
+			Player_ExecuteLocally(targetPlayerData.player, function()
+				Rule_ChangeIntervalIfExists(CCM_SuppressionMonitor_Tick, targetPlayerData.rate)			
+			end)
+			
+			--CCM_EventMessage(targetPlayerData.name .. " set their Suppression Monitor Update rate to " .. targetPlayerData.rate .. " seconds", targetPlayerData.pos)
+		end
+        
+    elseif command == CCM_Command.CompletePlayerUpgrade then
+        local targetPlayerData = Player_FromStringData(data)
+        Player_CompleteUpgrade(targetPlayerData.player, BP_GetUpgradeBlueprint(targetPlayerData.upgrade))
+        
+		Msg("Completed upgrade: " .. targetPlayerData.upgrade)
+    elseif command == CCM_Command.AddPlayerAbility then
+        local targetPlayerData = Player_FromStringData(data)
+        local abilityBP = BP_GetAbilityBlueprint(targetPlayerData.ability)
+        Player_AddAbility(targetPlayerData.player, abilityBP)
+        Player_SetAbilityAvailability(targetPlayerData.player, abilityBP, ITEM_DEFAULT)
+		
+		Msg("Added ability: " .. targetPlayerData.ability)
+		
+    elseif command == CCM_Command.UnlockCommanderAbility then
+        local targetPlayerData = Player_FromStringData(data)
+        CCM_EventMessage(playerData.name .. " unlocked commander ability " .. targetPlayerData.abilityName .. " for  " .. targetPlayerData.name, targetPlayerData.pos)
+        
+    elseif command == CCM_Command.ClearCommanderAbilities then
+        local targetPlayerData = Player_FromStringData(data)
+        
+        for key, race in pairs(CCM_SpawnTables) do
+            for categoryName, items in pairs(race) do 
+                if categoryName == "Commander Abilities" then
+                    for key3, cmdrAbility in ipairs(items) do
+                        local abilityBP 
+                        
+						if cmdrAbility.ability and cmdrAbility.ability ~= "" then
+							if scartype(cmdrAbility.ability) == ST_STRING  then
+								abilityBP = BP_GetAbilityBlueprint(cmdrAbility.ability)
+							elseif scartype(cmdrAbility.ability) == ST_PBG then
+								abilityBP = cmdrAbility.ability
+							end
+							
+							Player_SetAbilityAvailability(targetPlayerData.player, abilityBP, ITEM_REMOVED)
+						end
+						
+                        if cmdrAbility.upgrade and cmdrAbility.upgrade ~= "" then
+                            local upgradeBP 
+                            
+                            if scartype(cmdrAbility.upgrade) == ST_STRING then
+                                upgradeBP = BP_GetUpgradeBlueprint(cmdrAbility.upgrade)
+                            elseif scartype(cmdrAbility.upgrade) == ST_PBG then
+                                upgradeBP = cmdrAbility.upgrade
+                            end
+                            
+                            Player_RemoveUpgrade(targetPlayerData.player, upgradeBP)
+                        end
+                    end
+                end
+            end
+        end
+        CCM_EventMessage(playerData.name .. " cleared  commander abilities of " .. targetPlayerData.name, targetPlayerData.pos)
+        
+    elseif command == CCM_Command.ModifySquadMovementSpeed then
+        local squadData = Squad_FromStringData(data)
+        
+		if squadData.isValid then
+			local totalAddition = Squad_ModifyMovementSpeed(squadData.squad, squadData.addition)
+			
+			CCM_EventMessage(playerData.name .. " " .. (squadData.addition > 0 and "increased" or "decreased") .. " squad " .. squadData.name .. " movement speed by " .. (squadData.addition) .. " (total: " .. totalAddition .. ")", squadData.pos)
+		end
+	
+	elseif command == CCM_Command.SquadToEntity then
+        local squadData = Squad_FromStringData(data)
+        
+		if squadData.isValid then
+			Squad_ToEntities(squadData.squad)
+			
+			CCM_EventMessage(playerData.name .. " converted squad "  .. squadData.name .. " to entities", squadData.pos)
+		end
+		
+	elseif command == CCM_Command.SetEntityAnimatorState then
+        local entityData = Entity_FromStringData(data)
+        
+		if entityData.isValid then
+			Entity_SetAnimatorState(entityData.entity, entityData.state, entityData.value)
+			
+			CCM_EventMessage(playerData.name .. " set entity "  .. entityData.name .. " animator state '" .. entityData.state .. "' to '" .. entityData.value .. "'", entityData.pos)
+		end
+		
+	elseif command == CCM_Command.SetSquadAnimatorState then
+        local squadData = Squad_FromStringData(data)
+        
+		if squadData.isValid then
+			Squad_SetAnimatorState(squadData.squad, squadData.state, squadData.value)
+			
+			CCM_EventMessage(playerData.name .. " set squad "  .. squadData.name .. " animator state '" .. squadData.state .. "' to '" .. squadData.value .. "'", squadData.pos)
+		end
+		
+	elseif command == CCM_Command.SetEntitySkinType then
+		local entityData = Entity_FromStringData(data)
+		
+		if entityData.isValid then
+			Entity_SetSkinSeason(entityData.entity, entityData.skinType)
+			
+			CCM_EventMessage(playerData.name .. " set entity "  .. entityData.name .. " skin type to '" .. entityData.skinType .. "''", entityData.pos)
+		end
+
+	elseif command == CCM_Command.DropSquadWeapons then
+        local squadData = Squad_FromStringData(data)
+        
+		if squadData.isValid then
+			Squad_AddAbility(squadData.squad, ABILITY.GLOBAL.SP_DROP_WEAPONS)
+			Cmd_Ability(Squad_GetTempSGroup(squadData.squad), ABILITY.GLOBAL.SP_DROP_WEAPONS, nil, nil, true, false)
+	
+			CCM_EventMessage(playerData.name .. " dropped "  .. squadData.name .. " weapons", squadData.pos)
+		end
+
+	elseif command == CCM_Command.CaptureAllTerritorySectors then
+		local targetPlayerData = Player_FromStringData(data)
+		local entities = World_GetAllTerritoryPointEntities()
+
+		for key, entity in pairs(entities) do
+			Entity_InstantCaptureStrategicPoint(entity, targetPlayerData.player)
+		end
+		CCM_EventMessage(playerData.name .. " set all territory points captured by "  .. targetPlayerData.name, playerData.pos)
+
+	elseif command == CCM_Command.NeutralizeAllTerritorySectors then
+		local entities = World_GetAllTerritoryPointEntities()
+
+		for key, entity in pairs(entities) do
+			Entity_SetStrategicPointNeutral(entity)
+		end
+		CCM_EventMessage(playerData.name .. " set all territory points neutral", playerData.pos)
+
+	elseif command == CCM_Command.SquadToSkinPreviewEntity then
+		local squadData = Squad_FromStringData(data)
+        
+		if squadData.isValid then
+			local entity = Squad_Decrew(squadData.squad)
+
+			if entity then
+				if not squadData.isWorldOwned then
+					Entity_SetPlayerOwner(entity, squadData.owner)
+				end
+
+				Entity_SetAnimatorState(entity, "abandon_state", "crewed")
+                Entity_SetAnimatorState(entity, "engine_state", "off")
+
+				World_CleanUpTheDeadAll()
+
+				CCM_EventMessage(playerData.name .. " prepared squad " .. squadData.name .. " for skin preview", squadData.pos)
+			end
+		end
+	end
+end
+
+function CCM_Broadcast(command, data)
+	data = data or {}
+	local broadcast = Parameters_ToStringData(data)
+	--Msg("Broadcasting: " .. broadcast)
+	Command_PlayerBroadcastMessage(Game_GetLocalPlayer(), Game_GetLocalPlayer(), command, broadcast)
+end
+
+function CCM_ShowCrosshair()
+	if CCM_Crosshair then
+		CCM_Crosshair.Show()
+	end
+end
+
+function CCM_HideCrosshair()
+	if CCM_Crosshair then
+		CCM_Crosshair.Hide()
+	end
+end
+
+function CCM_DisableUI(renableSeconds)
+	CCM_Menu.HideMenu()
+	CCM_Menu.Hide()
+	Taskbar_SetVisibility(false)
+	UI_TerritoryHide()
+	UI_EnableSelectionVisuals(false)
+	
+	if renableSeconds then
+		Util_DelaySeconds(renableSeconds, function()
+			CCM_EnableUI()
+		end)
+	end
+end
+
+function CCM_EnableUI()
+	CCM_Menu.Show(false)
+	UI_EnableSelectionVisuals(true)
+	Taskbar_SetVisibility(true)
+	UI_TerritoryShow()
+end
+function CCM_KillSelection()
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.KillSquad, Squad_ToDataParameters(squad))
+	end)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.KillEntity, Entity_ToDataParameters(entity))
+	end)
+end
+
+function CCM_DeleteSelection()
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.DeleteSquad, Squad_ToDataParameters(squad))
+	end)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.DeleteEntity, Entity_ToDataParameters(entity))
+	end)
+end
+
+function CCM_KillSquad(squad)
+	CCM_Broadcast(CCM_Command.KillSquad, Squad_ToDataParameters(squad))
+end
+
+function CCM_DeleteSquad(squad)
+	CCM_Broadcast(CCM_Command.DeleteSquad, Squad_ToDataParameters(squad))
+end
+
+function CCM_KillEntity(entity)
+	CCM_Broadcast(CCM_Command.KillEntity, Entity_ToDataParameters(entity))
+end
+
+function CCM_DeleteEntity(entity)
+	CCM_Broadcast(CCM_Command.DeleteEntity, Entity_ToDataParameters(entity))
+end
+
+function CCM_EnableFOW()
+	CCM_Broadcast(CCM_Command.FOW_Enable)
+end
+
+function CCM_DisableFOW()
+	CCM_Broadcast(CCM_Command.FOW_Disable)
+end
+
+function CCM_EnableAI(player)
+	CCM_Broadcast(CCM_Command.AI_Enable, Player_ToDataParameters(player)) 
+end
+
+function CCM_DisableAI(player)
+	CCM_Broadcast(CCM_Command.AI_Disable, Player_ToDataParameters(player)) 
+end
+
+function CCM_SetAIDifficulty(player, difficulty)
+	CCM_Broadcast(CCM_Command.AI_SetDifficulty, {playerIndex = Player_GetIndex(player), difficulty = difficulty})
+end
+
+function CCM_SetSelectionHealth(percentage)
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.Squad_SetHealthPercentage, {squadId = Squad_GetGameID(squad), percentage = percentage})
+	end)
+	
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.Entity_SetHealthPercentage, {entityId = Entity_GetGameID(entity), percentage = percentage})
+	end)
+end
+
+function CCM_AddSelectionHealthPercentage(percentageAdd)
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.Squad_AddHealthPercentage, {squadId = Squad_GetGameID(squad), percentage = percentageAdd})
+	end)
+	
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.Entity_AddHealthPercentage, {entityId = Entity_GetGameID(entity), percentage = percentageAdd})
+	end)
+end
+
+function CCM_AddSelectionHealthPoints(pointsAdd)
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.Squad_AddHealthPoints, {squadId = Squad_GetGameID(squad), points = pointsAdd})
+	end)
+	
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.Entity_AddHealthPoints, {entityId = Entity_GetGameID(entity), points = pointsAdd, eventKicker = Player_GetSettings(Selection_GetPlayer()).HealthMonitor})
+	end)
+end
+
+
+function CCM_SetSelectionInvulnerability(enabled)
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.Squad_SetInvulnerable, {squadId = Squad_GetGameID(squad), enabled = enabled})
+	end)
+	
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.Entity_SetInvulnerable, {entityId = Entity_GetGameID(entity), enabled = enabled})
+	end)
+end
+
+function CCM_SetSelectionOwner(owner)
+	local squadCommand
+	local entityCommand
+	local playerIndex
+	if scartype(owner) == ST_PLAYER then
+		squadCommand = CCM_Command.Squad_SetPlayerOwner
+		entityCommand = CCM_Command.Entity_SetPlayerOwner
+		playerIndex = Player_GetIndex(owner)
+	elseif owner == nil then
+		squadCommand = CCM_Command.Squad_SetWorldOwned
+		entityCommand = CCM_Command.Entity_SetWorldOwned
+	elseif owner == "abandoned" then
+		squadCommand = CCM_Command.Squad_Abandon
+		entityCommand = CCM_Command.Entity_Abandon
+	end
+	
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(squadCommand, {squadId = Squad_GetGameID(squad), playerIndex = playerIndex})
+	end)
+	
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(entityCommand, {entityId = Entity_GetGameID(entity), playerIndex = playerIndex})
+	end)
+end
+
+function CCM_AddResource(player, resourceType, amount)
+	CCM_Broadcast(CCM_Command.AddResource, {playerIndex = Player_GetIndex(player), resourceType = ResourceType_ToString(resourceType), amount = amount})
+end
+
+function CCM_ResetResource(player, resourceType)
+	CCM_Broadcast(CCM_Command.ResetResource, {playerIndex = Player_GetIndex(player), resourceType = ResourceType_ToString(resourceType)})
+end
+
+function CCM_AddPopulationCap(player, amount)
+	CCM_Broadcast(CCM_Command.AddPopulationCap, {playerIndex = Player_GetIndex(player), amount = amount})
+end
+
+function CCM_SetInstantProductionEnabled(player, enabled)
+	CCM_Broadcast(CCM_Command.SetInstantProductionEnabed, {playerIndex = Player_GetIndex(player), enabled = enabled, setting = "InstantProduction"})
+end
+
+function CCM_SetInstantConstructionEnabled(player, enabled)
+	CCM_Broadcast(CCM_Command.SetInstantConstructionEnabled, {playerIndex = Player_GetIndex(player), enabled = enabled, setting = "InstantConstruction"})
+end
+
+function CCM_SetInstantAbilityRechargeEnabled(player, enabled)
+	CCM_Broadcast(CCM_Command.SetInstantAbilityRechargeEnabled, {playerIndex = Player_GetIndex(player), enabled = enabled, setting = "InstantAbilityRecharge"})
+end
+
+function CCM_SpawnSquad(player, sbp)
+	local pos = Camera_GetTargetPos()
+	--CCM_SpawnQueueAdd(CCM_Command.SpawnSquad, {playerIndex = Player_GetIndex(player), sbp = BP_GetName(sbp), x = pos.x, y = pos.y, z = pos.z})
+	CCM_Broadcast(CCM_Command.SpawnSquad, {playerIndex = Player_GetIndex(player), sbp = sbp, x = pos.x, y = pos.y, z = pos.z})	
+end
+
+function CCM_SpawnEntity(player, ebp)
+	local pos = Camera_GetTargetPos()
+	CCM_Broadcast(CCM_Command.SpawnEntity, {playerIndex = Player_GetIndex(player), ebp = ebp, x = pos.x, y = pos.y, z = pos.z})	
+end
+
+function CCM_SpawnSlotItem(player, slotItem)
+	local pos = Camera_GetTargetPos()
+	CCM_Broadcast(CCM_Command.SpawnSlotItem, {playerIndex = Player_GetIndex(player), slotItem = slotItem, x = pos.x, y = pos.y, z = pos.z})	
+end
+
+function CCM_IncreaseSelectionXP(amount)
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.IncreaseSquadVeterancyExperience, {squadId = Squad_GetGameID(squad), amount = amount})
+	end)
+	
+	Selection_ForEachEntity(function(idx, entity)
+		
+	end)
+end
+
+function CCM_IncreaseSelectionVeterancyLevel(amount)
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.IncreaseSquadVeterancyLevel, {squadId = Squad_GetGameID(squad), amount = amount})
+	end)
+end
+
+function CCM_InstantReinforceSelection(amount)
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.InstantReinforceSquad, {squadId = Squad_GetGameID(squad), amount = amount})
+	end)
+end
+
+function CCM_SplitSelection()
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.SplitSquad, {squadId = Squad_GetGameID(squad)})
+	end)
+end
+
+function CCM_RemoveSelectionCriticals()
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.RemoveSquadCriticals, {squadId = Squad_GetGameID(squad)})
+	end)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.RemoveEntityCriticals, {entityId = Squad_GetGameID(entity)})
+	end)
+end
+
+function CCM_RemoveSquadCritical(squad, crit)
+	CCM_Broadcast(CCM_Command.RemoveSquadCritical, {squadId = Squad_GetGameID(squad), critBP = BP_GetName(crit)})
+end
+
+function CCM_RemoveEntityCritical(entity, crit)
+	CCM_Broadcast(CCM_Command.RemoveEntityCritical, {entityId = Entity_GetGameID(entity), critBP = BP_GetName(crit)})
+end
+
+function CCM_ApplyCriticalToSelection(crit)
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.ApplyCriticalToSquad, {squadId = Squad_GetGameID(squad), critBP = BP_GetName(crit)})
+	end)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.ApplyCriticalToEntity, {entityId = Entity_GetGameID(entity), critBP = BP_GetName(crit)})
+	end)
+end
+
+function CCM_SetSquadAutoTargetting(squad, enabled)
+	CCM_Broadcast(CCM_Command.Squad_SetAutoTargetting, {squadId = Squad_GetGameID(squad), enabled = enabled})
+end
+
+function CCM_RemoveSquadUpgrade(squad, upgrade)
+	CCM_Broadcast(CCM_Command.RemoveSquadUpgrade, {squadId = Squad_GetGameID(squad), upgrade = BP_GetName(upgrade)})
+end
+
+function CCM_RemoveEntityUpgrade(entity, upgrade)
+	CCM_Broadcast(CCM_Command.RemoveEntityUpgrade, {entityId = Entity_GetGameID(entity), upgrade = BP_GetName(upgrade)})
+end
+
+function CCM_RemoveSquadSlotItem(squad, slotItem)
+	CCM_Broadcast(CCM_Command.RemoveSquadSlotItem, {squadId = Squad_GetGameID(squad), slotItem = BP_GetName(slotItem)})
+end
+
+function CCM_SetSelectionFacing()
+	local pos = Camera_GetTargetPos()
+	
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.SetSquadFacing, {squadId = Squad_GetGameID(squad), x = pos.x, y = pos.y, z = pos.z})
+	end)
+end
+
+function CCM_TeleportSelection()
+	local pos = Camera_GetTargetPos()
+	
+	Selection_ForEachSquad(function(idx, squad)
+		CCM_Broadcast(CCM_Command.TeleportSquad, {squadId = Squad_GetGameID(squad), x = pos.x, y = pos.y, z = pos.z})
+	end)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.TeleportEntity, {entityId = Entity_GetGameID(entity), x = pos.x, y = pos.y, z = pos.z})
+	end)
+end
+
+function CCM_KillEverything(radius)
+	local pos = Camera_GetTargetPos()
+	CCM_Broadcast(CCM_Command.KillEverything, {radius = radius, x = pos.x, y = pos.y, z = pos.z})
+end
+
+function CCM_DeleteEverything(radius)
+	local pos = Camera_GetTargetPos()
+	CCM_Broadcast(CCM_Command.DeleteEverything, {radius = radius, x = pos.x, y = pos.y, z = pos.z})
+end
+
+function CCM_RotateEntity(amount)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.RotateEntity, {entityId = Entity_GetGameID(entity), amount = amount})
+	end)
+end
+
+function CCM_CopySelection()
+	CCM_Broadcast(CCM_Command.ClearClipboard, {})
+	
+	Selection_ForEachSquad(function(idx, squad)		
+		CCM_Broadcast(CCM_Command.AddSquadToClipBoard, {squadId = Squad_GetGameID(squad)})
+	end)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.AddEntityToClipboard, {entityId = Entity_GetGameID(entity)})
+	end)
+end
+
+function CCM_PasteSelection()
+	local pos = Camera_GetTargetPos()
+	CCM_Broadcast(CCM_Command.PasteClipboard, {x = pos.x, y = pos.y, z = pos.z})
+end
+
+function CCM_SetHealthMonitorEnabled(enabled)
+	CCM_Broadcast(CCM_Command.SetHealthMonitorEnabled, {playerIndex = Player_GetIndex(Game_GetLocalPlayer()), enabled = enabled, setting = "HealthMonitorEnabled"})
+end
+
+function CCM_SetSuppressionMonitorEnabled(enabled)
+	CCM_Broadcast(CCM_Command.SetSuppressionMonitorEnabled, {playerIndex = Player_GetIndex(Game_GetLocalPlayer()), enabled = enabled, setting = "SuppressionMonitorEnabled"})
+end
+
+function CCM_SelectedTeamWeaponGarrisonFacePosition()
+	local squad = Selection_GetSquad()
+	local pos = Camera_GetTargetPos()
+	
+	
+	if squad then
+		CCM_Broadcast(CCM_Command.SetGarrisonedTeamWeaponFacing, {squadId = Squad_GetGameID(squad), x = pos.x, y = pos.y, z = pos.z})
+	end
+end
+
+function CCM_CancelTeamWeaponGarrisonFacingOrder()
+	local squad = Selection_GetSquad()
+
+	if squad then
+		CCM_Broadcast(CCM_Command.CancelGarrisonedTeamWeaponFacing, {squadId = Squad_GetGameID(squad)})
+	end
+end
+
+function CCM_AddSelectionSuppression(amount)
+	local squad = Selection_GetSquad()
+
+	if squad then
+		CCM_Broadcast(CCM_Command.AddSelectionSuppression, {squadId = Squad_GetGameID(squad), amount = amount})
+	end
+end
+
+function CCM_SetAllAIPlayersEnabled(enabled)
+	CCM_Broadcast(CCM_Command.SetAllAIPlayersEnabled, {enabled = enabled})
+end
+
+function CCM_ResetSelectionVeterancy()
+	Selection_ForEachSquad(function(idx, squad)		
+		CCM_Broadcast(CCM_Command.ResetSquadVeterancy, {squadId = Squad_GetGameID(squad)})
+	end)
+end
+
+function CCM_SetResourceIncomeEnabled(player, enabled)
+	CCM_Broadcast(CCM_Command.SetPlayerResourceIncomeEnabled, {playerIndex = Player_GetIndex(player), enabled = enabled})
+end
+
+function CCM_SetHealthMonitorUpdateRate(rate)
+	CCM_Broadcast(CCM_Command.SetHealthMonitorUpdateRate, {playerIndex = Player_GetIndex(Game_GetLocalPlayer()), rate = rate})
+end
+
+function CCM_SetSuppressionMonitorUpdateRate(rate)
+	CCM_Broadcast(CCM_Command.SetSuppressionMonitorUpdateDate, {playerIndex = Player_GetIndex(Game_GetLocalPlayer()), rate = rate})
+end
+
+function CCM_UnlockCommanderAbility(player, ability, upgrade, abilityName)
+    CCM_Broadcast(CCM_Command.AddPlayerAbility, {playerIndex = Player_GetIndex(player), ability = ability})
+    
+    if upgrade and upgrade ~= "" then
+        CCM_Broadcast(CCM_Command.CompletePlayerUpgrade, {playerIndex = Player_GetIndex(player), upgrade = upgrade})
+    end
+    
+    CCM_Broadcast(CCM_Command.UnlockCommanderAbility, {playerIndex = Player_GetIndex(player), abilityName = abilityName})
+end
+
+function CCM_ClearCommanderAbilities(player)
+    CCM_Broadcast(CCM_Command.ClearCommanderAbilities, {playerIndex = Player_GetIndex(player)})
+end
+
+function CCM_ModifySquadMovementSpeed(squad, addition)
+    CCM_Broadcast(CCM_Command.ModifySquadMovementSpeed, {squadId = Squad_GetGameID(squad), addition = addition})
+end
+
+function CCM_SetSelectionOwnerToEnemy()
+	Selection_ForEachSquad(function(idx, squad)		
+		CCM_Broadcast(CCM_Command.Squad_SetPlayerOwner, {squadId = Squad_GetGameID(squad), playerIndex = Player_GetIndex(Item_GetEnemyPlayer(squad))})
+	end)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.Entity_SetPlayerOwner, {entityId = Entity_GetGameID(entity), playerIndex = Player_GetIndex(Item_GetEnemyPlayer(entity))})
+	end)
+end
+
+function CCM_SquadToEntity(squad)
+	CCM_Broadcast(CCM_Command.SquadToEntity, {squadId = Squad_GetGameID(squad)})
+end
+
+function CCM_SetEntityAnimatorState(entity, state, value)
+	CCM_Broadcast(CCM_Command.SetEntityAnimatorState, {entityId = Entity_GetGameID(entity), state = state, value = value})
+end
+
+function CCM_SetSquadAnimatorState(squad, state, value)
+	CCM_Broadcast(CCM_Command.SetSquadAnimatorState, {squadId = Squad_GetGameID(squad), state = state, value = value})
+end
+
+function CCM_SetSelectionAnimatorState(state, value)
+	Selection_ForEachSquad(function(idx, squad)		
+		CCM_SetSquadAnimatorState(squad, state, value)
+	end)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_SetEntityAnimatorState(entity, state, value)
+	end)
+end
+
+function CCM_SetSelectionSkinType(skinType)
+	Selection_ForEachSquad(function(idx, squad)		
+		Squad_ForEachEntity(squad, function(sid, idx, entity)
+			CCM_Broadcast(CCM_Command.SetEntitySkinType, {entityId = Entity_GetGameID(entity), skinType = skinType})
+		end)
+	end)
+	Selection_ForEachEntity(function(idx, entity)
+		CCM_Broadcast(CCM_Command.SetEntitySkinType, {entityId = Entity_GetGameID(entity), skinType = skinType})
+	end)
+end
+
+function CCM_DropSelectionWeapons()
+	Selection_ForEachSquad(function(idx, squad)		
+		CCM_Broadcast(CCM_Command.DropSquadWeapons, {squadId = Squad_GetGameID(squad)})
+	end)
+end
+
+function CCM_CaptureAllTerritorySectors()
+	local player = Selection_GetPlayer()
+	CCM_Broadcast(CCM_Command.CaptureAllTerritorySectors, {playerIndex = Player_GetIndex(player)})
+end
+
+function CCM_NeutralizeAllTerritorySectors()
+	CCM_Broadcast(CCM_Command.NeutralizeAllTerritorySectors, {})
+end
+
+function CCM_SquadToSkinPreviewEntity(squad)
+	CCM_Broadcast(CCM_Command.SquadToSkinPreviewEntity, {squadId = Squad_GetGameID(squad)})
+end
+
+World_GetPlayerAt()

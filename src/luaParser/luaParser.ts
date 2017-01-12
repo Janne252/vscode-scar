@@ -24,6 +24,18 @@ export default class LuaParser
         return (<ILuaParse>parser).parse(this.textDocument.getText(), this.options);
     }
 
+    tryParseAstFromText(text: string): Object
+    {
+        try
+        {
+            return (<ILuaParse>parser).parse(text, this.options);
+        }
+        catch (error)
+        {
+            return undefined;
+        }
+    }
+
     public tryParse(): void
     {
         try

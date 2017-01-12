@@ -18,6 +18,8 @@ export interface IActiveCompletionItemSource extends IStaticCompletionItemSource
 {
     getPreviousCompletionItems(): CompletionItem[];
     updateCompletionItems(items: CompletionItem[]): void;
+    addCompletionItem(item: CompletionItem): void;
+    removeCompletionItem(item: CompletionItem): void;
     merger: ICompletionItemSourceMerger;
 }
 

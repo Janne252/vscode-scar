@@ -33,13 +33,33 @@
         }],
 		"configuration": {
 			"type": "object",
-			"title": "SCAR Language Server configuration",
+			"title": "SCAR Configuration",
 			"properties": {
-				"scarLanguageServer.maxNumberOfProblems": {
-					"type": "number",
-					"default": 100,
-					"description": "Controls the maximum number of problems produced by the server."
-				}
+				"scar.extensions": {
+					"type": "array",
+                    "default": [".scar", ".events", ".lua"],
+					"description": "List of extensions of files to search function definitions from."
+				},
+                "scar.ignoreFiles": {
+                    "type": "array",
+                    "default": [],
+                    "description": "List of files that SCAR extension should ignore."
+                },
+                "scar.ignoreFileSubExtensions": {
+                    "type": "array",
+                    "default": [".raw"],
+                    "description": "List of file sub-extensions SCAR extension should ignore. The creator of this extension uses .raw.scar for compiled SCAR files."
+                },
+                "scar.ignoreIntermediateCacheFiles": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether or not files in Intermediate Cache (Company of Heroes 2 Modding Tools cache directory) sub directory should be ignored."
+                },
+                "scar.ignoreFilesRegex": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Regular Expression String used to determine whether a file should be ignored by SCAR extension."
+                }
 			}
 		}
 	},	

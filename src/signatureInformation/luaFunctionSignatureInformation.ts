@@ -3,6 +3,7 @@
 import {ParameterInformation} from 'vscode';
 import SignatureInformationBase from './signatureInformationBase';
 import {ILuaFunctionDefinition} from '../scar';
+import LuaFunctionParameterInformation from '../parameterInformation/luaFunctionParameterInformation';
 
 export default class LuaFunctionSignatureInformation extends SignatureInformationBase
 {
@@ -30,7 +31,7 @@ export default class LuaFunctionSignatureInformation extends SignatureInformatio
 
         for(let parameter of luaFunction.parameters)
         {
-            this.parameters.push(new ParameterInformation(parameter.name, `type: ${parameter.type}, optional: ${parameter.optional}`));
+            this.parameters.push(new LuaFunctionParameterInformation(parameter));
         }
     }
 }

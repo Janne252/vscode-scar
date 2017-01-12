@@ -57,7 +57,7 @@ export default class SignatureHelpProvider implements ISignatureHelpProvider
             }
             catch(exception)
             {
-                if (!this.luaParser.valid)
+                if (!this.luaParser.valid && this.lastSignatureHelp !== undefined)
                 {
                     if (
                         !this.lastSIgnatureHelpActiveParamIncremented && 

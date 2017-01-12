@@ -83,6 +83,8 @@ export default class SignatureHelpSourceMerger implements ISignatureHelpSourceMe
         this.removeSignatureHelpItems(removeItems);
 
         this.addSignatureHelpItems(source.getSignatureHelpItems());
+
+        this.signatureHelpItemCache = {};
     }
 
     public getSignatureHelp(name: string): NamedSignatureHelp

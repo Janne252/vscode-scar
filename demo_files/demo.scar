@@ -29,3 +29,11 @@ string.byte()
 one.two.three.four()
 
 pairs(2)
+
+CCM_RemoveEntityCritical()
+
+function NewlyAddedFunction34(param1, param2, paramFoo) 
+
+end 
+
+NewlyAddedFunction34()
