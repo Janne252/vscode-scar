@@ -1,10 +1,9 @@
 'use strict';
 
 import {Diagnostic, Range, Position, DiagnosticSeverity} from 'vscode';
-import DiagnosticItem from './diagnosticItem';
 import {ILuaParserError} from '../luaParser/luaParser';
 
-export default class LuaParserDiagnostic extends DiagnosticItem
+export default class LuaParserDiagnostic extends Diagnostic
 {
 
     constructor(error: ILuaParserError)
