@@ -9,9 +9,7 @@ import {
     ILuaFunctionDefinition
 } from '../scar';
 
-import CompletionItemBase from './completionItemBase';
-
-export default class LuaFunctionCompletionItem extends CompletionItemBase
+export default class LuaFunctionCompletionItem extends CompletionItem
 {
 	/**
 	 * Creates a new completion item.

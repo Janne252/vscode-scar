@@ -9,9 +9,7 @@ import {
     ISCAREnumDefinition
 } from '../scar';
 
-import CompletionItemBase from './completionItemBase';
-
-export default class SCARBlueprintCompletionItem extends CompletionItemBase
+export default class SCARBlueprintCompletionItem extends CompletionItem
 {
 	/**
 	 * Creates a new completion item.

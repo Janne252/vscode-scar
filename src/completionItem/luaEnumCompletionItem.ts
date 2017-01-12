@@ -9,9 +9,7 @@ import {
     ILuaEnumDefinition
 } from '../scar';
 
-import CompletionItemBase from './completionItemBase';
-
-export default class LuaEnumCompletionItem extends CompletionItemBase
+export default class LuaEnumCompletionItem extends CompletionItem
 {
 	/**
 	 * Creates a new completion item.

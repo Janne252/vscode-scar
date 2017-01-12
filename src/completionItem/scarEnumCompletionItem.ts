@@ -9,9 +9,7 @@ import {
     ISCAREnumDefinition
 } from '../scar';
 
-import CompletionItemBase from './completionItemBase';
-
-export default class SCAREnumCompletionItem extends CompletionItemBase
+export default class SCAREnumCompletionItem extends CompletionItem
 {
 	/**
 	 * Creates a new completion item.

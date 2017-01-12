@@ -9,9 +9,7 @@ import {
     ILuaEnumDefinition
 } from '../scar';
 
-import CompletionItemBase from './completionItemBase';
-
-export default class DocumentWordCompletionItem extends CompletionItemBase
+export default class DocumentWordCompletionItem extends CompletionItem
 {
 	/**
 	 * Creates a new completion item.
