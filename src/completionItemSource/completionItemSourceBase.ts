@@ -13,18 +13,28 @@ import {ICompletionItemSource} from './completionItemSource';
 export abstract class CompletionItemSourceBase implements ICompletionItemSource
 {
     protected _isReady: boolean = false;
+    /**
+     * Whether or not the source has fully loaded.
+     */
     public get isReady():boolean
     {
         return this._isReady;
     }
-
+    /**
+     * Array containing the actual CompletionItems.
+     */
     protected completionItems: CompletionItem[];
 
+    /**
+     * Creates a new instance of CompletionSourceBase.
+     */
     constructor()
     {
         this.completionItems = [];
     }
-
+    /**
+     * Loads the data and processes it.
+     */
     public load(): Thenable<void>
     {
         return new Promise<void>((resolve, reject) => 
@@ -33,6 +43,9 @@ export abstract class CompletionItemSourceBase implements ICompletionItemSource
         });
     }
 
+    /**
+     * Returns the CompletionItems.
+     */
     public getCompletionItems(): CompletionItem[]
     {
         return this.completionItems;

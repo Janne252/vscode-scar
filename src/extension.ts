@@ -120,7 +120,7 @@ export function activate(context: vscode.ExtensionContext)
 
         context.subscriptions.push(commands.registerCommand('scar.findBlueprint', (args: any[]) => 
         {
-            let result = window.showQuickPick(luaConstsAutoCompletionItemSource.getWordList());
+            let result = window.showQuickPick(luaConstsAutoCompletionItemSource.getRawList());
             result.then((value: string) =>
             {
                 let textEditor = window.activeTextEditor;

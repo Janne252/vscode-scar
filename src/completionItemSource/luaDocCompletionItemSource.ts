@@ -10,13 +10,24 @@ import LuaFunctionCompletionItem from '../completionItem/luaFunctionCompletionIt
 import LuaEnumCompletionItem from '../completionItem/luaEnumCompletionItem';
 import {DocCompletionItemSourceBase} from './docCompletionItemSourceBase';
 
+/**
+ * Represents Lua standard libary functions and constants CompletionItem source.
+ */
 export default class LuaDocCompletionItemSource extends DocCompletionItemSourceBase<ILuaDoc>
 {
+    /**
+     * Creates a new instance of LuaDocCompletionItemSource.
+     * @param filepath The file path to the file containing LuaDoc.
+     * @param encoding The encoding used to read the file. Default: 'utf-8'
+     */
     constructor(filepath: string, encoding: string = 'utf-8')
     {
         super(filepath, encoding);
     }
-
+    /**
+     * Processes the data.
+     * @param data The data to process.
+     */
     protected processData(data: string)
     {
         super.processData(data);

@@ -25,7 +25,9 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
 
         this.previousCompletionItems = [];
     }
-
+    /**
+     * Notifies the merger by calling its .activeSourceUpdated method.
+     */
     protected notifyMerger(): void
     {
         if (this.merger !== undefined)
@@ -35,8 +37,7 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
     }
 
     /**
-     * Retrieves the previous (before update) completion items.
-     * @returns The previous completion items.
+     * Returns the previous (before update) completion items.
      */
     public getPreviousCompletionItems(): CompletionItem[]
     {
@@ -91,7 +92,9 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
        
        this.updateCompletionItems(newItems);
     }
-
+    /**
+     * Removes all the completion items from the source.
+     */
     public clear(): void
     {
         this.previousCompletionItems = this.completionItems;

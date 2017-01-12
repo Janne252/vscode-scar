@@ -10,26 +10,49 @@ import {IStaticCompletionItemSource} from './completionItemSource';
 import LuaFunctionCompletionItem from '../completionItem/luaFunctionCompletionItem';
 import LuaEnumCompletionItem from '../completionItem/luaEnumCompletionItem';
 
+/**
+ * Represents abstract CompletionItemProviderSource for sources that rely on reading contents of a file.
+ */
 export abstract class DocCompletionItemSourceBase<T> extends CompletionItemSourceBase implements IStaticCompletionItemSource
 {
+    /**
+     * The data that was read from the file.
+     */
     protected _data: T = undefined;
+    /**
+     * The raw data of the source.
+     */
     public get data(): T
     {
         return this._data;
     }
-    
+    /**
+     * The absolute file path of the source data file.
+     */
     protected _filepath : string;
+    /**
+     * The absolute file path of the source data file.
+     */
     public get filepath() : string 
     {
         return this._filepath;
     }
-
+    /**
+     * Encoding used to read the data file.
+     */
     protected _encoding : string;
+    /**
+     * Encoding used to read the data file.
+     */
     public get encoding() : string 
     {
         return this._encoding;
     }
-
+    /**
+     * Creates a new instance of DocCompletionItemSourceBase.
+     * @param filepath The absolute file path to the data file.
+     * @param encoding The encoding used to read the file. Default: "uft-8"
+     */
     constructor(filepath: string, encoding: string = 'utf-8')
     {
         super();
@@ -37,12 +60,16 @@ export abstract class DocCompletionItemSourceBase<T> extends CompletionItemSourc
         this._filepath = filepath;
         this._encoding = encoding;
     }
-
+    /**
+     * Processes the data.
+     */
     protected processData(data: string)
     {
         this._data = JSON.parse(data);
     }
-
+    /**
+     * Initializes the source by loading and processing the data.
+     */
     public load(): Thenable<void>
     {
         return new Promise<void>((resolve, reject) => 

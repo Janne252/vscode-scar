@@ -9,24 +9,45 @@ import {ILuaDoc, ILuaFunctionDefinition, ILuaEnumDefinition} from '../scar';
 import SCARBlueprintCompletionItem from '../completionItem/scarBlueprintCompletionItem';
 import {DocCompletionItemSourceBase} from './docCompletionItemSourceBase';
 
+/**
+ * Represents LuaConstsAuto.scar completionItem source.
+ */
 export default class LuaConstsAutoCompletionItemSource extends DocCompletionItemSourceBase<string>
 {
+    /**
+     * All blueprints combined to one string, separated by '|'.
+     */
     private combinedList: string;
+    /**
+     * Raw list of all the blueprints.
+     */
     private rawList: string[];
+    /**
+     * Regex pattern that can be used to match blueprint occurrances in a document.
+     */
     private _matchAllRegexString: string;
-
+    /**
+     * Regex pattern that can be used to match blueprint occurrances in a document.
+     */
     public get matchAllRegexString(): string
     {
         return this._matchAllRegexString;
     }
-
+    /**
+     * Creates a new instance of LuaConstsAutoCompletionItemSource.
+     * @param filepath The file path to the LuaConstsAuto.scar file.
+     * @param encoding The encoding used to read the file. Default: 'utf-8'
+     */
     constructor(filepath: string, encoding: string = 'utf-8')
     {
         super(filepath, encoding);
         this.rawList = [];
     }
-
-    protected processData(data: string)
+    /**
+     * Processes the data.
+     * @param data The data to process.
+     */
+    protected processData(data: string): void
     {
         this._data = data;
         let lines: string[] = data.split(/\r?\n/g);
@@ -48,13 +69,17 @@ export default class LuaConstsAutoCompletionItemSource extends DocCompletionItem
         this.combinedList = this.rawList.join('|');
         this._matchAllRegexString = `\\b(${this.combinedList})\\b`;
     }
-
+    /**
+     * Retruns the RegExp that can be used to find all blueprint occurrances in a document.
+     */
     public getMatchAllRegExp(): RegExp
     {
         return new RegExp(this._matchAllRegexString, 'g');
     }
-
-    public getWordList(): string[]
+    /**
+     * Returns the raw list of all blueprints.
+     */
+    public getRawList(): string[]
     {
         return this.rawList;
     }

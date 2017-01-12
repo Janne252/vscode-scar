@@ -5,15 +5,21 @@ import DocumentWordCompletionItem from '../completionItem/documentWordCompletion
 import {ActiveCompletionItemSourceBase} from './activeCompletionItemSourceBase';
 
 /**
- * Abstract base class for providing a source for active completion items.
+ * Represents a source of document word CompletionItems.
  */
 export default class DocumentCompletionItemSource extends ActiveCompletionItemSourceBase
 {
+    /**
+     * Creates a new instance of DocumentCompletionItemSource.
+     */
     constructor()
     {
         super();
     }
-
+    /**
+     * Updates the CompletionItems.
+     * @param textDocument The text document to get the words from.
+     */
     public update(textDocument: TextDocument): void
     {
         let text = textDocument.getText();
