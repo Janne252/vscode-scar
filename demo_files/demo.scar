@@ -1,39 +1,71 @@
+RACE_NAME = {
+    GERMAN = "german",
+    SOVIET = "soviet",
+    WEST_GERMAN = "west_german",
+    AEF = "aef",
+    BRITISH = "british"
+}
 
-local player = World_GetPlayerAt(1)
-local other = BT_General
+function Map_OnInit()
+    local mapCenterPos = World_Pos(0, 0, 0)
 
-local bp = SBP.WEST_GERMAN.ASSAULT_PIONEER_SQUAD_MP
+    for i = 1, World_GetPlayerCount() do
+        local player = World_GetPlayerAt()
+        
+        Player_ResetResources(player)
 
-local bp2 = SBP.AEF.RIFLEMEN_SQUAD_VETERAN_MP
- 
-
-local hue = UPG.BRITISH.PIAT_UNLOCK_MP
-
-local t = {}
-
-for i = 1, 10 do
-    local player = World_GetPlayerAt(i)
-
-    local squads = Player_GetSquads(player)
-
-    for key, squad in pairs(squads) do
-        local t = {
-            [1] = "dd",
-            ["name"] = "Jonhn"
-        }
+        local extraSquad = Squad_CreateAndSpawnToward(
+            Player_GetStandardStartingUnitSBP(player),
+            player,
+            0,
+            Player_GetStartingPosition(player),
+            mapCenterPos
+        )
     end
 end
 
-string.byte()
+Scar_AddInit(Map_OnInit)
 
-one.two.three.four()
+function Player_ResetResources(player)
+    local resourceTypes = {
+        RT_Manpower,
+        RT_Fuel,
+        RT_Munition
+    }
 
-pairs(2)
+    for key, resourceType in pairs(resourceTypes) do
+        Player_ResetResource(player, resourceType)
+    end
+end
 
-CCM_RemoveEntityCritical()
+function Player_GetStandardStartingUnitSBP(player, fallbackRaceName)
+    fallbackRaceName = fallbackRaceName or RACE_NAME.GERMAN
 
-function NewlyAddedFunction34(param1, param2, paramFoo) 
+    local raceName = Player_GetRaceName(player)
 
-end 
+    local startingUnitSBPs = {
+        [RACE_NAME.GERMAN] = SBP.GERMAN.PIONEER_SQUAD_MP,
+        [RACE_NAME.SOVIET] = SBP.SOVIET.COMBAT_ENGINEER_SQUAD_MP,
+        [RACE_NAME.WEST_GERMAN] = SBP.WEST_GERMAN.ASSAULT_PIONEER_SQUAD_MP,
+        [RACE_NAME.AEF] = SBP.AEF.REAR_ECHELON_SQUAD_MP,
+        [RACE_NAME.BRITISH] = SBP.BRITISH.TOMMY_SQUAD_MP
+    }
 
-NewlyAddedFunction34()
+    return startingUnitSBPs[raceName] or startingUnitSBPs[fallbackRaceName]
+end
+
+
+function Player_GetRanceIndex(player, fallbackIndex)
+    fallbackIndex = fallbackIndex or 0
+
+    local raceName = Player_GetRaceName(player)
+    local races = {
+        [RACE_NAME.GERMAN] = 0,
+        [RACE_NAME.SOVIET] = 1,
+        [RACE_NAME.WEST_GERMAN] = 2,
+        [RACE_NAME.AEF] = 3,
+        [RACE_NAME.BRITISH] = 4
+    }
+
+    return races[raceName] or fallbackIndex
+end
