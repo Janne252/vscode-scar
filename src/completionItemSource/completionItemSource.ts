@@ -4,8 +4,9 @@ import {CompletionItem} from 'vscode';
 
 export interface ICompletionItemSource
 {
+    isReady: boolean;
     getCompletionItems(): CompletionItem[]
-    init(): Thenable<void>;
+    load(): Thenable<void>;
 }
 
 export interface IStaticCompletionItemSource extends ICompletionItemSource

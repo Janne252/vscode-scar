@@ -43,20 +43,28 @@ export abstract class DocCompletionItemSourceBase<T> extends CompletionItemSourc
         this._data = JSON.parse(data);
     }
 
-    public init(): Thenable<void>
+    public load(): Thenable<void>
     {
         return new Promise<void>((resolve, reject) => 
         {
-            fs.readFile(this.filepath, this.encoding, (err, data) =>
+            if (this._isReady)
             {
-                if (err)
-                {
-                    reject(err);
-                }
-
-                this.processData(data);
                 resolve();
-            });
+            }
+            else
+            {
+                fs.readFile(this.filepath, this.encoding, (err, data) =>
+                {
+                    if (err)
+                    {
+                        reject(err);
+                    }
+
+                    this.processData(data);
+                    this._isReady = true;
+                    resolve();
+                });
+            }
         });
     }
 }

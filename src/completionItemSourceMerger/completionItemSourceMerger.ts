@@ -32,7 +32,7 @@ export default class CompletionItemSourceMerger implements ICompletionItemSource
         {
             this.staticSources.push(source);
             
-            source.init().then(() => 
+            source.load().then(() => 
             {
                 this.addCompletionItems(source.getCompletionItems());
 
@@ -55,7 +55,7 @@ export default class CompletionItemSourceMerger implements ICompletionItemSource
             source.merger = this;
             this.activeSources.push(source);
 
-            source.init().then(() => 
+            source.load().then(() => 
             {
                 this.addCompletionItems(source.getCompletionItems());
 
