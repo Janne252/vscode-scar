@@ -11,8 +11,14 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
 {
     protected previousCompletionItems: CompletionItem[];
     
+    /**
+     * The merger to notify when this source changes.
+     */
     public merger: ICompletionItemSourceMerger;
     
+    /**
+     * Creates a new instance of ActiveCompletionItemSourceBase.
+     */
     constructor()
     {
         super();
@@ -20,11 +26,18 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
         this.previousCompletionItems = [];
     }
 
+    /**
+     * Retrieves the previous (before update) completion items.
+     * @returns The previous completion items.
+     */
     public getPreviousCompletionItems(): CompletionItem[]
     {
         return this.previousCompletionItems;
     }
-
+    /**
+     * Updates the completion items.
+     * @param items The items to replace the current items with.
+     */
     public updateCompletionItems(items: CompletionItem[]): void
     {
         this.previousCompletionItems = this.completionItems;
@@ -35,7 +48,10 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
             this.merger.activeSourceUpdated(this);
         }
     }
-
+    /**
+     * Adds a completion item.
+     * @param item The item to add.
+     */
     public addCompletionItem(item: CompletionItem): void
     {
         let newItems = Array.from(this.completionItems);
@@ -52,7 +68,10 @@ export abstract class ActiveCompletionItemSourceBase extends CompletionItemSourc
 
         this.updateCompletionItems(newItems);
     }
-
+    /**
+     * Removes a completion item.
+     * @param item The item to remove.
+     */
     public removeCompletionItem(item: CompletionItem): void
     {
         let newItems = Array.from(this.completionItems);

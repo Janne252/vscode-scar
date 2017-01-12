@@ -24,11 +24,11 @@ export const SCARDocEnumDecorationType = window.createTextEditorDecorationType({
 
 export const LuaConstsAutoBlueprintDecorationType = window.createTextEditorDecorationType({
     light: {
-        color: '#d54500',
+        color: '#FF0000',
         
     },
     dark: {
-        color: '#d54500; font-weight: bold;'
+        color: '#FF0000; font-weight: bold;'
     },
 });
 

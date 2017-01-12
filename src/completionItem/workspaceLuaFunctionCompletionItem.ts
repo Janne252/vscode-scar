@@ -26,7 +26,7 @@ export default class WorkspaceLuaFunctionCompletionItem extends CompletionItem
      */
     constructor(name: string, detail: string, documentation: string)
     {
-        super(name, CompletionItemKind.Function);
+        super(name, CompletionItemKind.Module);
 
         this.detail = detail;
         this.documentation = documentation;
