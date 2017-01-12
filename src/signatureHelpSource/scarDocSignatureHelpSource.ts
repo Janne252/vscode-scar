@@ -15,7 +15,7 @@ export default class SCARDocSignatureHelpSource  extends StaticSignatureHelpSour
         super(source);
     }
 
-    protected proessData(): void
+    protected processData(): void
     {
         for(let luaFunction of this.source.data.functions)
         {

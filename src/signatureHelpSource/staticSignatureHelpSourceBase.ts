@@ -31,10 +31,19 @@ export abstract class StaticSignatureHelpSourceBase<T extends ILoadableSource<vo
     {
         return new Promise<void>((resolve, reject) => 
         {
-            this.source.load().then(() => 
+            if (this._isReady)
             {
-                this.processData();
-            });
+                resolve();
+            }
+            else
+            {
+                this.source.load().then(() => 
+                {
+                    this.processData();
+                    this._isReady = true;
+                    resolve();
+                });
+            }
         });
     }
 

@@ -8,7 +8,19 @@ export default class LuaFunctionSignatureInformation extends SignatureInformatio
 {
     constructor(luaFunction: ILuaFunctionDefinition)
     {
-        super(luaFunction.signature, luaFunction.description);
+        let signature = '';
+        let paramNames = [];
+        if (luaFunction.signature === undefined)
+        {
+            for(let param of luaFunction.parameters)
+            {
+                paramNames.push(param.name);
+            }
+
+            signature = `${luaFunction.name}(${paramNames.join(', ')})`;
+        }
+
+        super(signature, luaFunction.description);
 
         this.parameters = [];
 

@@ -20,6 +20,9 @@ import SCARDocDecorationTypeApplier from './decorationType/scarDocDecorationType
 import LuaConstsAutoDecorationTypeApplier from './decorationType/luaConstsAutoDecorationTypeApplier';
 import LuaDocDecorationTypeApplier from './decorationType/luaDocDecorationTypeApplier';
 import DecorationTypeApplierCollection from './decorationType/decorationTypeApplierCollection';
+import SignatureHelpSourceMerger from './signatureHelpSourceMerger/signatureHelpSourceMerger';
+import LuaDocSignatureHelpSource from './signatureHelpSource/luaDocSignatureHelpSource';
+import SCARDocSignatureHelpSource from './signatureHelpSource/scarDocSignatureHelpSource';
 
 const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
 	comments: false,
@@ -33,6 +36,7 @@ let scarDocCompletionItemSource: ScarDocCompletionItemSource;
 let luaDocCompletionItemSource: LuaDocCompletionItemSource;
 let luaConstsAutoCompletionItemSource: LuaConstsAutoCompletionItemSource;
 let decorationTypeAppliers = new DecorationTypeApplierCollection();
+let signatureHelpSourceMerger = new SignatureHelpSourceMerger();
 
 export function activate(context: vscode.ExtensionContext) 
 {
@@ -57,6 +61,17 @@ export function activate(context: vscode.ExtensionContext)
 
     Promise.all(completionItemSources).then((values: any[]) =>
     {
+        let signatureHelpSources = [
+            signatureHelpSourceMerger.addStaticSource(new LuaDocSignatureHelpSource(luaDocCompletionItemSource)),
+            signatureHelpSourceMerger.addStaticSource(new SCARDocSignatureHelpSource(scarDocCompletionItemSource))
+        ];
+
+        Promise.all(signatureHelpSources).then(() => 
+        {
+            let finder = signatureHelpSourceMerger;
+            console.log('signature help provider ready to serve.');
+        });
+
         let completionItemProvider = vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger));
         context.subscriptions.push(completionItemProvider);
         
