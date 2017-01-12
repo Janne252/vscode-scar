@@ -1,11 +1,12 @@
 'use strict';
 
 import {SignatureHelp, SignatureInformation} from 'vscode';
+import NamedSignatureHelp from '../signatureHelp/namedSignatureHelp';
 
 export interface ISignatureHelpSource
 {
     isReady: boolean;
-    getSignatureHelpItems(): SignatureHelp[];
+    getSignatureHelpItems(): NamedSignatureHelp[];
     load(): Thenable<void>;
 }
 
@@ -16,7 +17,9 @@ export interface IStaticSignatureHelpSource extends ISignatureHelpSource
 
 export interface IActiveSignatureHelpSource extends IStaticSignatureHelpSource
 {
-    updateSignatureHelpItems(items: SignatureHelp[]): void;
+    getPreviousSignatureHelpItems(): NamedSignatureHelp[];
+    updateSignatureHelpItems(items: NamedSignatureHelp[]): void;
+    merger: ISignatureHelpSourceMerger;
 }
 
 export interface ISignatureHelpSourceMerger
@@ -28,6 +31,6 @@ export interface ISignatureHelpSourceMerger
 
     activeSourceUpdated(source: IActiveSignatureHelpSource): void;
 
-    getSignatureHelp(name: string): SignatureHelp;
+    getSignatureHelp(name: string): NamedSignatureHelp;
 }
 

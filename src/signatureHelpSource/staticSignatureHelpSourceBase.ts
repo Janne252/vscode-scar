@@ -3,6 +3,7 @@
 import {SignatureHelp} from 'vscode';
 import {IStaticSignatureHelpSource} from './signatureHelpSource';
 import {ILoadableSource} from '../scar';
+import NamedSignatureHelp from '../signatureHelp/namedSignatureHelp';
 
 export abstract class StaticSignatureHelpSourceBase<T extends ILoadableSource<void>> implements IStaticSignatureHelpSource
 {
@@ -13,7 +14,7 @@ export abstract class StaticSignatureHelpSourceBase<T extends ILoadableSource<vo
     }
 
     protected source: T;
-    protected signatureHelpItems: SignatureHelp[];
+    protected signatureHelpItems: NamedSignatureHelp[];
 
     constructor(source: T)
     {
@@ -24,11 +25,6 @@ export abstract class StaticSignatureHelpSourceBase<T extends ILoadableSource<vo
     protected processData(): void
     {
 
-    }
-
-    protected signatureHelpMatchesName(signatureHelp: SignatureHelp, name: string): boolean
-    {
-        return false;
     }
 
     public load(): Thenable<void>
@@ -42,7 +38,7 @@ export abstract class StaticSignatureHelpSourceBase<T extends ILoadableSource<vo
         });
     }
 
-    public getSignatureHelpItems(): SignatureHelp[]
+    public getSignatureHelpItems(): NamedSignatureHelp[]
     {
         return this.signatureHelpItems;
     }  

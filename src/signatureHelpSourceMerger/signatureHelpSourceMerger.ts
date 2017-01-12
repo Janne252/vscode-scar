@@ -3,25 +3,29 @@
 import {SignatureHelp} from 'vscode';
 import {ISignatureHelpSourceMerger, IStaticSignatureHelpSource, IActiveSignatureHelpSource} from '../signatureHelpSource/signatureHelpSource';
 import ArrayHelpers from '../helper/arrayHelpers';
+import NamedSignatureHelp from '../signatureHelp/namedSignatureHelp';
 
 export default class SignatureHelpSourceMerger implements ISignatureHelpSourceMerger
 {
     protected staticSources: IStaticSignatureHelpSource[] = [];
     protected activeSources: IActiveSignatureHelpSource[] = [];
 
-    protected signatureHelpItems: SignatureHelp[];
+    protected signatureHelpItemCache: {[key: string]: NamedSignatureHelp};
+
+    protected signatureHelpItems: NamedSignatureHelp[];
 
     constructor()
     {
         this.signatureHelpItems = [];
+        this.signatureHelpItemCache = {};
     }
 
-    protected addSignatureHelpItems(items: SignatureHelp[]): void
+    protected addSignatureHelpItems(items: NamedSignatureHelp[]): void
     {
         this.signatureHelpItems = this.signatureHelpItems.concat(items);
     }
 
-    protected removeSignatureHelpItems(items: SignatureHelp[]): void
+    protected removeSignatureHelpItems(items: NamedSignatureHelp[]): void
     {
         ArrayHelpers.removeMany(this.signatureHelpItems, items);
     }
@@ -43,7 +47,7 @@ export default class SignatureHelpSourceMerger implements ISignatureHelpSourceMe
 
     public removeStaticSource(source: IStaticSignatureHelpSource): void
     {
-        this.removeCompletionItems(source.getCompletionItems());
+        this.removeSignatureHelpItems(source.getSignatureHelpItems());
        
         ArrayHelpers.remove(this.staticSources, source);
     }
@@ -57,7 +61,7 @@ export default class SignatureHelpSourceMerger implements ISignatureHelpSourceMe
 
             source.load().then(() => 
             {
-                this.add(source.get());
+                this.addSignatureHelpItems(source.getSignatureHelpItems());
 
                 resolve();
             });
@@ -67,37 +71,33 @@ export default class SignatureHelpSourceMerger implements ISignatureHelpSourceMe
     public removeActiveSource(source: IActiveSignatureHelpSource): void
     {
         source.merger = undefined;
-        this.removeCompletionItems(source.getCompletionItems());
+        this.removeSignatureHelpItems(source.getSignatureHelpItems());
 
         ArrayHelpers.remove(this.activeSources, source);
     }
 
-    public init()
+    public activeSourceUpdated(source: IActiveSignatureHelpSource): void
     {
-        this.completionItems = [];
+        let removeItems = source.getPreviousSignatureHelpItems();
 
-        for(let source of this.staticSources)
-        {
-            this.addCompletionItems(source.getCompletionItems());
-        }
+        this.removeSignatureHelpItems(removeItems);
 
-        for(let source of this.activeSources)
-        {
-            this.addCompletionItems(source.getCompletionItems());
-        }
+        this.addSignatureHelpItems(source.getSignatureHelpItems());
     }
 
-    public activeSourceUpdated(source: IActiveCompletionItemSource): void
+    public getSignatureHelp(name: string): NamedSignatureHelp
     {
-        let removeItems = source.getPreviousCompletionItems();
+        if (this.signatureHelpItemCache[name] === undefined)
+        {
+            for(let item of this.signatureHelpItems)
+            {
+                if (item.name == name)
+                {
+                    this.signatureHelpItemCache[name] = item;
+                }
+            }
+        }
 
-        this.removeCompletionItems(removeItems);
-
-        this.addCompletionItems(source.getCompletionItems());
-    }
-
-    public getCompletionItems(): CompletionItem[]
-    {
-        return this.completionItems;
+        return this.signatureHelpItemCache[name];
     }
 }

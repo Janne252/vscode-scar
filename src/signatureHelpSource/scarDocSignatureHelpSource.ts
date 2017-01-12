@@ -22,9 +22,4 @@ export default class SCARDocSignatureHelpSource  extends StaticSignatureHelpSour
             this.signatureHelpItems.push(new LuaFunctionSignatureHelp(luaFunction));
         }
     }
-
-    protected signatureHelpMatchesName(signatureHelp: LuaFunctionSignatureHelp, name: string): boolean
-    {
-        return signatureHelp.luaFunction.name == name;
-    }
 }

@@ -3,14 +3,15 @@
 import {SignatureHelp, SignatureInformation} from 'vscode';
 import {ILuaFunctionDefinition} from '../scar';
 import LuaFunctionSignatureInformation from '../signatureInformation/luaFunctionSignatureInformation';
+import NamedSignatureHelp from './namedSignatureHelp';
 
-export default class LuaFunctionSignatureHelp extends SignatureHelp
+export default class LuaFunctionSignatureHelp extends NamedSignatureHelp
 {
     public luaFunction: ILuaFunctionDefinition;
 
     constructor(luaFunction: ILuaFunctionDefinition)
     {
-        super();
+        super(luaFunction.name);
 
         this.luaFunction = luaFunction;
 
