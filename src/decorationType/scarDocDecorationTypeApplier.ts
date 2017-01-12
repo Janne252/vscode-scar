@@ -21,6 +21,8 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
             return;
         }
 
+        console.log('highligting file (SCAR): ' + window.activeTextEditor.document.uri.path);  
+
         let callExpressions: LuaParserCallExpression[] = [];
         let identifiers: ILuaParserTreeNode[] = [];
         let scarDocFunctionRanges: Range[] = [];

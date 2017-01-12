@@ -1,5 +1,5 @@
 'use strict';
-import {window, TextEditorDecorationType, Range, Position} from 'vscode';
+import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
 import LuaConstsAutoCompletionItemSource from '../completionItemSource/luaConstsAutoCompletionItemSource';
 import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../luaParser/luaParser';
@@ -15,32 +15,18 @@ export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeAp
         super(source, luaParser);
     }
 
-    public update(): void
+    public update(textEditor: TextEditor): void
     {
-        if (window.activeTextEditor === undefined)
-        {
-            return;
-        }
+        console.log('highligting file (LuaConstsAuto): ' + textEditor.document.uri.path);
 
         let blueprintRanges: Range[] = [];
         let text = this.luaParser.textDocument.getText();
-
-        let matches = this.source.matchAllRegexp.exec('');
+        let matchAllBlueprints = this.source.getMatchAllRegExp();
 
         let match: RegExpExecArray;
-
-        /*try
+        while(match = matchAllBlueprints.exec(text))
         {
-            fs.writeFileSync('E:/vscode-ext-dev/scar/demo_files/test.txt', this.source.matchAllRegexString, {encoding: 'utf-8'});
-        }
-        catch (error)
-        {
-            console.log(error);
-        }*/
-
-        while((match = this.source.matchAllRegexp.exec(text)) != null)
-        {
-            let pos = window.activeTextEditor.document.positionAt(match.index);
+            let pos = textEditor.document.positionAt(match.index);
 
             let range = new Range(
                 pos,
@@ -51,8 +37,9 @@ export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeAp
 
             //console.log(`found '${match[0]}' at ${match.index}, length: ${match[0].length}`);
             //console.log(JSON.stringify(match));
+            //console.log(match);
         }
 
-        window.activeTextEditor.setDecorations(LuaConstsAutoBlueprintDecorationType, blueprintRanges);
+        textEditor.setDecorations(LuaConstsAutoBlueprintDecorationType, blueprintRanges);
     }
 }

@@ -1,5 +1,6 @@
 'use strict';
 
+import {TextEditor} from 'vscode';
 import {IDecorationTypeApplier} from './decorationTypeApplierBase';
 import ArrayHelpers from '../helper/arrayHelpers';
 
@@ -12,11 +13,11 @@ export default class DecorationTypeApplierCollection
         this.appliers = [];
     }
 
-    public update(): void
+    public update(textEditor: TextEditor): void
     {
         for(let applier of this.appliers)
         {
-            applier.update();
+            applier.update(textEditor);
         }
     }
 

@@ -2,6 +2,7 @@
     "name": "scar",
     "displayName": "scar",
     "description": "Support for Relic's SCAR scripting language",
+    "license": "MIT",
     "version": "0.0.1",
     "publisher": "Janne252",
     "engines": {
@@ -17,8 +18,8 @@
 	"contributes": {
         "languages": [{
 			"id": "scar",
-			"aliases": ["SCAR", "scar"],
 			"extensions": [".scar",".events", ".lua"],
+			"aliases": ["SCAR", "scar"],
 			"configuration": "./configurations/scar.configuration.json"
 		}],
         "grammars": [{

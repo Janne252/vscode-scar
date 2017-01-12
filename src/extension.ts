@@ -1,7 +1,7 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position} from 'vscode';
+import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor} from 'vscode';
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
 import CompletionItemProvider from './completionItemProvider';
@@ -37,7 +37,6 @@ export function activate(context: vscode.ExtensionContext)
 {
     diagnosticProvider = new DiagnosticProvider(new LuaParser(LUA_PARSER_OPTIONS), languages.createDiagnosticCollection());
 
-
     let completionItemMerger = new CompletionItemMerger();
     
     luaDocCompletionItemSource = new LuaDocCompletionItemSource(path.join(__dirname, '../../data/luadoc.json'));
@@ -66,32 +65,31 @@ export function activate(context: vscode.ExtensionContext)
 
         workspace.onDidChangeTextDocument((e) => 
         {
-            Task_CurrentTextDocumentEdited(e.document);
+            if (e.document.languageId == 'scar')
+            {
+                diagnosticProvider.update(e.document);
+                decorationTypeAppliers.update(window.activeTextEditor);
+            }
         });
 
         window.onDidChangeActiveTextEditor((e) => 
         {
-            currentDocumentCompletionItemSource.update(e.document);
-
-            diagnosticProvider.update(e.document);
-
-            Task_ApplyDecorations();
+            if (e.document.languageId == 'scar')
+            {
+                diagnosticProvider.update(e.document);
+                currentDocumentCompletionItemSource.update(e.document);
+                decorationTypeAppliers.update(e);
+            }
         });
 
-        if (window.activeTextEditor !== undefined)
+        // Kick-off
+        if (window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
         {
-            Task_CurrentTextDocumentEdited(window.activeTextEditor.document);
-        }
+            let textEditor = window.activeTextEditor;
 
-        function Task_CurrentTextDocumentEdited(textDocument: TextDocument): void
-        {
-            diagnosticProvider.update(textDocument);
-            Task_ApplyDecorations();
-        }
-
-        function Task_ApplyDecorations(): void
-        {   
-            decorationTypeAppliers.update();
+            currentDocumentCompletionItemSource.update(textEditor.document);
+            diagnosticProvider.update(textEditor.document);
+            decorationTypeAppliers.update(textEditor);
         }
     });
 }

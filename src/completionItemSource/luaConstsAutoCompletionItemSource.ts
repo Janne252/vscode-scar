@@ -19,12 +19,6 @@ export default class LuaConstsAutoCompletionItemSource extends DocCompletionItem
         return this._matchAllRegexString;
     }
 
-    private _matchAllRegexp: RegExp;
-    public get matchAllRegexp(): RegExp
-    {
-        return this._matchAllRegexp;
-    }
-
     constructor(filepath: string, encoding: string = 'utf-8')
     {
         super(filepath, encoding);
@@ -52,7 +46,10 @@ export default class LuaConstsAutoCompletionItemSource extends DocCompletionItem
 
         this.combinedList = this.rawList.join('|');
         this._matchAllRegexString = `\\b(${this.combinedList})\\b`;
+    }
 
-        this._matchAllRegexp = new RegExp(this._matchAllRegexString, 'g');
+    public getMatchAllRegExp(): RegExp
+    {
+        return new RegExp(this._matchAllRegexString, 'g');
     }
 }

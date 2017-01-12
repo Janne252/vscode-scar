@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 
 --]]
- 
+
 function CCM_Init()
     Lib_SetupMod("5ed2ead7bbf94c01833685dfa1f23ac1", "CCMII", DEV_MODE)
     

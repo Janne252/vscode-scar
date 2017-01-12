@@ -1,6 +1,6 @@
 'use strict';
 
-import {window, TextEditorDecorationType} from 'vscode';
+import {window, TextEditorDecorationType, TextEditor} from 'vscode';
 import LuaParser from '../luaParser/luaParser';
 
 export abstract class DecorationTypeApplierBase<T> implements IDecorationTypeApplier
@@ -14,7 +14,7 @@ export abstract class DecorationTypeApplierBase<T> implements IDecorationTypeApp
         this.luaParser = luaParser;
     }
 
-    public update(): void
+    public update(textEditor: TextEditor): void
     {
 
     }
@@ -22,5 +22,5 @@ export abstract class DecorationTypeApplierBase<T> implements IDecorationTypeApp
 
 export interface IDecorationTypeApplier
 {
-    update(): void;
+    update(textEditor: TextEditor): void;
 }
