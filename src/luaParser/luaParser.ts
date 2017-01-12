@@ -71,8 +71,6 @@ export default class LuaParser
     public getCallExpressionAt(position: Position): LuaParserCallExpression
     {
         let result: LuaParserCallExpression;
-        
-        DumpJSON(this.ast);
 
         ObjectIterator.each(this.ast, function(key, value: ILuaParserCallExpression)
         {
