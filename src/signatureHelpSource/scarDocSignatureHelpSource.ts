@@ -9,8 +9,7 @@ import LuaDocSignatureHelpSource from './LuaDocSignatureHelpSource';
 export default class SCARDocSignatureHelpSource  extends StaticSignatureHelpSourceBase<SCARDocCompletionItemSource>
 {
     protected signatureHelpItems: LuaFunctionSignatureHelp[];
-    protected signatureHelpDictionary: {[key: string]: LuaFunctionSignatureHelp};
-
+    
     constructor(source: SCARDocCompletionItemSource)
     {
         super(source);

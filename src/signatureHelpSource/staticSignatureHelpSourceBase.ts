@@ -14,13 +14,11 @@ export abstract class StaticSignatureHelpSourceBase<T extends ILoadableSource<vo
 
     protected source: T;
     protected signatureHelpItems: SignatureHelp[];
-    protected signatureHelpDictionary: {[key: string]: SignatureHelp};
 
     constructor(source: T)
     {
         this.source = source;
         this.signatureHelpItems = [];
-        this.signatureHelpDictionary = {};
     }
 
     protected processData(): void
@@ -44,19 +42,8 @@ export abstract class StaticSignatureHelpSourceBase<T extends ILoadableSource<vo
         });
     }
 
-    public getSignatureHelp(name: string): SignatureHelp
+    public getSignatureHelpItems(): SignatureHelp[]
     {
-        if (this.signatureHelpDictionary[name] === undefined)
-        {
-            for(let signatureHelp of this.signatureHelpItems)
-            {
-                if (this.signatureHelpMatchesName(signatureHelp, name))
-                {
-                    this.signatureHelpDictionary[name] = signatureHelp;
-                }
-            }
-        }
-
-        return this.signatureHelpDictionary[name];
+        return this.signatureHelpItems;
     }  
 }

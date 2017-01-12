@@ -5,18 +5,18 @@ import {SignatureHelp, SignatureInformation} from 'vscode';
 export interface ISignatureHelpSource
 {
     isReady: boolean;
-    getSignatureHelp(name: string): SignatureHelp;
+    getSignatureHelpItems(): SignatureHelp[];
     load(): Thenable<void>;
 }
 
 export interface IStaticSignatureHelpSource extends ISignatureHelpSource
 {
-
+    
 }
 
 export interface IActiveSignatureHelpSource extends IStaticSignatureHelpSource
 {
-    updateSignatureHelp(items: SignatureHelp[]): void;
+    updateSignatureHelpItems(items: SignatureHelp[]): void;
 }
 
 export interface ISignatureHelpSourceMerger
