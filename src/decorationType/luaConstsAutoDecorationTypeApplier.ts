@@ -6,19 +6,28 @@ import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../lu
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from '../decorationType/decorationTypes';
-
 import * as fs from 'fs';
+
+/**
+ * Represents a DecorationType applier for LuaConstsAuto.scar blueprint entries.
+ * Uses LuaConstsAutoCompletionItemSource as the source data type.
+ */
 export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeApplierBase<LuaConstsAutoCompletionItemSource>
 {
+    /**
+     * Creates a new instance of LuaConstsAutoDecorationTypeApplier.
+     * @param source The source of the entries to highlight.
+     */
     constructor(source: LuaConstsAutoCompletionItemSource, luaParser: LuaParser)
     {
         super(source, luaParser);
     }
-
+    /**
+     * Updates the TextEditor with highlights from this DecorationTypeApplier.
+     * @param textEditor The text editor to add the decorations to.
+     */
     public update(textEditor: TextEditor): void
     {
-        //console.log('highligting file (LuaConstsAuto): ' + textEditor.document.uri.path);
-
         let blueprintRanges: Range[] = [];
         let text = this.luaParser.textDocument.getText();
         let matchAllBlueprints = this.source.getMatchAllRegExp();
@@ -34,10 +43,6 @@ export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeAp
             );
 
             blueprintRanges.push(range);
-
-            //console.log(`found '${match[0]}' at ${match.index}, length: ${match[0].length}`);
-            //console.log(JSON.stringify(match));
-            //console.log(match);
         }
 
         textEditor.setDecorations(LuaConstsAutoBlueprintDecorationType, blueprintRanges);

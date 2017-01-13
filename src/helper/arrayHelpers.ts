@@ -1,12 +1,15 @@
 'use strict';
 
+/**
+ * Represents a collection of array helper functions.
+ */
 export default class ArrayHelpers
 {
-    private constructor()
-    {
-
-    }
-
+    /**
+     * Removes an item from an array.
+     * @param source The array to remove the item from.
+     * @param item The item to remove.
+     */
     public static remove(source: any[], item: any): void
     {
         for(let i = source.length - 1; i >= 0; i--)
@@ -17,7 +20,11 @@ export default class ArrayHelpers
             }
         }
     }
-
+    /**
+     * Removes an array of items from an array.
+     * @param source The array to remove the item from.
+     * @param items The array of items to remove.
+     */
     public static removeMany(source: any[], items: any[]): void
     {
         if (items.length == 0)

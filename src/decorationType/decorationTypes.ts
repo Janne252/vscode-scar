@@ -2,6 +2,9 @@
 
 import {window} from 'vscode';
 
+/**
+ * DecorationType for SCARDOC functions.
+ */
 export const SCARDocFunctionDecorationType = window.createTextEditorDecorationType({
     light: {
         color: '#008000',
@@ -11,7 +14,9 @@ export const SCARDocFunctionDecorationType = window.createTextEditorDecorationTy
         color: '#008000; font-weight: bold;'
     },
 });
-
+/**
+ * DecorationType for SCARDOC Enums.
+ */
 export const SCARDocEnumDecorationType = window.createTextEditorDecorationType({
     light: {
         color: '#FF8C00',
@@ -21,7 +26,9 @@ export const SCARDocEnumDecorationType = window.createTextEditorDecorationType({
         color: '#FF8C00; font-weight: bold;'
     },
 });
-
+/**
+ * DecorationType for LuaConstsAuto.scar blueprint entries.
+ */
 export const LuaConstsAutoBlueprintDecorationType = window.createTextEditorDecorationType({
     light: {
         color: '#FF0000',
@@ -31,8 +38,10 @@ export const LuaConstsAutoBlueprintDecorationType = window.createTextEditorDecor
         color: '#FF0000; font-weight: bold;'
     },
 });
-
-export const UserDefinedFunctionDecorationStyle = window.createTextEditorDecorationType({
+/**
+ * DecorationType for workspace functions.
+ */
+export const WorkspaceFunctionDecorationType = window.createTextEditorDecorationType({
     light: {
         color: '#c23aff',
         
@@ -41,7 +50,9 @@ export const UserDefinedFunctionDecorationStyle = window.createTextEditorDecorat
         color: '#7e3878; font-weight: bold;'
     },
 });
-
+/**
+ * DecorationType for Lua standard library functions.
+ */
 export const LuaDocFunctionDecorationType = window.createTextEditorDecorationType({
     light: {
         color: '#00CED1',
@@ -51,7 +62,9 @@ export const LuaDocFunctionDecorationType = window.createTextEditorDecorationTyp
         color: '#00CED1; font-weight: bold;'
     },
 });
-
+/**
+ * DecorationType for Lua standard library enums.
+ */
 export const LuaDocEnumDecorationType = window.createTextEditorDecorationType({
     light: {
         color: '#00CED1',

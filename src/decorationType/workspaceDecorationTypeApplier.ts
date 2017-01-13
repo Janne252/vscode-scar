@@ -5,7 +5,7 @@ import workspaceCompletionItemSource from '../completionItemSource/workspaceComp
 import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
-import {UserDefinedFunctionDecorationStyle} from '../decorationType/decorationTypes';
+import {WorkspaceFunctionDecorationType} from '../decorationType/decorationTypes';
 
 export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplierBase<workspaceCompletionItemSource>
 {
@@ -13,11 +13,12 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
     {
         super(source, luaParser);
     }
-
+    /**
+     * Updates the TextEditor with highlights from this DecorationTypeApplier.
+     * @param textEditor The text editor to add the decorations to.
+     */
     public update(textEditor: TextEditor): void
     {
-        //console.log('highligting file (SCAR): ' + textEditor.document.uri.path);  
-
         let callExpressions: LuaParserCallExpression[] = [];
         let workspaceFunctionRanges: Range[] = [];
 
@@ -48,7 +49,7 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
                 }
             }
                  
-            textEditor.setDecorations(UserDefinedFunctionDecorationStyle, workspaceFunctionRanges);
+            textEditor.setDecorations(WorkspaceFunctionDecorationType, workspaceFunctionRanges);
         }
     }
 }

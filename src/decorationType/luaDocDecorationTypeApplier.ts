@@ -8,13 +8,24 @@ import ObjectIterator from '../helper/objectIterator';
 import {LuaDocEnumDecorationType, LuaDocFunctionDecorationType} from '../decorationType/decorationTypes';
 import {DumpJSON} from '../scar';
 
-export default class LocDocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocCompletionItemSource>
+/**
+ * Represents DecorationType applier for Lua standard library functions and enums.
+ * Uses LuaDocCompletionItemSource as the source data type.
+ */
+export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocCompletionItemSource>
 {
+    /**
+     * Creates a new instance of LuaDocDecorationTypeApplier.
+     * @param source The source of the entries to highlight.
+     */
     constructor(source: LuaDocCompletionItemSource, luaParser: LuaParser)
     {
         super(source, luaParser);
     }
-
+    /**
+     * Updates the TextEditor with highlights from this DecorationTypeApplier.
+     * @param textEditor The text editor to add the decorations to.
+     */
     public update(textEditor: TextEditor): void
     {
         //console.log('highligting file (LuaDoc): ' + textEditor.document.uri.path);  

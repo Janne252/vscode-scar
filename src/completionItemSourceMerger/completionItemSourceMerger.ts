@@ -4,28 +4,50 @@ import {CompletionItem} from 'vscode';
 import {ICompletionItemSourceMerger, ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource} from '../completionItemSource/completionItemSource';
 import ArrayHelpers from '../helper/arrayHelpers';
 
+/**
+ * Merges a collection of static and active CompletionItem sources.
+ */
 export default class CompletionItemSourceMerger implements ICompletionItemSourceMerger
 {
+    /**
+     * Collection of static sources.
+     */
     protected staticSources: IStaticCompletionItemSource[] = [];
+    /**
+     * Collection of active sources.
+     */
     protected activeSources: IActiveCompletionItemSource[] = [];
-
+    /**
+     * Collection of the merged COmpletionItems.
+     */
     protected completionItems: CompletionItem[];
-
+    /**
+     * Creates a new instance of CompletionItemSourceMerger.
+     */
     constructor()
     {
         this.completionItems = [];
     }
-
+    /**
+     * Internally adds a collection of CompletionItems.
+     * @param items The CompletionItems to add.
+     */
     protected addCompletionItems(items: CompletionItem[]): void
     {
         this.completionItems = this.completionItems.concat(items);
     }
-
+    /**
+     * Internally removes a collection of CompletionItems.
+     * @param items The CompletionItems to remove.
+     */
     protected removeCompletionItems(items: CompletionItem[]): void
     {
         ArrayHelpers.removeMany(this.completionItems, items);
     }
-
+    /**
+     * Adds a static COmpletionItem source to this merger.
+     * @param source The source to add.
+     */
     public addStaticSource(source: IStaticCompletionItemSource): Thenable<void>
     {
         return new Promise<void>((resolve, reject) => 
@@ -40,14 +62,20 @@ export default class CompletionItemSourceMerger implements ICompletionItemSource
             });
         });
     }
-
+    /**
+     * Removes a static COmpletionItem source from this merger.
+     * @param source The source to remove.
+     */
     public removeStaticSource(source: IStaticCompletionItemSource): void
     {
         this.removeCompletionItems(source.getCompletionItems());
        
         ArrayHelpers.remove(this.staticSources, source);
     }
-
+    /**
+     * Adds an active COmpletionItem source to this merger.
+     * @param source The source to add.
+     */
     public addActiveSource(source: IActiveCompletionItemSource): Thenable<void>
     {
         return new Promise<void>((resolve, reject) => 
@@ -63,7 +91,10 @@ export default class CompletionItemSourceMerger implements ICompletionItemSource
             });
         });
     }
-
+    /**
+     * Removes an active COmpletionItem source from this merger.
+     * @param source The source to remove.
+     */
     public removeActiveSource(source: IActiveCompletionItemSource): void
     {
         source.merger = undefined;
@@ -71,22 +102,9 @@ export default class CompletionItemSourceMerger implements ICompletionItemSource
 
         ArrayHelpers.remove(this.activeSources, source);
     }
-
-    public init()
-    {
-        this.completionItems = [];
-
-        for(let source of this.staticSources)
-        {
-            this.addCompletionItems(source.getCompletionItems());
-        }
-
-        for(let source of this.activeSources)
-        {
-            this.addCompletionItems(source.getCompletionItems());
-        }
-    }
-
+    /**
+     * Called by active sources when they change.
+     */
     public activeSourceUpdated(source: IActiveCompletionItemSource): void
     {
         let removeItems = source.getPreviousCompletionItems();
@@ -95,7 +113,9 @@ export default class CompletionItemSourceMerger implements ICompletionItemSource
 
         this.addCompletionItems(source.getCompletionItems());
     }
-
+    /**
+     * Returns all the COmpletionItems from all the sources.
+     */
     public getCompletionItems(): CompletionItem[]
     {
         return this.completionItems;

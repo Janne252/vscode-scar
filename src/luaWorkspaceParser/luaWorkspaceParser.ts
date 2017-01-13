@@ -13,7 +13,7 @@ import ObjectIterator from '../helper/objectIterator';
 import {DumpJSON, ILuaFunctionDefinitionParameter} from '../scar';
 import WorkspaceLuaFunctionCompletionItem from '../completionItem/workspaceLuaFunctionCompletionItem';
 import WorkspaceLuaFunctionSignatureHelp from '../signatureHelp/workspaceLuaFunctionSignatureHelp';
-import fs2 from '../helper/fs';
+import FSHelpers from '../helper/fsHelpers';
 import StringHelper from '../helper/string';
 
 export default class LuaWorkspaceParser
@@ -106,7 +106,7 @@ export default class LuaWorkspaceParser
             this._parsedFileCount = 0;
             this.files = [];
 
-            let filepaths = fs2.readDirSyncRecursive(this.rootpath);
+            let filepaths = FSHelpers.readDirSyncRecursive(this.rootpath);
             //console.log(filepaths.join('\n'));
 
             console.log(`Starting to process ${filepaths.length} files. `);
