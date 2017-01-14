@@ -36,21 +36,22 @@ const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
 }
 
 let diagnosticProvider: DiagnosticProvider;
+let completionItemMerger = new CompletionItemMerger();
 let currentDocumentCompletionItemSource = new DocumentCompletionItemSource();
 let scarDocCompletionItemSource: ScarDocCompletionItemSource;
 let luaDocCompletionItemSource: LuaDocCompletionItemSource;
 let luaConstsAutoCompletionItemSource: LuaConstsAutoCompletionItemSource;
-let decorationTypeAppliers = new DecorationTypeApplierCollection();
+let decorationTypeAppliers = new DecorationTypeApplierCollection('scar');
 let signatureHelpSourceMerger = new SignatureHelpSourceMerger();
 let workspaceParser: LuaWorkspaceParser;
 
 export function activate(context: vscode.ExtensionContext) 
 {
+    let shouldUpdateCurrentDocumentCompletionItemSource = false;
+    
     diagnosticProvider = new DiagnosticProvider(new LuaParser(LUA_PARSER_OPTIONS), languages.createDiagnosticCollection());
 
     workspaceParser = new LuaWorkspaceParser(workspace.rootPath, diagnosticProvider.luaParser);
-
-    let completionItemMerger = new CompletionItemMerger();
     
     luaDocCompletionItemSource = new LuaDocCompletionItemSource(path.join(__dirname, '../../data/luadoc.json'));
     scarDocCompletionItemSource = new ScarDocCompletionItemSource(path.join(__dirname, '../../data/scardoc.json'));
@@ -69,8 +70,8 @@ export function activate(context: vscode.ExtensionContext)
 
     Promise.all(completionItemSources).then((values: any[]) =>
     {
-        let textEditor = window.activeTextEditor;
-
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger)));
+        
         workspaceParser.load().then(() => 
         {
             completionItemMerger.addActiveSource(workspaceParser.completionItemSource);
@@ -78,7 +79,7 @@ export function activate(context: vscode.ExtensionContext)
 
             decorationTypeAppliers.addApplier(new WorkspaceDecorationTypeApplier(workspaceParser.completionItemSource, diagnosticProvider.luaParser));
 
-            decorationTypeAppliers.update(textEditor);
+            decorationTypeAppliers.update(window.activeTextEditor);
         });
 
         let signatureHelpSources = [
@@ -91,32 +92,50 @@ export function activate(context: vscode.ExtensionContext)
             context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));
         });
 
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger)));
-        
         workspace.onDidSaveTextDocument((textDocument: TextDocument) =>
         {
             currentDocumentCompletionItemSource.update(textDocument);
 
-            workspaceParser.reparseFile(textDocument.fileName);
+            let fileParsing: Thenable<boolean>;
+
+            if (workspaceParser.exists(textDocument.fileName))
+            {
+                fileParsing = workspaceParser.reparseFile(textDocument.fileName);
+            }
+            else
+            {
+                fileParsing = workspaceParser.registerNewFile(textDocument.fileName);
+            }
+
+            fileParsing.then((success) => 
+            {
+                if (success)
+                {
+                    decorationTypeAppliers.update(window.activeTextEditor);
+                }
+            });
         });
 
-        workspace.onDidChangeTextDocument((e) => 
+        workspace.onDidChangeTextDocument((textEditor) => 
         {
-            if (e.document.languageId == 'scar')
+            if (textEditor.document.languageId == 'scar')
             {
-                diagnosticProvider.update(e.document);
-                decorationTypeAppliers.update(window.activeTextEditor);
+                shouldUpdateCurrentDocumentCompletionItemSource = true;
+                diagnosticProvider.update(textEditor.document);
             }
+
+            decorationTypeAppliers.update(window.activeTextEditor);
         });
 
-        window.onDidChangeActiveTextEditor((e) => 
+        window.onDidChangeActiveTextEditor((textEditor) => 
         {
-            if (e.document.languageId == 'scar')
+            if (textEditor.document.languageId == 'scar')
             {
-                diagnosticProvider.update(e.document);
-                currentDocumentCompletionItemSource.update(e.document);
-                decorationTypeAppliers.update(e);
+                diagnosticProvider.update(textEditor.document);
+                currentDocumentCompletionItemSource.update(textEditor.document);
             }
+
+            decorationTypeAppliers.update(textEditor);
         });
 
         context.subscriptions.push(commands.registerCommand('scar.findBlueprint', (args: any[]) => 
@@ -139,6 +158,7 @@ export function activate(context: vscode.ExtensionContext)
         {
             workspaceParser.reload().then(() => 
             {
+                decorationTypeAppliers.update(window.activeTextEditor);
                 console.log('Workspace reloaded!');
             });
         }));
@@ -151,9 +171,17 @@ export function activate(context: vscode.ExtensionContext)
         // Kick-off
         if (window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
         {
-            currentDocumentCompletionItemSource.update(textEditor.document);
-            diagnosticProvider.update(textEditor.document);
-        }
+            diagnosticProvider.update(window.activeTextEditor.document);
+        } 
+
+        setInterval(() => 
+        {
+            if (shouldUpdateCurrentDocumentCompletionItemSource && window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
+            {
+                shouldUpdateCurrentDocumentCompletionItemSource = false;
+                currentDocumentCompletionItemSource.update(window.activeTextEditor.document);
+            }
+        }, 1000);
     });
 }
 
