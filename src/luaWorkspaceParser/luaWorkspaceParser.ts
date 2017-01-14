@@ -222,7 +222,7 @@ export default class LuaWorkspaceParser
                 let name: string = '';
                 try
                 {
-                    let description = `File: ${filepath}, line ${node.loc.start.line + 1}`;
+                    let description = `File: ${filepath}, line ${node.loc.start.line}`;
 
                     if (ast.comments !== undefined)
                     {
