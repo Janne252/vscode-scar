@@ -14,10 +14,15 @@ export default class DecorationTypeApplierCollection
      */
     protected appliers: IDecorationTypeApplier[];
     /**
+     * Language id that the TextEditor document must be in order to apply the highlights.
+     */
+    public languageId: string;
+    /**
      * Creates a new instance of DecorationTypeApplierCollection.
      */
-    constructor()
+    constructor(languageId: string)
     {
+        this.languageId = languageId;
         this.appliers = [];
     }
     /**
@@ -26,9 +31,12 @@ export default class DecorationTypeApplierCollection
      */
     public update(textEditor: TextEditor): void
     {
-        for(let applier of this.appliers)
+        if (textEditor !== undefined && textEditor.document.languageId == this.languageId)
         {
-            applier.update(textEditor);
+            for(let applier of this.appliers)
+            {
+                applier.update(textEditor);
+            }
         }
     }
     /**
