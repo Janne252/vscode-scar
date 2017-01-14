@@ -5,15 +5,16 @@ import {
 	TextEdit,Command, 
 } from 'vscode';
 
-import {
-    ILuaFunctionDefinition
-} from '../scar';
+import {ILuaFunctionDefinition, ILuaFunctionDefinitionParameter} from '../scar';
 
 /**
  * Represents a CompletionItem for a Workspace Lua Function.
  */
 export default class WorkspaceLuaFunctionCompletionItem extends CompletionItem
 {
+    /**
+     * The source file this CompletionItem originates from.
+     */
     public source: string;
     /**
      * Creates a new completion item.
