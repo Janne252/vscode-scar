@@ -10,17 +10,18 @@
     - [x] LuaConstsAuto.scar blueprints
     - [x] Current document words
     - [x] Lua standard library functions
-    - [x] Workspace user-defined global functions
+    - [x] Workspace user-defined function
+         - [x] Workspace user-defined function documentation parsing (based on [LDoc](https://github.com/stevedonovan/LDoc) format)
  - [x] Intellisense (function parameter autocompletion)
     - [x] SCARDOC functions
     - [x] Lua standard library functions
-    - [x] Workspace user-defined global functions
+    - [x] Workspace user-defined functions
  - [x] Dynamic syntax highlighting
     - [x] SCARDOC functions
     - [x] SCARDOC enums
     - [x] LuaConstsAuto.scar blueprints
     - [x] Lua standard library functions
-    - [x] Workspace user-defined global functions 
+    - [x] Workspace user-defined functions 
  - [x] Misc 
     - [x] Reload workspace user-defined functions
     - [x] Find LuaConstsAuto.scar blueprint 
