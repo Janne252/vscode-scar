@@ -56,7 +56,8 @@ export default class WorkspaceLuaFunctionDocumentation
 
         this.documentationFound = commentsAboveFunction.length > 0;
 
-
+        commentsAboveFunction.reverse();
+        
         for(let comment of commentsAboveFunction)
         {
             let paramIndex = comment.value.indexOf(ENTRY_PARAM);
