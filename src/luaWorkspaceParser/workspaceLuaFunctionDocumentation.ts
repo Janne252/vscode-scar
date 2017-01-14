@@ -1,6 +1,6 @@
 'use strict';
 
-import {ILuaParserCommentNode} from '../luaParser/luaParser';
+import {ILuaParserCommentNode, ILuaParserAstRootNode} from '../luaParser/luaParser';
 export const ENTRY_PARAM: string = '@param';
 export const ENTRY_RETURN: string = '@return';
 
@@ -17,20 +17,51 @@ export default class WorkspaceLuaFunctionDocumentation
 
     public parameters: {[key: string]: IWorkspaceLuaFunctionParameterDocumentation};
 
+    public documentationFound: boolean;
+
     /**
      * Creates a new instance of WorkspaceLuaFunctionDocumentation.
      * @param comments Array of comments. Expected to be in the correct oder.
      */
-    constructor(comments: ILuaParserCommentNode[])
+    constructor(ast: ILuaParserAstRootNode, line: number)
     {
-        this.parameters = {};
+        this.returns = '';
         this.descriptionLines = [];
-        for(let comment of comments)
+        this.parameters = {};
+        
+        if (ast.comments === undefined)
+        {
+            this.documentationFound = false;
+            return;
+        }
+
+        let comments = ast.comments;
+        let targetLine = line; 
+
+        let commentsAboveFunction: ILuaParserCommentNode[] = [];
+        let comment: ILuaParserCommentNode;
+
+        // Lua parser ast tree contains comments in the order of occurrance. 
+        // Iterate over the comments in reversed order and see how many comments can be found above the function delcaration.
+        for(let i = comments.length - 1; i >= 0; i--)
+        {
+            comment = comments[i];
+
+            if (comment.loc.start.line == targetLine)
+            {
+                commentsAboveFunction.push(comment);
+                targetLine--;
+            }
+        }
+
+        this.documentationFound = commentsAboveFunction.length > 0;
+
+
+        for(let comment of commentsAboveFunction)
         {
             let paramIndex = comment.value.indexOf(ENTRY_PARAM);
             let returnIndex = comment.value.indexOf(ENTRY_RETURN);
 
-            // We have a generic description line.
             if (comment.value.indexOf(ENTRY_PARAM) == -1 && comment.value.indexOf(ENTRY_RETURN) == -1)
             {
                 this.descriptionLines.push(comment.value);

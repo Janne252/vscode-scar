@@ -3,7 +3,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {workspace} from 'vscode';
+import {workspace, CompletionItem} from 'vscode';
 
 import LuaParser, {ILuaParserOptions, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter, ILuaParserAstRootNode, ILuaParserCommentNode} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/luaParserCallExpression';
@@ -16,6 +16,7 @@ import WorkspaceLuaFunctionSignatureHelp from '../signatureHelp/workspaceLuaFunc
 import FSHelpers from '../helper/fsHelpers';
 import StringHelper from '../helper/string';
 import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
+import WorkspaceLuaFunctionInformation from './workspaceLuaFunctionInformation';
 
 export default class LuaWorkspaceParser
 {
@@ -137,24 +138,22 @@ export default class LuaWorkspaceParser
         });
     }
 
+    public exists(filepath: string): boolean
+    {
+        filepath = filepath.toLowerCase();
+
+        return this.files.indexOf(filepath) != -1;
+    }
+
     public registerNewFile(filepath: string): Thenable<boolean>
     {
+        filepath = filepath.toLowerCase();
+
         return new Promise((resolve, reject) => 
         {
-            filepath = filepath.toLowerCase();
-
-            let ext = path.extname(filepath);
-            //console.log('disallowed files: ' + this.disallowedFiles.join(', ') + ' | check against ' + filepath);
-            if 
-            (
-                (!this.disallowIntermediateCacheFiles || filepath.indexOf('intermediate cache') == -1) &&
-                this.allowedExtensions.indexOf(ext) !== -1 &&
-                this.disallowedFiles.indexOf(filepath) == -1 &&
-                StringHelper.containsAny(filepath, this.disallowedSubExtensions) == false && 
-                (!this.disallowedFilesRegex || this.disallowedFilesRegex.test(filepath) == false)
-            )
+            if (this.isFileAllowedToParse(filepath))
             {
-                this.files.push(filepath);
+                this.files.push(filepath.toLowerCase());
 
                 this.parseFile(filepath).then((valid: boolean) => 
                 {
@@ -163,10 +162,36 @@ export default class LuaWorkspaceParser
             }
             else
             {
-                this.log.push(`Skipping file "${filepath}", extension "${ext}" not allowed in the configuration or is a cached file.`);
+
                 resolve(false);
             }
         });
+    }
+
+    /**
+     * Internally checks if the file is allowed to be parsed.
+     * @param filepath File path of the file. MUST BE ALL LOWER CASE!
+     */
+    protected isFileAllowedToParse(filepath: string): boolean
+    {
+        let ext = path.extname(filepath);
+        if 
+        (
+            (!this.disallowIntermediateCacheFiles || filepath.indexOf('intermediate cache') == -1) &&
+            this.allowedExtensions.indexOf(ext) !== -1 &&
+            this.disallowedFiles.indexOf(filepath) == -1 &&
+            StringHelper.containsAny(filepath, this.disallowedSubExtensions) == false && 
+            (!this.disallowedFilesRegex || this.disallowedFilesRegex.test(filepath) == false)
+        )
+        {
+            return true;
+        }
+        else
+        {
+            this.log.push(`Skipping file "${filepath}", extension "${ext}" not allowed in the configuration or is a cached file.`);
+
+            return false;
+        }
     }
 
     protected parseFile(filepath: string): Thenable<boolean>
@@ -203,104 +228,42 @@ export default class LuaWorkspaceParser
         {
             if (node !== null && node.type === 'FunctionDeclaration' && node.identifier != null)
             {
-                let parameters: ILuaFunctionDefinitionParameter[] = [];
-                let paramNames: string[] = [];
+                let info = new WorkspaceLuaFunctionInformation(filepath, ast, node);
 
-                let param: ILuaParserFunctionDeclarationParameter;
-                for(let i = 0; i < node.parameters.length; i++)
-                {
-                    param = node.parameters[i];
-                    parameters.push({
-                        name: param.name,
-                        type: 'any',
-                        optional: false
-                    });
-                    paramNames.push(param.name);
-                }
-
-                let signature: string = '';
-                let name: string = '';
-                try
-                {
-                    let description = `File: ${filepath}, line ${node.loc.start.line}`;
-
-                    if (ast.comments !== undefined)
-                    {
-                        let comments = ast.comments;
-                        let targetLine = node.loc.start.line - 1; // one line above the function declaration
-
-                        let commentsAboveFunction: ILuaParserCommentNode[] = [];
-                        let comment: ILuaParserCommentNode;
-                        // Lua parser ast tree contains comments in the order of occurrance. 
-                        // Iterate over the comments in reversed order and see how many comments can be found above the function delcaration.
-                        for(let i = comments.length - 1; i >= 0; i--)
-                        {
-                            comment = comments[i];
-
-                            if (comment.loc.start.line == targetLine)
-                            {
-                                commentsAboveFunction.push(comment);
-                                targetLine--;
-                            }
-                        }
-
-                        if (commentsAboveFunction.length > 0)
-                        {
-                            let doc = new WorkspaceLuaFunctionDocumentation(commentsAboveFunction);
-
-                            for(let parameter of parameters)
-                            {
-                                if (doc.parameters[parameter.name])
-                                {
-                                    parameter.description = doc.parameters[parameter.name].description;
-                                }
-                            }
-
-                            description = `${doc.description} ${doc.returns} ${description}`;
-                        }
-                    }
-                    name = node.identifier.name;
-                    signature = `${name}(${paramNames.join(', ')})`;
-
-
-                    self._completionItemSource.addCompletionItem(new WorkspaceLuaFunctionCompletionItem(name, signature, description, filepath));
-                    self._signatureHelpSource.addSignatureHelpItem(new WorkspaceLuaFunctionSignatureHelp(name, signature, description, parameters, filepath));
-                }
-                catch(error)
-                {
-                    //console.log(JSON.stringify(node));
-                }
+                self._completionItemSource.addCompletionItem(new WorkspaceLuaFunctionCompletionItem(info.name, info.signature, info.description, filepath));
+                self._signatureHelpSource.addSignatureHelpItem(new WorkspaceLuaFunctionSignatureHelp(info.name, info.signature, info.description, info.parameters, filepath));
             }
         });
     }
 
-    public reparseFile(filepath: string): void
+    public reparseFile(filepath: string): Thenable<boolean>
     {
-        let completionItems = <WorkspaceLuaFunctionCompletionItem[]>this._completionItemSource.getCompletionItems();
-        let signatureHelpitems = <WorkspaceLuaFunctionSignatureHelp[]>this._signatureHelpSource.getSignatureHelpItems();
-
         let removedCompletionItems = 0;
         let removedSignatureHelpItems = 0;
 
-        for(let item of completionItems)
+        this._completionItemSource.removeCompletionItems((item: WorkspaceLuaFunctionCompletionItem): boolean => 
         {
             if (item.source == filepath)
             {
-                this._completionItemSource.removeCompletionItem(item);
                 removedCompletionItems++;
+                return true;
             }
-        }
+            
+            return false;
+        });
         
-        for(let item of signatureHelpitems)
+        this._signatureHelpSource.removeSignatureHelpItems((item: WorkspaceLuaFunctionSignatureHelp): boolean => 
         {
             if (item.source == filepath)
             {
-                this._signatureHelpSource.removeSignatureHelpItem(item);
                 removedSignatureHelpItems++;
+                return true;
             }
-        }
+            
+            return false;
+        });
 
         console.log(`reparsing file "${filepath}". Removed completion items: ${removedCompletionItems}, removed signatureHelpItems: ${removedSignatureHelpItems}`);
-        this.parseFile(filepath);
+        return this.parseFile(filepath);
     }
 }
