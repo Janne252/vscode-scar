@@ -34,3 +34,6 @@
 
 ## Intellisense
 ![](https://raw.githubusercontent.com/Janne252/scar/master/images/promo_intellisense.png)
+
+## User-defined documentation parsing
+![](https://raw.githubusercontent.com/Janne252/scar/master/images/promo_workspacedoc.png)
