@@ -1130,6 +1130,9 @@ function CCM_BroadcastMessageReceived(player, command, data)
 	end
 end
 
+-- Broadcasts a command and data to all players.
+-- @param command The command to broadcast.
+-- @param data The data to broadcast with the command.
 function CCM_Broadcast(command, data)
 	data = data or {}
 	local broadcast = Parameters_ToStringData(data)
