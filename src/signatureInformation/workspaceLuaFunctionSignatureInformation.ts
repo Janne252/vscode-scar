@@ -7,6 +7,9 @@ import LuaFunctionParameterInformation from '../parameterInformation/luaFunction
 
 export default class WorkspaceLuaFunctionSignatureInformation extends SignatureInformationBase
 {
+    /**
+
+     */
     constructor(signature: string, description: string, parameters: ILuaFunctionDefinitionParameter[])
     {
         super(signature, description);

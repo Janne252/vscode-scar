@@ -14,6 +14,7 @@ import {
  */
 export default class WorkspaceLuaFunctionCompletionItem extends CompletionItem
 {
+    public source: string;
     /**
      * Creates a new completion item.
      *
@@ -23,11 +24,13 @@ export default class WorkspaceLuaFunctionCompletionItem extends CompletionItem
      * @param name The name.
      * @param detail Additional details.
      * @param documentation Additional documentation.
+     * @param source The source file of the lua function.
      */
-    constructor(name: string, detail: string, documentation: string)
+    constructor(name: string, detail: string, documentation: string, source: string)
     {
         super(name, CompletionItemKind.Module);
 
+        this.source = source;
         this.detail = detail;
         this.documentation = documentation;
     }

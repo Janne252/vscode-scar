@@ -1,16 +1,6 @@
+'use strict';
+
 import {CompletionItemKind} from 'vscode';
-import LuaFunctionCompletionItem from './completionItem/luaFunctionCompletionItem';
-import LuaEnumCompletionItem from './completionItem/luaEnumCompletionItem';
-import SCAREnumCompletionItem from './completionItem/scarEnumCompletionItem';
-
-import {StaticCompletionItemSourceBase} from './completionItemSource/staticCompletionItemSourceBase';
-import {ActiveCompletionItemSourceBase} from './completionItemSource/activeCompletionItemSourceBase';
-import {ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource, ICompletionItemSourceMerger} from './completionItemSource/completionItemSource';
-import {DocCompletionItemSourceBase} from './completionItemSource/docCompletionItemSourceBase';
-import LuaDocCompletionItemSource from './completionItemSource/luaDocCompletionItemSource';
-import SCARDocCompletionItemSource from './completionItemSource/scarDocCompletionItemSource';
-
-import CompletionItemSourceMerger from './completionItemSourceMerger/completionItemSourceMerger';
 
 export interface ILuaDoc
 {
@@ -38,6 +28,7 @@ export interface ILuaFunctionDefinitionParameter
     name: string;
     optional: boolean;
     type: string;
+    description?: string;
 }
 
 export interface ILuaEnumDefinition
@@ -56,14 +47,6 @@ export interface ISCAREnumDefinition
 export interface ILoadableSource<T>
 {
     load(): Thenable<T>;
-}
-
-export {
-    LuaFunctionCompletionItem, LuaEnumCompletionItem, SCAREnumCompletionItem,
-    StaticCompletionItemSourceBase, ActiveCompletionItemSourceBase, 
-    ICompletionItemSource, IStaticCompletionItemSource, IActiveCompletionItemSource, ICompletionItemSourceMerger,
-    DocCompletionItemSourceBase, LuaDocCompletionItemSource, SCARDocCompletionItemSource,
-    CompletionItemSourceMerger
 }
 
 import * as fs from 'fs';

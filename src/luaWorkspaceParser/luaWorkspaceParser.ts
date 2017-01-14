@@ -5,7 +5,7 @@ import * as path from 'path';
 
 import {workspace} from 'vscode';
 
-import LuaParser, {ILuaParserOptions, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter} from '../luaParser/luaParser';
+import LuaParser, {ILuaParserOptions, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter, ILuaParserAstRootNode, ILuaParserCommentNode} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/luaParserCallExpression';
 import WorkspaceCompletionItemSource from '../completionItemSource/workspaceCompletionItemSource';
 import WorkspaceSignatureHelpSource from '../signatureHelpSource/workspaceSignatureHelpSource';
@@ -15,6 +15,7 @@ import WorkspaceLuaFunctionCompletionItem from '../completionItem/workspaceLuaFu
 import WorkspaceLuaFunctionSignatureHelp from '../signatureHelp/workspaceLuaFunctionSignatureHelp';
 import FSHelpers from '../helper/fsHelpers';
 import StringHelper from '../helper/string';
+import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
 
 export default class LuaWorkspaceParser
 {
@@ -194,13 +195,13 @@ export default class LuaWorkspaceParser
         });
     }
 
-    protected parseAst(filepath: string, ast: any): void
+    protected parseAst(filepath: string, ast: ILuaParserAstRootNode): void
     {
         let self = this;
 
         ObjectIterator.each(ast, function(key, node: ILuaParserFunctionDeclaration)
         {
-            if (node !== null && node.type === 'FunctionDeclaration')
+            if (node !== null && node.type === 'FunctionDeclaration' && node.identifier != null)
             {
                 let parameters: ILuaFunctionDefinitionParameter[] = [];
                 let paramNames: string[] = [];
@@ -221,13 +222,49 @@ export default class LuaWorkspaceParser
                 let name: string = '';
                 try
                 {
+                    let description = `File: ${filepath}, line ${node.loc.start.line + 1}`;
+
+                    if (ast.comments !== undefined)
+                    {
+                        let comments = ast.comments;
+                        let targetLine = node.loc.start.line - 1; // one line above the function declaration
+
+                        let commentsAboveFunction: ILuaParserCommentNode[] = [];
+                        let comment: ILuaParserCommentNode;
+                        // Lua parser ast tree contains comments in the order of occurrance. 
+                        // Iterate over the comments in reversed order and see how many comments can be found above the function delcaration.
+                        for(let i = comments.length - 1; i >= 0; i--)
+                        {
+                            comment = comments[i];
+
+                            if (comment.loc.start.line == targetLine)
+                            {
+                                commentsAboveFunction.push(comment);
+                                targetLine--;
+                            }
+                        }
+
+                        if (commentsAboveFunction.length > 0)
+                        {
+                            let doc = new WorkspaceLuaFunctionDocumentation(commentsAboveFunction);
+
+                            for(let parameter of parameters)
+                            {
+                                if (doc.parameters[parameter.name])
+                                {
+                                    parameter.description = doc.parameters[parameter.name].description;
+                                }
+                            }
+
+                            description = `${doc.description} ${doc.returns} ${description}`;
+                        }
+                    }
                     name = node.identifier.name;
                     signature = `${name}(${paramNames.join(', ')})`;
 
-                    let description = `${filepath}, line ${node.loc.start.line + 1}`;
 
-                    self._completionItemSource.addCompletionItem(new WorkspaceLuaFunctionCompletionItem(name, signature, description));
-                    self._signatureHelpSource.addSignatureHelpItem(new WorkspaceLuaFunctionSignatureHelp(name, signature, description, parameters));
+                    self._completionItemSource.addCompletionItem(new WorkspaceLuaFunctionCompletionItem(name, signature, description, filepath));
+                    self._signatureHelpSource.addSignatureHelpItem(new WorkspaceLuaFunctionSignatureHelp(name, signature, description, parameters, filepath));
                 }
                 catch(error)
                 {
@@ -239,7 +276,31 @@ export default class LuaWorkspaceParser
 
     public reparseFile(filepath: string): void
     {
-        console.log('reparsing file ' + filepath);
+        let completionItems = <WorkspaceLuaFunctionCompletionItem[]>this._completionItemSource.getCompletionItems();
+        let signatureHelpitems = <WorkspaceLuaFunctionSignatureHelp[]>this._signatureHelpSource.getSignatureHelpItems();
+
+        let removedCompletionItems = 0;
+        let removedSignatureHelpItems = 0;
+
+        for(let item of completionItems)
+        {
+            if (item.source == filepath)
+            {
+                this._completionItemSource.removeCompletionItem(item);
+                removedCompletionItems++;
+            }
+        }
+        
+        for(let item of signatureHelpitems)
+        {
+            if (item.source == filepath)
+            {
+                this._signatureHelpSource.removeSignatureHelpItem(item);
+                removedSignatureHelpItems++;
+            }
+        }
+
+        console.log(`reparsing file "${filepath}". Removed completion items: ${removedCompletionItems}, removed signatureHelpItems: ${removedSignatureHelpItems}`);
         this.parseFile(filepath);
     }
 }

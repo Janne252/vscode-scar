@@ -10,7 +10,7 @@ export default class LuaParser
 {
     public textDocument: TextDocument;
     public options: ILuaParserOptions;
-    public ast: Object;
+    public ast: ILuaParserAstRootNode;
     public valid: boolean = true;
     public lastError: Error = undefined;
 
@@ -19,12 +19,12 @@ export default class LuaParser
         this.options = options;
     }
 
-    public parse(): Object
+    public parse(): ILuaParserAstRootNode
     {
         return (<ILuaParse>parser).parse(this.textDocument.getText(), this.options);
     }
 
-    tryParseAstFromText(text: string): Object
+    tryParseAstFromText(text: string): ILuaParserAstRootNode
     {
         try
         {
@@ -106,6 +106,23 @@ export default class LuaParser
     }
 }
 
+export interface ILuaParserAstRootNode
+{
+    body: any[];
+    loc: ILuaParserTreeLocation;
+    range: ILuaParserTreeRange;
+    comments?: ILuaParserCommentNode[];
+}
+
+export interface ILuaParserCommentNode
+{
+    type: string;
+    value: string;
+    raw: string;
+    loc: ILuaParserTreeLocation;
+    range: ILuaParserTreeRange;
+}
+
 export interface ILuaParserOptions
 {
     wait?: boolean;
@@ -122,7 +139,7 @@ export interface ILuaParserOptions
 export interface ILuaParse 
 {
     defaultOptions: ILuaParserOptions;
-    parse: (input: string | ILuaParserOptions, options?: ILuaParserOptions) => ILuaParser;
+    parse: (input: string | ILuaParserOptions, options?: ILuaParserOptions) => ILuaParserAstRootNode;
 }
 
 export interface ILuaParser

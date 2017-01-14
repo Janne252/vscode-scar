@@ -27,9 +27,10 @@ import SCARDocSignatureHelpSource from './signatureHelpSource/scarDocSignatureHe
 import LuaFunctionSignatureHelp from './signatureHelp/luaFunctionSignatureHelp';
 import SignatureHelpProvider from './signatureHelpProvider';
 import LuaWorkspaceParser from './luaWorkspaceParser/luaWorkspaceParser';
+import {DumpJSON} from './scar';
 
 const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
-	comments: false,
+	comments: true,
 	locations: true,
 	ranges: true
 }
@@ -140,6 +141,11 @@ export function activate(context: vscode.ExtensionContext)
             {
                 console.log('Workspace reloaded!');
             });
+        }));
+
+        context.subscriptions.push(commands.registerCommand('scar.dumpAst', (args: any[]) =>
+        {
+            DumpJSON(diagnosticProvider.luaParser.ast);
         }));
 
         // Kick-off

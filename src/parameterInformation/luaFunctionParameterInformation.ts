@@ -7,6 +7,7 @@ export default class LuaFunctionParameterInformation extends ParameterInformatio
 {
     constructor(parameter: ILuaFunctionDefinitionParameter)
     {
-        super(parameter.name, `type: ${parameter.type}, optional: ${parameter.optional}`);
+        let providedDescription = parameter.description !== undefined && parameter.description.length > 0 ? parameter.description + ' ' : '';
+        super(parameter.name, `${providedDescription}type: ${parameter.type}, optional: ${parameter.optional}`);
     }
 }

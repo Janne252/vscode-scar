@@ -9,10 +9,13 @@ import WorkspaceLuaFunctionSignatureInformation from '../signatureInformation/wo
 
 export default class WorkspaceLuaFunctionSignatureHelp extends NamedSignatureHelp
 {
-    constructor(name: string, signature: string, descrption: string, parameters: ILuaFunctionDefinitionParameter[])
+    public source: string;
+    
+    constructor(name: string, signature: string, descrption: string, parameters: ILuaFunctionDefinitionParameter[], source: string)
     {
         super(name);
 
+        this.source = source;
         this.activeParameter = 0;
         this.activeSignature = 0;
 

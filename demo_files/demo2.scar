@@ -1,1 +1,6 @@
+function SomeOtherStuff()
+
+end
+
+g_stuff = {}
 

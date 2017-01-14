@@ -41,6 +41,11 @@
                 "command": "scar.findBlueprint",
                 "title": "[SCAR] Find a Blueprint",
                 "description": "Search Blueprints"
+            },
+            {
+                "command": "scar.dumpAst",
+                "title": "[SCAR | DEBUG] Dump current file ast tree",
+                "description": "Dumps the ast tree of the currenty active file."
             }
         ],
         "keybindings": [

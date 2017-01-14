@@ -54,10 +54,14 @@ function Player_GetStandardStartingUnitSBP(player, fallbackRaceName)
     return startingUnitSBPs[raceName] or startingUnitSBPs[fallbackRaceName]
 end
 
-
-function Player_GetRanceIndex(player, fallbackIndex)
+-- Converts a player's race name to a numeric index.
+-- @param player The player.
+-- @param fallbackIndex The index used if an unknown race is detected.
+-- @return Returns the numeric index of the player's race.
+function Player_GetRaceIndex(player, fallbackIndex)
     fallbackIndex = fallbackIndex or 0
 
+    -- Get the player race name string
     local raceName = Player_GetRaceName(player)
     local races = {
         [RACE_NAME.GERMAN] = 0,
@@ -69,3 +73,4 @@ function Player_GetRanceIndex(player, fallbackIndex)
 
     return races[raceName] or fallbackIndex
 end
+
