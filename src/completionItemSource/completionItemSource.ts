@@ -51,6 +51,10 @@ export interface IActiveCompletionItemSource extends IStaticCompletionItemSource
      */
     removeCompletionItem(item: CompletionItem): void;
     /**
+     * Removes CompletionItem based on an external function return value.
+     */
+    removeCompletionItems(comparer: ICompletionItemComparer);
+    /**
      * Removes all CompletionItems.
      */
     clear(): void;
@@ -58,6 +62,10 @@ export interface IActiveCompletionItemSource extends IStaticCompletionItemSource
      * The merger to notify of changes.
      */
     merger: ICompletionItemSourceMerger;
+}
+export interface ICompletionItemComparer
+{
+    (item: CompletionItem): boolean;
 }
 /**
  * Represents CompletionItem source merger.

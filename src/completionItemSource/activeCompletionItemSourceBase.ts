@@ -1,6 +1,7 @@
 'use strict';
 
 import {CompletionItem} from 'vscode';
+import {ICompletionItemComparer} from './completionItemSource';
 import {IActiveCompletionItemSource, ICompletionItemSourceMerger} from './completionItemSource';
 import {StaticCompletionItemSourceBase} from './staticCompletionItemSourceBase';
 
@@ -91,6 +92,24 @@ export abstract class ActiveCompletionItemSourceBase extends StaticCompletionIte
         }
        
        this.updateCompletionItems(newItems);
+    }
+    /**
+     * Removes CompletionItems based on an external function return value.
+     * @param comparer The comparer used to check if a CompletionItem should be removed.
+     */
+    public removeCompletionItems(comparer: ICompletionItemComparer): void
+    {
+        let newItems = Array.from(this.completionItems);
+
+        for(let i = newItems.length - 1; i >= 0; i--)
+        {
+            if (comparer(newItems[i]))
+            {
+                newItems.splice(i, 1);
+            }
+        }
+
+        this.updateCompletionItems(newItems);
     }
     /**
      * Removes all the completion items from the source.

@@ -1,6 +1,6 @@
 'use strict';
 
-import {IActiveSignatureHelpSource, ISignatureHelpSourceMerger} from './signatureHelpSource';
+import {IActiveSignatureHelpSource, ISignatureHelpSourceMerger, ISignatureHelpItemComparer} from './signatureHelpSource';
 import NamedSignatureHelp from '../signatureHelp/namedSignatureHelp';
 
 export abstract class ActiveSignatureHelpSourceBase implements IActiveSignatureHelpSource
@@ -82,6 +82,21 @@ export abstract class ActiveSignatureHelpSourceBase implements IActiveSignatureH
         for(let i = newItems.length - 1; i >= 0; i--)
         {
             if (newItems[i] == item)
+            {
+                newItems.splice(i, 1);
+            }
+        }
+       
+       this.updateSignatureHelpItems(newItems);
+    }
+
+    public removeSignatureHelpItems(comparer: ISignatureHelpItemComparer): void
+    {
+        let newItems = Array.from(this.signatureHelpItems);
+
+        for(let i = newItems.length - 1; i >= 0; i--)
+        {
+            if (comparer(newItems[i]))
             {
                 newItems.splice(i, 1);
             }

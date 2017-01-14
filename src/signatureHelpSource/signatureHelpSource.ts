@@ -23,6 +23,8 @@ export interface IActiveSignatureHelpSource extends IStaticSignatureHelpSource
 
     addSignatureHelpItem(item: NamedSignatureHelp): void;
     removeSignatureHelpItem(item: NamedSignatureHelp): void;
+
+    removeSignatureHelpItems(comparer: ISignatureHelpItemComparer): void;
     clear(): void;
 }
 
@@ -38,3 +40,7 @@ export interface ISignatureHelpSourceMerger
     getSignatureHelp(name: string): NamedSignatureHelp;
 }
 
+export interface ISignatureHelpItemComparer
+{
+    (item: NamedSignatureHelp): boolean;
+}
