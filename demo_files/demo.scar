@@ -74,3 +74,4 @@ function Player_GetRaceIndex(player, fallbackIndex)
     return races[raceName] or fallbackIndex
 end
 
+Player_GetRaceIndex(player)
