@@ -23,8 +23,7 @@ import {SCARDocParser, LuaDocParser, LuaConstsAutoParser, DumpJSON} from './scar
 import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
 import {ISourceCompletionItem} from './itemSourceMerger/item/completionItem';
 import {ISourceSignatureHelp} from './itemSourceMerger/item/signatureHelp';
-import SCarDocCompletionItemSource from './itemSourceMerger/source/scarDocCompletionItem';
-import LuaDocCompletionItemSource from './itemSourceMerger/source/luaDocCompletionItem';
+import {SCARDocCompletionItemSource, LuaDocCompletionItemSource} from './itemSourceMerger/source/luaDocCompletionItem';
 import LuaConstsAutoCompletionItemSource from './itemSourceMerger/source/luaConstsAutoCompletionItem';
 import DocumentCompletionItemSource from './itemSourceMerger/source/documentCompletionItem';
 import WorkspaceCompletionItemSource from './itemSourceMerger/source/workspaceCompletionItem';
@@ -72,7 +71,7 @@ export function activate(context: vscode.ExtensionContext)
         decorationTypeAppliers.addApplier(new LuaConstsAutoDecorationTypeApplier(luaConstsAutoParser, diagnosticProvider.luaParser));
         decorationTypeAppliers.addApplier(new LuaDocDecorationTypeApplier(luaDocParser, diagnosticProvider.luaParser));
 
-        completionItemMerger.addStaticSource(new SCarDocCompletionItemSource(scarDocParser));
+        completionItemMerger.addStaticSource(new SCARDocCompletionItemSource(scarDocParser));
         completionItemMerger.addStaticSource(new LuaDocCompletionItemSource(luaDocParser));
         completionItemMerger.addStaticSource(new LuaConstsAutoCompletionItemSource(luaConstsAutoParser));
         completionItemMerger.addActiveSource(documentCompletionItemSource);

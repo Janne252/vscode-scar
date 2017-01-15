@@ -3,16 +3,16 @@
 import {CompletionItem, CompletionItemKind} from 'vscode';
 import {IItem} from '../itemSourceMerger';
 import StaticItemSource from './static';
-import {ILuaDoc, ILuaFunctionDefinition} from '../../scar';
+import {ILuaDoc, ISCARDoc, ILuaFunctionDefinition, ILuaEnumDefinition, ISCADOCREnumDefinition} from '../../scar';
 import {ISourceCompletionItem} from '../item/completionItem';
 
-export default class LuaDocCompletionItemSource extends StaticItemSource<ISourceCompletionItem>
+class DocCompletionItemSource extends StaticItemSource<ISourceCompletionItem>
 {
-	constructor(luaDoc: ILuaDoc)
+	constructor(id: string, doc: ILuaDoc | ISCARDoc)
 	{
-		super('luaDocCompletionItems', []);
+		super(id, []);
 
-		for (let func of luaDoc.functions)
+		for (let func of doc.functions)
 		{
 			this.items.push(<ISourceCompletionItem>{
 				id: func.name,
@@ -23,15 +23,47 @@ export default class LuaDocCompletionItemSource extends StaticItemSource<ISource
 			});
 		}
 
-		for(let luaEnum of luaDoc.enums)
+		for(let luaEnum of doc.enums)
 		{	
+			let kind: CompletionItemKind;
+
 			this.items.push(<ISourceCompletionItem>{
 				id: luaEnum.name,
-				kind: luaEnum.kind,
+				kind: luaEnum.kind !== undefined ? luaEnum.kind : CompletionItemKind.Enum,
                 label: luaEnum.name,
-				detail: luaEnum.description,
-				documentation: luaEnum.description
+				detail: luaEnum.description !== undefined ? luaEnum.description : luaEnum.type,
+				documentation: luaEnum.description !== undefined ? luaEnum.description : `${luaEnum.name} of type ${luaEnum.type}`
 			});
-		}	
+		}
+	}
+}
+
+/**
+ * Represents a static source of Lua documentation CompletionItems.
+ */
+export class LuaDocCompletionItemSource extends DocCompletionItemSource
+{
+	/**
+	 * Creates a new instance of LuaDocCompletionItemSource.
+	 * @param luaDoc The Lua documentation to pull the information from.
+	 */
+	constructor(luaDoc: ILuaDoc)
+	{
+		super('luaDocCompletionItems' ,luaDoc);
+	}
+}
+
+/**
+ * Represents a static source of SCARDoc documentation CompletionItems.
+ */
+export class SCARDocCompletionItemSource extends DocCompletionItemSource
+{
+	/**
+	 * Creates a new instance of SCARDocCompletionItemSource.
+	 * @param scarDoc The SCARDoc to pull the information from.
+	 */
+	constructor(scarDoc: ISCARDoc)
+	{
+		super('scarDocCompletionItems', scarDoc);
 	}
 }

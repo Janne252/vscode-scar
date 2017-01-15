@@ -6,13 +6,21 @@ import StaticItemSource from './static';
 import {ISCARDoc, ILuaDoc, ILuaFunctionDefinition} from '../../scar';
 import {ISourceSignatureHelp} from '../item/signatureHelp';
 
+/**
+ * Represents a static source of Lua/SCAR documentation SignatureHelp items.
+ */
 class DocSignatureHelpSource extends StaticItemSource<ISourceSignatureHelp>
 {
-	constructor(id: string, scarDoc: ISCARDoc | ILuaDoc)
+    /**
+     * Creates a new instance of DocSignatureHelpSource.
+     * @param id The unique identifier of the source.
+     * @param doc The documentation to pull the information from.
+     */
+	constructor(id: string, doc: ISCARDoc | ILuaDoc)
 	{
 		super(id, []);
 
-		for (let func of scarDoc.functions)
+		for (let func of doc.functions)
 		{
             let signature = this.getSignature(func);
             let parameters = this.getParameters(func);
@@ -33,7 +41,10 @@ class DocSignatureHelpSource extends StaticItemSource<ISourceSignatureHelp>
 			});
 		}
 	}
-
+    /**
+     * Internally generates an array of ParameterInformation based on a ILuaFunctionDefinition.
+     * @param func The function to generate the ParameterInformation[] for.
+     */
     protected getParameters(func: ILuaFunctionDefinition): ParameterInformation[]
     {
         let result: ParameterInformation[] = [];
@@ -48,7 +59,10 @@ class DocSignatureHelpSource extends StaticItemSource<ISourceSignatureHelp>
 
         return result;
     }
-
+    /**
+     * Internally generates a signature string based on a ILuaFunctionDefinition.
+     * @param func The ILuaFunctionDefinition to create the signature string from.
+     */
     protected getSignature(func: ILuaFunctionDefinition): string
     {
         let result = '';
@@ -71,16 +85,30 @@ class DocSignatureHelpSource extends StaticItemSource<ISourceSignatureHelp>
     }
 }
 
+/**
+ * Represents a static source of SCARDoc SignatureHelp items.
+ */
 export class SCARDocSignatureHelpSource extends DocSignatureHelpSource
 {
+    /**
+     * Creates a new instance of SCARDocSignatureHelpSource.
+     * @param data The SCARDoc to pull the information from.
+     */
     constructor(data: ISCARDoc)
     {
         super('scarDocSignatureHelp', data);
     }
 }
 
+/**
+ * Represents a static source of LuaDoc SignatureHelp items.
+ */
 export class LuaDocSignatureHelpSource extends DocSignatureHelpSource
 {
+    /**
+     * Creates a new instance of LuaDocSignatureHelpSource.
+     * @param data The LuaDoc to pull the information from.
+     */
     constructor(data: ILuaDoc)
     {
         super('luaDocSignatureHelp', data);

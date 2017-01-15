@@ -1,25 +1,57 @@
 'use strict';
 
 import {IItem} from '../itemSourceMerger';
-import ActiveItemSource from './active';
+import StaticItemSource from './static';
 import * as fs from 'fs';
 
-export default class SourceFileItemSource<ItemType extends IItem> extends ActiveItemSource<ItemType>
+/**
+ * Represents a static source that loads data from a file.
+ * @param ItemType the type of the item the source stores.
+ */
+export abstract class SourceFileItemSource<ItemType extends IItem> extends StaticItemSource<ItemType>
 {
+    /**
+     * The path of the file the data is read from.
+     */
     protected filepath: string;
+    /**
+     * The encoding used to read the file.
+     */
     protected encoding: string;
-
-
+    /**
+     * Whether or not the sourc has finished loading.
+     */
+    protected _isReady: boolean;
+    /**
+     * Whether or not the sourc has finished loading.
+     */
+    public get isReady():boolean
+    {
+        return this._isReady;
+    }
+    /**
+     * Creates a new instance of SourceFileItemSource.
+     * @param id The unique idenfier of the source.
+     * @param filepath The path to the file.
+     * @param encoding The encoding used to read the file.
+     */
     constructor(id: string, filepath: string, encoding: string = 'utf-8')
     {
         super(id, []);
-    }
 
+        this._isReady = false;
+    }
+    /**
+     * Internally processes the data.
+     * @param data The data that was read from the file.
+     */
     protected processData(data: any): void
     {
 
-    }
-
+    }   
+    /**
+     * Reads the file and processes it. Returns a promise.
+     */
     public load(): Thenable<void>
     {
         return new Promise<void>((resolve, reject) => 

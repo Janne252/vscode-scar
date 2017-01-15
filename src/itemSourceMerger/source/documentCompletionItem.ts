@@ -6,13 +6,23 @@ import ActiveItemSource from './active';
 import {ISCARDoc, ILuaFunctionDefinition} from '../../scar';
 import {ISourceCompletionItem} from '../item/completionItem';
 
+/**
+ * Represents an active source of document CompletionItems.
+ */
 export default class DocumentDocCompletionItemSource extends ActiveItemSource<ISourceCompletionItem>
 {
+    /**
+     * Creates a new instance of DocumentDocCompletionItemSource.
+     */
 	constructor()
 	{
 		super('documentCompletionItems', []);
 	}
 
+    /**
+     * Updates the DocumentDocCompletionItemSource with words from a TextDocument.
+     * @param textDocument The TextDocument to pull the words from.
+     */
     public update(textDocument: TextDocument): void
     {
         let text = textDocument.getText();
@@ -36,7 +46,7 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IS
             if (!exists)
             {
                 result.push(<ISourceCompletionItem>{
-					id: word,
+					id: 'currentDocument_' + word,
 					kind: CompletionItemKind.Text,
 					label: word,
 					detail: 'word',

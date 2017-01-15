@@ -8,8 +8,15 @@ import {ISourceCompletionItem} from '../item/completionItem';
 
 import * as fs from 'fs';
 
+/**
+ * Represents a static source of LuaConstsAuto.scar CompletionItems.
+ */
 export default class LuaConstsAutoCompletionItemSource extends StaticItemSource<ISourceCompletionItem>
 {
+    /**
+     * Creates a new instance of LuaConstsAutoCompletionItemSource.
+     * @param luaConstsAutoDoc The documentation to pull the blueprints from.
+     */
 	constructor(luaConstsAutoDoc: ILuaConstsAutoDoc)
 	{
 		super('luaConstsAutoCompletionItems', []);

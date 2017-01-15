@@ -39,6 +39,7 @@ export interface ILuaFunctionDefinitionParameter
 export interface ILuaEnumDefinition
 {
     name: string;
+    type?: string;
     description: string;
     kind: CompletionItemKind;
 }
@@ -47,6 +48,8 @@ export interface ISCADOCREnumDefinition
 {
     name: string;
     type: string;
+    description?: string;
+    kind?: CompletionItemKind;
 }
 
 export interface ILoadableSource<T>

@@ -8,19 +8,28 @@ import {ISourceSignatureHelp} from '../item/signatureHelp';
 import WorkspaceLuaFunctionInformation from '../../luaWorkspaceParser/workspaceLuaFunctionInformation';
 import {LuaDocSignatureHelpSource} from './luaDocSignatureHelp';
 
+/**
+ * Represents an active source of workspace SignatureHelp items.
+ */
 export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWorkspaceSignatureHelp>
 {
+    /**
+     * Creates a new instance of WorkspaceSignatureHelpSource.
+     */
 	constructor()
 	{
 		super('workspaceSignatureHelp', []);
 	}
-
+    /**
+     * Add a new item from the workspace parser.
+     * @param info The info the workspace parser created.
+     */
     public parserAddItem(info: WorkspaceLuaFunctionInformation): void
     {   
         let parameters = this.getParameters(info);
 
         this.addItem(<IWorkspaceSignatureHelp>{
-            id: info.name,
+            id: 'workspace_' + info.name,
             filepath: info.filepath,
             activeParameter: 0,
             activeSignature: 0,
@@ -35,12 +44,15 @@ export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWork
             lastParameterIsList: false
         });
     }
-
-    protected getParameters(func: WorkspaceLuaFunctionInformation): ParameterInformation[]
+    /**
+     * Internally creates a parameter array of a parsed function.
+     * @param info The parsed function information.
+     */
+    protected getParameters(info: WorkspaceLuaFunctionInformation): ParameterInformation[]
     {
         let result: ParameterInformation[] = [];
         
-        for(let param of func.parameters)
+        for(let param of info.parameters)
         {
             result.push({
                 label: param.name,
@@ -52,7 +64,13 @@ export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWork
     }
 }
 
+/**
+ * Base interface for workspace SignatureHelp items.
+ */
 export interface IWorkspaceSignatureHelp extends ISourceSignatureHelp
 {
+    /**
+     * The path to the file the SignatureHelp origintes from.
+     */
     filepath: string;
 }

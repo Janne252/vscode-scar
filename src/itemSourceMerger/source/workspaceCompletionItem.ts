@@ -6,17 +6,26 @@ import ActiveItemSource from './active';
 import {ISourceCompletionItem} from '../item/completionItem';
 import WorkspaceLuaFunctionInformation from '../../luaWorkspaceParser/workspaceLuaFunctionInformation';
 
+/**
+ * Represents an active source of workspace CompletionItems.
+ */
 export default class WorkspaceCompletionItemSource extends ActiveItemSource<IWorkspaceCompletionItem>
 {
-    constructor(initialItems: IWorkspaceCompletionItem[] = [])
+    /**
+     * Creates a new instance of WorkspaceCompletionItemSource.
+     */
+    constructor()
     {
-        super('workspaceCompletioItemSource', initialItems);
+        super('workspaceCompletioItemSource', []);
     }
-
+    /**
+     * Add a new item from the workspace parser.
+     * @param info The info the workspace parser created.
+     */
     public parserAddItem(info: WorkspaceLuaFunctionInformation): void
     {
         this.addItem(<IWorkspaceCompletionItem>{
-            id: info.name,
+            id: 'workspace_' + info.name,
             filepath: info.filepath,
             kind: CompletionItemKind.Module,
             label: info.name,
@@ -26,7 +35,13 @@ export default class WorkspaceCompletionItemSource extends ActiveItemSource<IWor
     }
 }
 
+/**
+ * Base interface for Workspace CompletionItems.
+ */
 export interface IWorkspaceCompletionItem extends ISourceCompletionItem
 {
+    /**
+     * Path to the source file the CompletionItem originates from.
+     */
     filepath: string;
 }
