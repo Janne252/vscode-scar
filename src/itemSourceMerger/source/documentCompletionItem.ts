@@ -14,10 +14,10 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IS
     /**
      * Creates a new instance of DocumentDocCompletionItemSource.
      */
-	constructor()
-	{
-		super('documentCompletionItems', []);
-	}
+    constructor()
+    {
+        super('documentCompletionItems', []);
+    }
 
     /**
      * Updates the DocumentDocCompletionItemSource with words from a TextDocument.
@@ -46,15 +46,15 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IS
             if (!exists)
             {
                 result.push(<ISourceCompletionItem>{
-					id: 'currentDocument_' + word,
-					kind: CompletionItemKind.Text,
-					label: word,
-					detail: 'word',
-					documentation: 'current document word'
-				});
+                    id: 'currentDocument_' + word,
+                    kind: CompletionItemKind.Text,
+                    label: word,
+                    detail: 'word',
+                    documentation: 'current document word'
+                });
             }
         }
 
-		this.updateItems(result);
-	}
+        this.updateItems(result);
+    }
 }
