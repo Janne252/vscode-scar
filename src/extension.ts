@@ -5,11 +5,6 @@ import {window, workspace, languages, TextDocument, DiagnosticCollection, Range,
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
 import CompletionItemProvider from './completionItemProvider';
-//import LuaDocCompletionItemSource from './completionItemSource/luaDocCompletionItemSource';
-//import ScarDocCompletionItemSource from './completionItemSource/scarDocCompletionItemSource';
-//import LuaConstsAutoCompletionItemSource from './completionItemSource/luaConstsAutoCompletionItemSource';
-//import DocumentCompletionItemSource from './completionItemSource/documentCompletionItemSource';
-import CompletionItemMerger from './completionItemSourceMerger/completionItemSourceMerger';
 import LuaParser, {ILuaParserOptions, ILuaParserError, ILuaParserCallExpression} from './luaParser/luaParser';
 import LuaParserCallExpression from './luaParser/LuaParserCallExpression';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';

@@ -3,7 +3,6 @@
 import {ILuaFunctionDefinitionParameter} from '../scar';
 import {ILuaParserAstRootNode, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter} from '../luaParser/luaParser';
 
-import WorkspaceLuaFunctionCompletionItem from '../completionItem/workspaceLuaFunctionCompletionItem';
 import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
 
 export default class WorkspaceLuaFunctionInformation

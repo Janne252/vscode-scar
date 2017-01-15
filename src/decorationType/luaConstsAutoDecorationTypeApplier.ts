@@ -1,7 +1,6 @@
 'use strict';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
-import LuaConstsAutoCompletionItemSource from '../completionItemSource/luaConstsAutoCompletionItemSource';
 import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
@@ -10,7 +9,7 @@ import {LuaConstsAutoParser} from '../scar';
 
 /**
  * Represents a DecorationType applier for LuaConstsAuto.scar blueprint entries.
- * Uses LuaConstsAutoCompletionItemSource as the source data type.
+ * Uses LuaConstsAutoParser as the source data type.
  */
 export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeApplierBase<LuaConstsAutoParser>
 {

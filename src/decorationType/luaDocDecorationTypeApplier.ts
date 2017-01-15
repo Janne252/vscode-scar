@@ -1,7 +1,6 @@
 'use strict';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
-import LuaDocCompletionItemSource from '../completionItemSource/luaDocCompletionItemSource';
 import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
@@ -10,7 +9,7 @@ import {LuaDocParser} from '../scar';
 
 /**
  * Represents DecorationType applier for Lua standard library functions and enums.
- * Uses LuaDocCompletionItemSource as the source data type.
+ * Uses LuaDocParser as the source data type.
  */
 export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocParser>
 {

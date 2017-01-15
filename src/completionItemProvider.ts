@@ -5,7 +5,6 @@ import {
     TextDocument, Position, CancellationToken
 } from 'vscode';
 
-import CompletionItemSourceMerger from './completionItemSourceMerger/completionItemSourceMerger';
 import * as fs from 'fs';
 import * as path from 'path';
 import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';

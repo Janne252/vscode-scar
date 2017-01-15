@@ -1,7 +1,6 @@
 'use strict';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
-import ScarDocCompletionItemSource from '../completionItemSource/scarDocCompletionItemSource';
 import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
@@ -10,7 +9,7 @@ import {SCARDocParser} from '../scar';
 
 /**
  * Represents a DecorationType applier for SCARDOC functions and enums.
- * Uses ScarDocCompletionItemSource as the source data type.
+ * Uses SCARDocParser as the source data type.
  */
 export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierBase<SCARDocParser>
 {

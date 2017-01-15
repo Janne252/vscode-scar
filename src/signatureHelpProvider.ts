@@ -1,7 +1,6 @@
 'use strict';
 
 import {SignatureHelpProvider as ISignatureHelpProvider, TextDocument, Position, CancellationToken} from 'vscode';
-import NamedSignatureHelp from './signatureHelp/namedSignatureHelp';
 import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
 import {ISourceSignatureHelp} from './itemSourceMerger/item/signatureHelp';
 

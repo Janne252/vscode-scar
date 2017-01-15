@@ -9,8 +9,6 @@ import LuaParser, {ILuaParserOptions, ILuaParserFunctionDeclaration, ILuaParserF
 import LuaParserCallExpression from '../luaParser/luaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {DumpJSON, ILuaFunctionDefinitionParameter} from '../scar';
-import WorkspaceLuaFunctionCompletionItem from '../completionItem/workspaceLuaFunctionCompletionItem';
-import WorkspaceLuaFunctionSignatureHelp from '../signatureHelp/workspaceLuaFunctionSignatureHelp';
 import FSHelpers from '../helper/fsHelpers';
 import StringHelper from '../helper/string';
 import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
