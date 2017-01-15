@@ -6,18 +6,19 @@ import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../lu
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from '../decorationType/decorationTypes';
+import {SCARDocParser} from '../scar';
 
 /**
  * Represents a DecorationType applier for SCARDOC functions and enums.
  * Uses ScarDocCompletionItemSource as the source data type.
  */
-export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierBase<ScarDocCompletionItemSource>
+export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierBase<SCARDocParser>
 {
     /**
      * Creates a new instance of SCARDocDecorationTypeApplier.
      * @param source The source of the entries to highlight.
      */
-    constructor(source: ScarDocCompletionItemSource, luaParser: LuaParser)
+    constructor(source: SCARDocParser, luaParser: LuaParser)
     {
         super(source, luaParser);
     }
@@ -52,7 +53,7 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
                 }
             });
 
-            for(let func of this.source.data.functions)
+            for(let func of this.source.functions)
             {
                 for(let call of callExpressions)
                 {
@@ -63,7 +64,7 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
                 }
             }
             
-            for (let scarDocEnum of this.source.data.enums)
+            for (let scarDocEnum of this.source.enums)
             {
                 for (let identifier of identifiers)
                 {

@@ -7,8 +7,6 @@ import {workspace, CompletionItem} from 'vscode';
 
 import LuaParser, {ILuaParserOptions, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter, ILuaParserAstRootNode, ILuaParserCommentNode} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/luaParserCallExpression';
-import WorkspaceCompletionItemSource from '../completionItemSource/workspaceCompletionItemSource';
-import WorkspaceSignatureHelpSource from '../signatureHelpSource/workspaceSignatureHelpSource';
 import ObjectIterator from '../helper/objectIterator';
 import {DumpJSON, ILuaFunctionDefinitionParameter} from '../scar';
 import WorkspaceLuaFunctionCompletionItem from '../completionItem/workspaceLuaFunctionCompletionItem';
@@ -17,6 +15,9 @@ import FSHelpers from '../helper/fsHelpers';
 import StringHelper from '../helper/string';
 import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
 import WorkspaceLuaFunctionInformation from './workspaceLuaFunctionInformation';
+
+import WorkspaceSignatureHelpSource from '../itemSourceMerger/source/workspaceSignatureHelp';
+import WorkspaceCompletionItemSource from '../itemSourceMerger/source/workspaceCompletionItem';
 
 export default class LuaWorkspaceParser
 {
@@ -222,16 +223,17 @@ export default class LuaWorkspaceParser
 
     protected parseAst(filepath: string, ast: ILuaParserAstRootNode): void
     {
-        let self = this;
-
-        ObjectIterator.each(ast, function(key, node: ILuaParserFunctionDeclaration)
+        ObjectIterator.each(ast, (key, node: ILuaParserFunctionDeclaration) =>
         {
             if (node !== null && node.type === 'FunctionDeclaration' && node.identifier != null)
             {
                 let info = new WorkspaceLuaFunctionInformation(filepath, ast, node);
 
-                self._completionItemSource.addCompletionItem(new WorkspaceLuaFunctionCompletionItem(info.name, info.signature, info.description, filepath));
-                self._signatureHelpSource.addSignatureHelpItem(new WorkspaceLuaFunctionSignatureHelp(info.name, info.signature, info.description, info.parameters, filepath));
+                //self._completionItemSource.addCompletionItem(new WorkspaceLuaFunctionCompletionItem(info.name, info.signature, info.description, filepath));
+                //self._signatureHelpSource.addSignatureHelpItem(new WorkspaceLuaFunctionSignatureHelp(info.name, info.signature, info.description, info.parameters, filepath));
+
+                this._completionItemSource.parserAddItem(info);
+                this._signatureHelpSource.parserAddItem(info);
             }
         });
     }
@@ -241,9 +243,9 @@ export default class LuaWorkspaceParser
         let removedCompletionItems = 0;
         let removedSignatureHelpItems = 0;
 
-        this._completionItemSource.removeCompletionItems((item: WorkspaceLuaFunctionCompletionItem): boolean => 
+        this._completionItemSource.removeItems((item): boolean => 
         {
-            if (item.source == filepath)
+            if (item.filepath == filepath)
             {
                 removedCompletionItems++;
                 return true;
@@ -252,9 +254,9 @@ export default class LuaWorkspaceParser
             return false;
         });
         
-        this._signatureHelpSource.removeSignatureHelpItems((item: WorkspaceLuaFunctionSignatureHelp): boolean => 
+        this._signatureHelpSource.removeItems((item): boolean => 
         {
-            if (item.source == filepath)
+            if (item.filepath == filepath)
             {
                 removedSignatureHelpItems++;
                 return true;

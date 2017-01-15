@@ -6,7 +6,7 @@ import {
 } from 'vscode';
 
 import {
-    ISCAREnumDefinition
+    ISCADOCREnumDefinition
 } from '../scar';
 
 /**

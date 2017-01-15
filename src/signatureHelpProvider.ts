@@ -2,23 +2,25 @@
 
 import {SignatureHelpProvider as ISignatureHelpProvider, TextDocument, Position, CancellationToken} from 'vscode';
 import NamedSignatureHelp from './signatureHelp/namedSignatureHelp';
-import SignatureHelpSourceMerger from './signatureHelpSourceMerger/signatureHelpSourceMerger';
+import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
+import {ISourceSignatureHelp} from './itemSourceMerger/item/signatureHelp';
+
 import LuaParser from './luaParser/luaParser';
 
 export default class SignatureHelpProvider implements ISignatureHelpProvider
 {
-    protected merger: SignatureHelpSourceMerger;
+    protected merger: ItemSourceMerger<ISourceSignatureHelp>;
     protected luaParser:LuaParser;
-    protected lastSignatureHelp: NamedSignatureHelp;
+    protected lastSignatureHelp: ISourceSignatureHelp;
     protected lastSIgnatureHelpActiveParamIncremented: boolean = false;
 
-    constructor(merger: SignatureHelpSourceMerger, luaParser: LuaParser)
+    constructor(merger: ItemSourceMerger<ISourceSignatureHelp>, luaParser: LuaParser)
     {
         this.merger = merger;
         this.luaParser = luaParser;
     }
 
-    public provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken): Thenable<NamedSignatureHelp>
+    public provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken): Thenable<ISourceSignatureHelp>
     {
         //console.log(`Attempting to provide help at ${position.line}, ${position.character}`);
         return new Promise((resolve, reject) => 
@@ -37,7 +39,7 @@ export default class SignatureHelpProvider implements ISignatureHelpProvider
 
                 let name = callExpression.base.name;
 
-                let help = this.merger.getSignatureHelp(name);
+                let help = this.merger.getItem((item) => item.id == name);
 
                 help.activeParameter = callExpression.getArgumentIndex(position, 0);
 

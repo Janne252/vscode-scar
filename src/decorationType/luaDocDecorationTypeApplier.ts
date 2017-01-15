@@ -6,19 +6,19 @@ import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../lu
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {LuaDocEnumDecorationType, LuaDocFunctionDecorationType} from '../decorationType/decorationTypes';
-import {DumpJSON} from '../scar';
+import {LuaDocParser} from '../scar';
 
 /**
  * Represents DecorationType applier for Lua standard library functions and enums.
  * Uses LuaDocCompletionItemSource as the source data type.
  */
-export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocCompletionItemSource>
+export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocParser>
 {
     /**
      * Creates a new instance of LuaDocDecorationTypeApplier.
      * @param source The source of the entries to highlight.
      */
-    constructor(source: LuaDocCompletionItemSource, luaParser: LuaParser)
+    constructor(source: LuaDocParser, luaParser: LuaParser)
     {
         super(source, luaParser);
     }
@@ -59,7 +59,7 @@ export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBa
                 }
             });
 
-            for(let func of this.source.data.functions)
+            for(let func of this.source.functions)
             {
                 for(let call of callExpressions)
                 {
@@ -70,7 +70,7 @@ export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBa
                 }
             }
             
-            for (let scarDocEnum of this.source.data.enums)
+            for (let scarDocEnum of this.source.enums)
             {
                 for (let identifier of identifiers)
                 {

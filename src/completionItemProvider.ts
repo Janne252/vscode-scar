@@ -5,19 +5,16 @@ import {
     TextDocument, Position, CancellationToken
 } from 'vscode';
 
-import {
-    ILuaDoc
-} from './scar';
-
 import CompletionItemSourceMerger from './completionItemSourceMerger/completionItemSourceMerger';
-
 import * as fs from 'fs';
 import * as path from 'path';
+import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
+import {ISourceCompletionItem} from './itemSourceMerger/item/completionItem';
 
 export default class CompletionItemProvider implements ICompletionItemProvider
 {
-    protected merger: CompletionItemSourceMerger;
-    constructor(merger: CompletionItemSourceMerger)
+    protected merger: ItemSourceMerger<ISourceCompletionItem>;
+    constructor(merger: ItemSourceMerger<ISourceCompletionItem>)
     {
         this.merger = merger;
     }
@@ -26,7 +23,7 @@ export default class CompletionItemProvider implements ICompletionItemProvider
     {
         return new Promise((resolve, reject) => 
         {
-            resolve(this.merger.getCompletionItems());
+            resolve(this.merger.getAllItems());
         });
     }
 }

@@ -1,15 +1,15 @@
 'use strict';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
-import workspaceCompletionItemSource from '../completionItemSource/workspaceCompletionItemSource';
+import WorkspaceCompletionItemSource from '../itemSourceMerger/source/workspaceCompletionItem';
 import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {WorkspaceFunctionDecorationType} from '../decorationType/decorationTypes';
 
-export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplierBase<workspaceCompletionItemSource>
+export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplierBase<WorkspaceCompletionItemSource>
 {
-    constructor(source: workspaceCompletionItemSource, luaParser: LuaParser)
+    constructor(source: WorkspaceCompletionItemSource, luaParser: LuaParser)
     {
         super(source, luaParser);
     }
@@ -36,7 +36,7 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
                 }
             });
 
-            let functions = this.source.getCompletionItems();
+            let functions = this.source.getAllItems();
 
             for(let func of functions)
             {

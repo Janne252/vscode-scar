@@ -5,7 +5,7 @@ import {CompletionList} from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {ISCARDoc, ILuaFunctionDefinition, ISCAREnumDefinition} from '../scar';
+import {ISCARDoc, ILuaFunctionDefinition, ISCADOCREnumDefinition} from '../scar';
 import LuaFunctionCompletionItem from '../completionItem/luaFunctionCompletionItem';
 import SCAREnumCompletionItem from '../completionItem/scarEnumCompletionItem';
 import {DocCompletionItemSourceBase} from './docCompletionItemSourceBase';
@@ -39,7 +39,7 @@ export default class ScarDocCompletionItemSource extends DocCompletionItemSource
             this.completionItems.push(new LuaFunctionCompletionItem(func));
         }        
         
-        let scarEnum: ISCAREnumDefinition;
+        let scarEnum: ISCADOCREnumDefinition;
         for(let i = 0; i < this._data.enums.length; i++)
         {
             scarEnum = this._data.enums[i];

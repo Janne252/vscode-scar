@@ -6,7 +6,7 @@ import {
 } from 'vscode';
 
 import {
-    ISCAREnumDefinition
+    ISCADOCREnumDefinition
 } from '../scar';
 
 /**
@@ -22,7 +22,7 @@ export default class SCAREnumCompletionItem extends CompletionItem
 	 *
 	 * @param scarEnum The ISCAREnumDefinition.
 	 */
-	constructor(scarEnum: ISCAREnumDefinition)
+	constructor(scarEnum: ISCADOCREnumDefinition)
 	{
 		super(scarEnum.name, CompletionItemKind.Enum);
 

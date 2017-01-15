@@ -6,19 +6,19 @@ import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../lu
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from '../decorationType/decorationTypes';
-import * as fs from 'fs';
+import {LuaConstsAutoParser} from '../scar';
 
 /**
  * Represents a DecorationType applier for LuaConstsAuto.scar blueprint entries.
  * Uses LuaConstsAutoCompletionItemSource as the source data type.
  */
-export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeApplierBase<LuaConstsAutoCompletionItemSource>
+export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeApplierBase<LuaConstsAutoParser>
 {
     /**
      * Creates a new instance of LuaConstsAutoDecorationTypeApplier.
      * @param source The source of the entries to highlight.
      */
-    constructor(source: LuaConstsAutoCompletionItemSource, luaParser: LuaParser)
+    constructor(source: LuaConstsAutoParser, luaParser: LuaParser)
     {
         super(source, luaParser);
     }

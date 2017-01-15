@@ -8,6 +8,7 @@ import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentati
 
 export default class WorkspaceLuaFunctionInformation
 {
+    public filepath: string;
     public name: string;
     public signature: string;
     public description: string;
@@ -15,6 +16,7 @@ export default class WorkspaceLuaFunctionInformation
 
     constructor(filepath: string, ast: ILuaParserAstRootNode, node: ILuaParserFunctionDeclaration)
     {
+        this.filepath = filepath;
         this.parameters = [];
         let paramNames: string[] = [];
 

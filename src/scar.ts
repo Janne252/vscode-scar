@@ -11,7 +11,12 @@ export interface ILuaDoc
 export interface ISCARDoc
 {
     functions: ILuaFunctionDefinition[];
-    enums: ISCAREnumDefinition[];
+    enums: ISCADOCREnumDefinition[];
+}
+
+export interface ILuaConstsAutoDoc
+{
+    blueprints: string[];
 }
 
 export interface ILuaFunctionDefinition
@@ -38,7 +43,7 @@ export interface ILuaEnumDefinition
     kind: CompletionItemKind;
 }
 
-export interface ISCAREnumDefinition
+export interface ISCADOCREnumDefinition
 {
     name: string;
     type: string;
@@ -54,4 +59,112 @@ import * as fs from 'fs';
 export function DumpJSON(data: any): void
 {
     fs.writeFileSync('E:/vscode-ext-dev/scar/demo_files/dump.txt', JSON.stringify(data), {encoding: 'utf-8'});
+}
+
+export class Parser
+{
+    protected filepath: string;
+    protected encoding: string;
+
+    constructor(filepath: string, encoding: string = 'utf-8')
+    {   
+        this.filepath = filepath;
+        this.encoding = encoding;
+    }
+
+    protected processData(data: any): void
+    {
+
+    }
+
+    public load(): Thenable<void>
+    {
+        return new Promise<void>((resolve, reject) => 
+        {
+            fs.readFile(this.filepath, this.encoding, (err, data) =>
+            {
+                if (err)
+                {
+                    reject(err);
+                }
+
+                this.processData(data);
+                resolve();
+            });
+        });
+    }
+}
+
+export class SCARDocParser extends Parser implements ISCARDoc
+{
+    public functions: ILuaFunctionDefinition[];
+    public enums: ISCADOCREnumDefinition[];
+
+    constructor(filepath: string, encoding: string = 'utf-8')
+    {
+        super(filepath, encoding);
+    }
+
+    protected processData(data: string): void
+    {
+        let jsonData = <ISCARDoc>JSON.parse(data);
+
+        this.functions = jsonData.functions;
+        this.enums = jsonData.enums;
+    }
+}
+
+export class LuaDocParser extends Parser implements ILuaDoc
+{
+    public functions: ILuaFunctionDefinition[];
+    public enums: ILuaEnumDefinition[];
+
+    constructor(filepath: string, encoding: string = 'utf-8')
+    {
+        super(filepath, encoding);
+    }
+
+    protected processData(data: string): void
+    {
+        let jsonData = <ILuaDoc>JSON.parse(data);
+
+        this.functions = jsonData.functions;
+        this.enums = jsonData.enums;
+    }
+}
+
+export class LuaConstsAutoParser extends Parser implements ILuaConstsAutoDoc
+{
+    protected combinedList: string;
+    protected _matchAllRegexString: string;
+    public blueprints: string[];
+
+    constructor(filepath: string, encoding: string = 'utf-8')
+    {
+        super(filepath, encoding);
+        this.blueprints = [];
+    }
+
+    protected processData(data: string): void
+    {
+        let lines: string[] = data.split(/\r?\n/g);
+        
+        for(let line of lines)
+        {
+            if (line.startsWith('--? ') && line.indexOf('@enum') == -1)
+            {
+                let entry = line.substring(4);
+
+                this.blueprints.push(entry);
+            }
+        }
+
+        this.combinedList = this.blueprints.join('|');
+        this._matchAllRegexString = `\\b(${this.combinedList})\\b`;
+    }
+
+    public getMatchAllRegExp(): RegExp
+    {
+        return new RegExp(this._matchAllRegexString, 'g');
+    }
 }

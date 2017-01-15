@@ -5,29 +5,36 @@ import {window, workspace, languages, TextDocument, DiagnosticCollection, Range,
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
 import CompletionItemProvider from './completionItemProvider';
-import LuaDocCompletionItemSource from './completionItemSource/luaDocCompletionItemSource';
-import ScarDocCompletionItemSource from './completionItemSource/scarDocCompletionItemSource';
-import LuaConstsAutoCompletionItemSource from './completionItemSource/luaConstsAutoCompletionItemSource';
-import DocumentCompletionItemSource from './completionItemSource/documentCompletionItemSource';
+//import LuaDocCompletionItemSource from './completionItemSource/luaDocCompletionItemSource';
+//import ScarDocCompletionItemSource from './completionItemSource/scarDocCompletionItemSource';
+//import LuaConstsAutoCompletionItemSource from './completionItemSource/luaConstsAutoCompletionItemSource';
+//import DocumentCompletionItemSource from './completionItemSource/documentCompletionItemSource';
 import CompletionItemMerger from './completionItemSourceMerger/completionItemSourceMerger';
 import LuaParser, {ILuaParserOptions, ILuaParserError, ILuaParserCallExpression} from './luaParser/luaParser';
 import LuaParserCallExpression from './luaParser/LuaParserCallExpression';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';
 import DiagnosticProvider from './diagnosticProvider';
 import ObjectIterator from './helper/objectIterator';
-import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from './decorationType/decorationTypes';
 import SCARDocDecorationTypeApplier from './decorationType/scarDocDecorationTypeApplier';
 import LuaConstsAutoDecorationTypeApplier from './decorationType/luaConstsAutoDecorationTypeApplier';
 import LuaDocDecorationTypeApplier from './decorationType/luaDocDecorationTypeApplier';
 import WorkspaceDecorationTypeApplier from './decorationType/workspaceDecorationTypeApplier';
 import DecorationTypeApplierCollection from './decorationType/decorationTypeApplierCollection';
-import SignatureHelpSourceMerger from './signatureHelpSourceMerger/signatureHelpSourceMerger';
-import LuaDocSignatureHelpSource from './signatureHelpSource/luaDocSignatureHelpSource';
-import SCARDocSignatureHelpSource from './signatureHelpSource/scarDocSignatureHelpSource';
-import LuaFunctionSignatureHelp from './signatureHelp/luaFunctionSignatureHelp';
+
 import SignatureHelpProvider from './signatureHelpProvider';
 import LuaWorkspaceParser from './luaWorkspaceParser/luaWorkspaceParser';
-import {DumpJSON} from './scar';
+import {SCARDocParser, LuaDocParser, LuaConstsAutoParser, DumpJSON} from './scar';
+
+import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
+import {ISourceCompletionItem} from './itemSourceMerger/item/completionItem';
+import {ISourceSignatureHelp} from './itemSourceMerger/item/signatureHelp';
+import SCarDocCompletionItemSource from './itemSourceMerger/source/scarDocCompletionItem';
+import LuaDocCompletionItemSource from './itemSourceMerger/source/luaDocCompletionItem';
+import LuaConstsAutoCompletionItemSource from './itemSourceMerger/source/luaConstsAutoCompletionItem';
+import DocumentCompletionItemSource from './itemSourceMerger/source/documentCompletionItem';
+import WorkspaceCompletionItemSource from './itemSourceMerger/source/workspaceCompletionItem';
+
+import {SCARDocSignatureHelpSource, LuaDocSignatureHelpSource} from './itemSourceMerger/source/luaDocSignatureHelp';
 
 const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
 	comments: true,
@@ -36,65 +43,63 @@ const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
 }
 
 let diagnosticProvider: DiagnosticProvider;
-let completionItemMerger = new CompletionItemMerger();
-let currentDocumentCompletionItemSource = new DocumentCompletionItemSource();
-let scarDocCompletionItemSource: ScarDocCompletionItemSource;
-let luaDocCompletionItemSource: LuaDocCompletionItemSource;
-let luaConstsAutoCompletionItemSource: LuaConstsAutoCompletionItemSource;
+let completionItemMerger = new ItemSourceMerger<ISourceCompletionItem>();
+let scarDocParser: SCARDocParser;
+let luaDocParser: LuaDocParser;
+let luaConstsAutoParser: LuaConstsAutoParser;
+let documentCompletionItemSource: DocumentCompletionItemSource;
+
 let decorationTypeAppliers = new DecorationTypeApplierCollection('scar');
-let signatureHelpSourceMerger = new SignatureHelpSourceMerger();
+let signatureHelpSourceMerger = new ItemSourceMerger<ISourceSignatureHelp>();
 let workspaceParser: LuaWorkspaceParser;
 
 export function activate(context: vscode.ExtensionContext) 
 {
+    scarDocParser = new SCARDocParser(path.join(__dirname, '../../data/scardoc.json'));
+    luaDocParser = new LuaDocParser(path.join(__dirname, '../../data/luadoc.json'));
+    luaConstsAutoParser = new LuaConstsAutoParser(path.join(__dirname, '../../data/luaconstsauto.scar'));
+    documentCompletionItemSource = new DocumentCompletionItemSource();
+
     let shouldUpdateCurrentDocumentCompletionItemSource = false;
     
     diagnosticProvider = new DiagnosticProvider(new LuaParser(LUA_PARSER_OPTIONS), languages.createDiagnosticCollection());
-
     workspaceParser = new LuaWorkspaceParser(workspace.rootPath, diagnosticProvider.luaParser);
-    
-    luaDocCompletionItemSource = new LuaDocCompletionItemSource(path.join(__dirname, '../../data/luadoc.json'));
-    scarDocCompletionItemSource = new ScarDocCompletionItemSource(path.join(__dirname, '../../data/scardoc.json'));
-    luaConstsAutoCompletionItemSource = new LuaConstsAutoCompletionItemSource(path.join(__dirname, '../../data/luaconstsauto.scar'));
 
-    decorationTypeAppliers.addApplier(new SCARDocDecorationTypeApplier(scarDocCompletionItemSource, diagnosticProvider.luaParser));
-    decorationTypeAppliers.addApplier(new LuaConstsAutoDecorationTypeApplier(luaConstsAutoCompletionItemSource, diagnosticProvider.luaParser));
-    decorationTypeAppliers.addApplier(new LuaDocDecorationTypeApplier(luaDocCompletionItemSource, diagnosticProvider.luaParser));
+    let parsers = [
+        scarDocParser.load(),
+        luaDocParser.load(),
+        luaConstsAutoParser.load()
+    ]
 
-    let completionItemSources = [
-        completionItemMerger.addStaticSource(luaDocCompletionItemSource),
-        completionItemMerger.addStaticSource(scarDocCompletionItemSource),
-        completionItemMerger.addStaticSource(luaConstsAutoCompletionItemSource),
-        completionItemMerger.addActiveSource(currentDocumentCompletionItemSource),
-    ];
-
-    Promise.all(completionItemSources).then((values: any[]) =>
+    Promise.all(parsers).then(() => 
     {
+        decorationTypeAppliers.addApplier(new SCARDocDecorationTypeApplier(scarDocParser, diagnosticProvider.luaParser));
+        decorationTypeAppliers.addApplier(new LuaConstsAutoDecorationTypeApplier(luaConstsAutoParser, diagnosticProvider.luaParser));
+        decorationTypeAppliers.addApplier(new LuaDocDecorationTypeApplier(luaDocParser, diagnosticProvider.luaParser));
+
+        completionItemMerger.addStaticSource(new SCarDocCompletionItemSource(scarDocParser));
+        completionItemMerger.addStaticSource(new LuaDocCompletionItemSource(luaDocParser));
+        completionItemMerger.addStaticSource(new LuaConstsAutoCompletionItemSource(luaConstsAutoParser));
+        completionItemMerger.addActiveSource(documentCompletionItemSource);
+
+        signatureHelpSourceMerger.addStaticSource(new SCARDocSignatureHelpSource(scarDocParser));
+        signatureHelpSourceMerger.addStaticSource(new LuaDocSignatureHelpSource(luaDocParser));
+
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger)));
-        
+
         workspaceParser.load().then(() => 
         {
-            completionItemMerger.addActiveSource(workspaceParser.completionItemSource);
             signatureHelpSourceMerger.addActiveSource(workspaceParser.signatureHelpSource);
+            context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));
 
             decorationTypeAppliers.addApplier(new WorkspaceDecorationTypeApplier(workspaceParser.completionItemSource, diagnosticProvider.luaParser));
 
             decorationTypeAppliers.update(window.activeTextEditor);
         });
 
-        let signatureHelpSources = [
-            signatureHelpSourceMerger.addStaticSource(new LuaDocSignatureHelpSource(luaDocCompletionItemSource)),
-            signatureHelpSourceMerger.addStaticSource(new SCARDocSignatureHelpSource(scarDocCompletionItemSource))
-        ];
-
-        Promise.all(signatureHelpSources).then(() => 
-        {
-            context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));
-        });
-
         workspace.onDidSaveTextDocument((textDocument: TextDocument) =>
         {
-            currentDocumentCompletionItemSource.update(textDocument);
+            documentCompletionItemSource.update(textDocument);
 
             let fileParsing: Thenable<boolean>;
 
@@ -132,7 +137,7 @@ export function activate(context: vscode.ExtensionContext)
             if (textEditor.document.languageId == 'scar')
             {
                 diagnosticProvider.update(textEditor.document);
-                currentDocumentCompletionItemSource.update(textEditor.document);
+                documentCompletionItemSource.update(textEditor.document);
             }
 
             decorationTypeAppliers.update(textEditor);
@@ -140,7 +145,7 @@ export function activate(context: vscode.ExtensionContext)
 
         context.subscriptions.push(commands.registerCommand('scar.findBlueprint', (args: any[]) => 
         {
-            let result = window.showQuickPick(luaConstsAutoCompletionItemSource.getRawList());
+            let result = window.showQuickPick(luaConstsAutoParser.blueprints);
             result.then((value: string) =>
             {
                 let textEditor = window.activeTextEditor;
@@ -179,7 +184,7 @@ export function activate(context: vscode.ExtensionContext)
             if (shouldUpdateCurrentDocumentCompletionItemSource && window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
             {
                 shouldUpdateCurrentDocumentCompletionItemSource = false;
-                currentDocumentCompletionItemSource.update(window.activeTextEditor.document);
+                documentCompletionItemSource.update(window.activeTextEditor.document);
             }
         }, 1000);
     });
