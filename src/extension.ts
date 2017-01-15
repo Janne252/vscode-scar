@@ -9,7 +9,6 @@ import LuaParser, {ILuaParserOptions, ILuaParserError, ILuaParserCallExpression}
 import LuaParserCallExpression from './luaParser/LuaParserCallExpression';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';
 import DiagnosticProvider from './diagnosticProvider';
-import ObjectIterator from './helper/objectIterator';
 import SCARDocDecorationTypeApplier from './decorationType/scarDocDecorationTypeApplier';
 import LuaConstsAutoDecorationTypeApplier from './decorationType/luaConstsAutoDecorationTypeApplier';
 import LuaDocDecorationTypeApplier from './decorationType/luaDocDecorationTypeApplier';
