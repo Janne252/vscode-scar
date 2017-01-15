@@ -30,9 +30,9 @@ import WorkspaceCompletionItemSource from './itemSourceMerger/source/workspaceCo
 import {SCARDocSignatureHelpSource, LuaDocSignatureHelpSource} from './itemSourceMerger/source/luaDocSignatureHelp';
 
 const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
-	comments: true,
-	locations: true,
-	ranges: true
+    comments: true,
+    locations: true,
+    ranges: true
 }
 
 let diagnosticProvider: DiagnosticProvider;

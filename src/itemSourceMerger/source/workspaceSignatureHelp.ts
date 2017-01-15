@@ -16,10 +16,10 @@ export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWork
     /**
      * Creates a new instance of WorkspaceSignatureHelpSource.
      */
-	constructor()
-	{
-		super('workspaceSignatureHelp', []);
-	}
+    constructor()
+    {
+        super('workspaceSignatureHelp', []);
+    }
     /**
      * Add a new item from the workspace parser.
      * @param info The info the workspace parser created.
