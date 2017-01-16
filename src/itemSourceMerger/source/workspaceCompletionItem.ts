@@ -16,7 +16,7 @@ export default class WorkspaceCompletionItemSource extends ActiveItemSource<IWor
      */
     constructor()
     {
-        super('workspaceCompletioItemSource', []);
+        super('workspaceCompletioItems', []);
     }
     /**
      * Add a new item from the workspace parser.
@@ -26,6 +26,7 @@ export default class WorkspaceCompletionItemSource extends ActiveItemSource<IWor
     {
         this.addItem(<IWorkspaceCompletionItem>{
             id: 'workspace_' + info.name,
+            name: info.name,
             filepath: info.filepath,
             kind: CompletionItemKind.Module,
             label: info.name,

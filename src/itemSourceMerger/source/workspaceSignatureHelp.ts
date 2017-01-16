@@ -18,7 +18,7 @@ export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWork
      */
     constructor()
     {
-        super('workspaceSignatureHelp', []);
+        super('workspaceSignatureHelpItems', []);
     }
     /**
      * Add a new item from the workspace parser.
@@ -30,6 +30,7 @@ export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWork
 
         this.addItem(<IWorkspaceSignatureHelp>{
             id: 'workspace_' + info.name,
+            name: info.name,
             filepath: info.filepath,
             activeParameter: 0,
             activeSignature: 0,
