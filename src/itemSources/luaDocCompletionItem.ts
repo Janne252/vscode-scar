@@ -1,10 +1,10 @@
 'use strict';
 
 import {CompletionItem, CompletionItemKind} from 'vscode';
-import {IItem} from '../itemSourceMerger';
-import StaticItemSource from './static';
-import {ILuaDoc, ISCARDoc, ILuaFunctionDefinition, ILuaEnumDefinition, ISCADOCREnumDefinition} from '../../scar';
-import {ICompletionItem} from '../item/completionItem';
+import {IItem} from '../itemSourceMerger/types';
+import StaticItemSource from '../itemSourceMerger/staticSource';
+import {ILuaDoc, ISCARDoc, ILuaFunctionDefinition, ILuaEnumDefinition, ISCADOCREnumDefinition} from '../scar';
+import {ICompletionItem} from './completionItem';
 
 class DocCompletionItemSource extends StaticItemSource<ICompletionItem>
 {

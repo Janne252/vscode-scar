@@ -1,11 +1,11 @@
 'use strict';
 
 import {CompletionItem, CompletionItemKind} from 'vscode';
-import {IItem} from '../itemSourceMerger';
-import ActiveItemSource from './active';
-import {ICompletionItem} from '../item/completionItem';
-import WorkspaceLuaFunctionInformation from '../../luaWorkspaceParser/workspaceLuaFunctionInformation';
-
+import {IItem} from '../itemSourceMerger/types';
+import ActiveItemSource from '../itemSourceMerger/activeSource';
+import {ICompletionItem} from './completionItem';
+import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/workspaceLuaFunctionInformation';
+import {IWorkspaceCompletionItem} from './workspaceCompletionItem';
 /**
  * Represents an active source of workspace CompletionItems.
  */

@@ -1,10 +1,10 @@
 'use strict';
 
 import {CompletionItem, CompletionItemKind} from 'vscode';
-import {IItem} from '../itemSourceMerger';
-import StaticItemSource from './static';
-import {ILuaConstsAutoDoc, ILuaFunctionDefinition} from '../../scar';
-import {ICompletionItem} from '../item/completionItem';
+import {IItem} from '../itemSourceMerger/types';
+import StaticItemSource from '../itemSourceMerger/staticSource';
+import {ILuaConstsAutoDoc, ILuaFunctionDefinition} from '../scar';
+import {ICompletionItem} from './completionItem';
 
 import * as fs from 'fs';
 

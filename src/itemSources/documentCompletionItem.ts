@@ -1,10 +1,10 @@
 'use strict';
 
 import {CompletionItem, CompletionItemKind, TextDocument, window} from 'vscode';
-import {IItem} from '../itemSourceMerger';
-import ActiveItemSource from './active';
-import {ISCARDoc, ILuaFunctionDefinition} from '../../scar';
-import {ICompletionItem} from '../item/completionItem';
+import {IItem} from '../itemSourceMerger/types';
+import ActiveItemSource from '../itemSourceMerger/activeSource';
+import {ISCARDoc, ILuaFunctionDefinition} from '../scar';
+import {ICompletionItem} from './completionItem';
 
 /**
  * Represents an active source of document CompletionItems.

@@ -1,10 +1,10 @@
 'use strict';
 
 import {CompletionItem, CompletionItemKind, ParameterInformation} from 'vscode';
-import {IItem} from '../itemSourceMerger';
-import StaticItemSource from './static';
-import {ISCARDoc, ILuaDoc, ILuaFunctionDefinition} from '../../scar';
-import {ISignatureHelp} from '../item/signatureHelp';
+import {IItem} from '../itemSourceMerger/types';
+import StaticItemSource from '../itemSourceMerger/staticSource';
+import {ISCARDoc, ILuaDoc, ILuaFunctionDefinition} from '../scar';
+import {ISignatureHelp} from './signatureHelp';
 
 /**
  * Represents a static source of Lua/SCAR documentation SignatureHelp items.

@@ -1,11 +1,11 @@
 'use strict';
 
 import {CompletionItem, CompletionItemKind, ParameterInformation} from 'vscode';
-import {IItem} from '../itemSourceMerger';
-import ActiveItemSource from './active';
-import {ISCARDoc, ILuaDoc, ILuaFunctionDefinition} from '../../scar';
-import {ISignatureHelp} from '../item/signatureHelp';
-import WorkspaceLuaFunctionInformation from '../../luaWorkspaceParser/workspaceLuaFunctionInformation';
+import {IItem} from '../itemSourceMerger/types';
+import ActiveItemSource from '../itemSourceMerger/activeSource';
+import {ISCARDoc, ILuaDoc, ILuaFunctionDefinition} from '../scar';
+import {ISignatureHelp} from './signatureHelp';
+import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/workspaceLuaFunctionInformation';
 import {LuaDocSignatureHelpSource} from './luaDocSignatureHelp';
 
 /**
