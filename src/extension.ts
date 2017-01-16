@@ -83,6 +83,8 @@ export function activate(context: vscode.ExtensionContext)
         workspaceParser.load().then(() => 
         {
             signatureHelpSourceMerger.addActiveSource(workspaceParser.signatureHelpSource);
+            completionItemMerger.addActiveSource(workspaceParser.completionItemSource);
+            
             context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));
 
             decorationTypeAppliers.addApplier(new WorkspaceDecorationTypeApplier(workspaceParser.completionItemSource, diagnosticProvider.luaParser));
