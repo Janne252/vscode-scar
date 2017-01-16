@@ -1,6 +1,6 @@
 'use strict';
 
-import {IItem, IStaticItemSource} from '../itemSourceMerger';
+import {IItem, IStaticItemSource} from './types';
 
 /**
  * Represents a static source of items.

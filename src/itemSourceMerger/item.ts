@@ -1,6 +1,6 @@
 'use strict';
 
-import {IItem} from '../itemSourceMerger';
+import {IItem} from '../itemSourceMerger/types';
 
 export default class Item implements IItem
 {

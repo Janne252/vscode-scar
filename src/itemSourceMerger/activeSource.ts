@@ -1,7 +1,7 @@
 'use strict';
 
-import StaticItemSource from './static';
-import {IItem, IActiveItemSource, IItemSourceMerger, IItemComparer} from '../itemSourceMerger';
+import StaticItemSource from './staticSource';
+import {IItem, IActiveItemSource, IItemSourceMerger, IItemComparer} from './types';
 
 /**
  * Represents an active source of items.

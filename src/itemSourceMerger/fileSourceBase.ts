@@ -1,14 +1,14 @@
 'use strict';
 
-import {IItem} from '../itemSourceMerger';
-import StaticItemSource from './static';
+import {IItem} from '../itemSourceMerger/types';
+import StaticItemSource from './staticSource';
 import * as fs from 'fs';
 
 /**
  * Represents a static source that loads data from a file.
  * @param ItemType the type of the item the source stores.
  */
-export abstract class SourceFileItemSource<ItemType extends IItem> extends StaticItemSource<ItemType>
+export abstract class FileSourceBase<ItemType extends IItem> extends StaticItemSource<ItemType>
 {
     /**
      * The path of the file the data is read from.
