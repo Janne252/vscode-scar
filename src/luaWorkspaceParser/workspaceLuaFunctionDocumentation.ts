@@ -1,8 +1,7 @@
 'use strict';
 
 import {ILuaParserCommentNode, ILuaParserAstRootNode} from 'luaparse';
-export const ENTRY_PARAM: string = '@param';
-export const ENTRY_RETURN: string = '@return';
+import WorkspaceParserConfig from './parserConfig';
 
 /**
  * Documentation parser that supports LDoc format: https://github.com/stevedonovan/LDoc
@@ -41,7 +40,7 @@ export default class WorkspaceLuaFunctionDocumentation
      * @param ast The AST containing the document comment entries.
      * @param line The line the function is defined at.
      */
-    constructor(ast: ILuaParserAstRootNode, line: number)
+    constructor(config: WorkspaceParserConfig, ast: ILuaParserAstRootNode, line: number)
     {
         this.returns = '';
         this.descriptionLines = [];
@@ -78,6 +77,9 @@ export default class WorkspaceLuaFunctionDocumentation
         
         for(let comment of commentsAboveFunction)
         {
+            let ENTRY_PARAM = config.lDocParameterDefinition;
+            let ENTRY_RETURN = config.lDocFunctionReturnDefinition;
+
             let paramIndex = comment.value.indexOf(ENTRY_PARAM);
             let returnIndex = comment.value.indexOf(ENTRY_RETURN);
 

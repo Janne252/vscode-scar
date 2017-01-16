@@ -4,7 +4,7 @@ import {ILuaFunctionDefinitionParameter} from '../scar';
 import {ILuaParserAstRootNode, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter} from 'luaparse';
 
 import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
-
+import {} from '.'
 /**
  * Extracts relevant information of a Lua function from an AST.
  */
@@ -35,7 +35,7 @@ export default class WorkspaceLuaFunctionInformation
      * @param filepath Path to the file the function originates from.
      * @
      */
-    constructor(filepath: string, ast: ILuaParserAstRootNode, node: ILuaParserFunctionDeclaration)
+    constructor(config, filepath: string, ast: ILuaParserAstRootNode, node: ILuaParserFunctionDeclaration)
     {
         this.filepath = filepath;
         this.parameters = [];
@@ -57,7 +57,7 @@ export default class WorkspaceLuaFunctionInformation
         this.signature = `${this.name}(${paramNames.join(', ')})`;
         this.description = `File: ${filepath}, line ${node.loc.start.line}`;
 
-        let doc = new WorkspaceLuaFunctionDocumentation(ast, node.loc.start.line - 1);
+        let doc = new WorkspaceLuaFunctionDocumentation(config, ast, node.loc.start.line - 1);
 
         if (doc.documentationFound)
         {
