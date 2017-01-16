@@ -1,7 +1,8 @@
 'use strict';
 
+import {ILuaParserError} from 'luaparse';
 import {DiagnosticCollection, TextDocument, Uri} from 'vscode';
-import LuaParser, {ILuaParserError} from './luaParser/luaParser';
+import LuaParser from './luaParser/luaParser';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';
 
 export default class DiagnosticProvider

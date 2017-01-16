@@ -2,10 +2,10 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-
+import {ILuaParserOptions, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter, ILuaParserAstRootNode, ILuaParserCommentNode} from 'luaparse';
 import {workspace, CompletionItem} from 'vscode';
 
-import LuaParser, {ILuaParserOptions, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter, ILuaParserAstRootNode, ILuaParserCommentNode} from '../luaParser/luaParser';
+import LuaParser from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/luaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {DumpJSON, ILuaFunctionDefinitionParameter} from '../scar';
@@ -14,51 +14,100 @@ import StringHelper from '../helper/string';
 import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
 import WorkspaceLuaFunctionInformation from './workspaceLuaFunctionInformation';
 
-import WorkspaceSignatureHelpSource from '../itemSourceMerger/source/workspaceSignatureHelp';
-import WorkspaceCompletionItemSource from '../itemSourceMerger/source/workspaceCompletionItem';
+import WorkspaceSignatureHelpSource from '../itemSources/workspaceSignatureHelp';
+import WorkspaceCompletionItemSource from '../itemSources/workspaceCompletionItem';
 
+/**
+ * Represents a workspace lua parser.
+ */
 export default class LuaWorkspaceParser
 {
+    /**
+     * Root directory path of the workspace.
+     */
     protected rootpath: string;
+    /**
+     * Lua parser instance.
+     */
     protected luaParser: LuaParser;
+    /**
+     * Registered files from the workspace.
+     */
     protected files: string[];
-
+    /**
+     * Whether or not intermediate cache files should be skipped.
+     */
     protected disallowIntermediateCacheFiles: boolean;
+    /**
+     * List of allowed file extensions.
+     */
     protected allowedExtensions: string[];
+    /**
+     * List of disallowed files.
+     */
     protected disallowedFiles: string[];
+    /**
+     * List of disallowed sub file extensions.
+     */
     protected disallowedSubExtensions: string[];
+    /**
+     * Regex used to filter out disallowed files.
+     */
     protected disallowedFilesRegex: RegExp;
-
+    /**
+     * Internal log used to report reasons why a file was not parsed.
+     */
     protected log: string[];
-
+    /**
+     * Total number of files in the workspace.
+     */
     protected _fileCount: number = 0;
+    /**
+     * Total number of files in the workspace.
+     */
     public get fileCount(): number
     {
         return this._fileCount;
     }
-
+    /**
+     * Total number of parsed files.
+     */
     protected _parsedFileCount: number = 0;
+    /**
+     * Total number of parsed files.
+     */
     public get parsedFileCount(): number
     {
         return this._parsedFileCount;
     }
-
+    /**
+     * CompletionItems parsed by the WorkspaceParser.
+     */
     protected _completionItemSource: WorkspaceCompletionItemSource;
+    /**
+     * CompletionItems parsed by the WorkspaceParser.
+     */
     public get completionItemSource(): WorkspaceCompletionItemSource
     {
         return this._completionItemSource;
     }
-    
+    /**
+     * SignatureHelp items parsed by the WorkspaceParser.
+     */
     protected _signatureHelpSource: WorkspaceSignatureHelpSource;
     public get signatureHelpSource(): WorkspaceSignatureHelpSource
     {
         return this._signatureHelpSource;
     }
-
-    constructor(rootpath: string, LuaParser: LuaParser)
+    /**
+     * Creates a new instance of WorkspaceParser.
+     * @param rootpath The root directory path of the workspace to parse.
+     * @param luaParser The lua parser instance used to parse the files.
+     */
+    constructor(rootpath: string, luaParser: LuaParser)
     {
         this.rootpath = rootpath;
-        this.luaParser = LuaParser;
+        this.luaParser = luaParser;
         this.files = [];
         this._completionItemSource = new WorkspaceCompletionItemSource();
         this._signatureHelpSource = new WorkspaceSignatureHelpSource();
@@ -91,7 +140,9 @@ export default class LuaWorkspaceParser
 
         this.log = [];
     }
-
+    /**
+     * Reloads all files in the workspace and parses all the files.
+     */
     public reload(): Thenable<void>
     {
         this._completionItemSource.clear();
@@ -99,7 +150,9 @@ export default class LuaWorkspaceParser
         
         return this.load();
     }
-
+    /**
+     * Loads the workspace and parses all the files.
+     */
     public load(): Thenable<void>
     {
         return new Promise<void>((resolve, reject) => 
@@ -136,14 +189,21 @@ export default class LuaWorkspaceParser
             }
         });
     }
-
+    /**
+     * Checks if a file is known by the WorkspaceParser.
+     * @param filepath The file to check.
+     */
     public exists(filepath: string): boolean
     {
         filepath = filepath.toLowerCase();
 
         return this.files.indexOf(filepath) != -1;
     }
-
+    /**
+     * Resolves a changed file. If it's already known, the file is reloaded.
+     * The file is registered as a new file otherwise.
+     * @param filepath The file to resolve.
+     */
     public resolveWorkspaceFileChanged(filepath: string): Thenable<boolean>
     {
         if (this.exists(filepath))
@@ -155,7 +215,10 @@ export default class LuaWorkspaceParser
             this.registerNewFile(filepath);
         }
     }
-
+    /**
+     * Registers a new file to the WorkspaceParser.
+     * @param filepath The file to register.
+     */
     public registerNewFile(filepath: string): Thenable<boolean>
     {
         filepath = filepath.toLowerCase();
@@ -178,7 +241,6 @@ export default class LuaWorkspaceParser
             }
         });
     }
-
     /**
      * Internally checks if the file is allowed to be parsed.
      * @param filepath File path of the file. MUST BE ALL LOWER CASE!
@@ -204,7 +266,10 @@ export default class LuaWorkspaceParser
             return false;
         }
     }
-
+    /**
+     * Parses a file and returns true if the file was parsed successfully. 
+     * Returns false otherwise.
+     */
     protected parseFile(filepath: string): Thenable<boolean>
     {
         return new Promise((resolve, reject) => 
@@ -230,7 +295,11 @@ export default class LuaWorkspaceParser
             });
         });
     }
-
+    /**
+     * Parses the LuaParser ast tree.
+     * @param filepath The path to the file the ast tree originates from.
+     * @param ast The AST tree.
+     */
     protected parseAst(filepath: string, ast: ILuaParserAstRootNode): void
     {
         ObjectIterator.each(ast, (key, node: ILuaParserFunctionDeclaration) =>
@@ -239,15 +308,15 @@ export default class LuaWorkspaceParser
             {
                 let info = new WorkspaceLuaFunctionInformation(filepath, ast, node);
 
-                //self._completionItemSource.addCompletionItem(new WorkspaceLuaFunctionCompletionItem(info.name, info.signature, info.description, filepath));
-                //self._signatureHelpSource.addSignatureHelpItem(new WorkspaceLuaFunctionSignatureHelp(info.name, info.signature, info.description, info.parameters, filepath));
-
                 this._completionItemSource.parserAddItem(info);
                 this._signatureHelpSource.parserAddItem(info);
             }
         });
     }
-
+    /**
+     * Re-parses a file.
+     * @param filepath The path to the file to re-parse.
+     */
     public reparseFile(filepath: string): Thenable<boolean>
     {
         let removedCompletionItems = 0;

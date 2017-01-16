@@ -1,11 +1,12 @@
 'use strict';
 
 import * as vscode from 'vscode';
+import {ILuaParserOptions, ILuaParserError, ILuaParserCallExpression} from 'luaparse';
 import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit} from 'vscode';
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
 import CompletionItemProvider from './completionItemProvider';
-import LuaParser, {ILuaParserOptions, ILuaParserError, ILuaParserCallExpression} from './luaParser/luaParser';
+import LuaParser from './luaParser/luaParser';
 import LuaParserCallExpression from './luaParser/LuaParserCallExpression';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';
 import DiagnosticProvider from './diagnosticProvider';
@@ -19,15 +20,15 @@ import SignatureHelpProvider from './signatureHelpProvider';
 import LuaWorkspaceParser from './luaWorkspaceParser/luaWorkspaceParser';
 import {SCARDocParser, LuaDocParser, LuaConstsAutoParser, DumpJSON} from './scar';
 
-import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
-import {ICompletionItem} from './itemSourceMerger/item/completionItem';
-import {ISignatureHelp} from './itemSourceMerger/item/signatureHelp';
-import {SCARDocCompletionItemSource, LuaDocCompletionItemSource} from './itemSourceMerger/source/luaDocCompletionItem';
-import LuaConstsAutoCompletionItemSource from './itemSourceMerger/source/luaConstsAutoCompletionItem';
-import DocumentCompletionItemSource from './itemSourceMerger/source/documentCompletionItem';
-import WorkspaceCompletionItemSource from './itemSourceMerger/source/workspaceCompletionItem';
+import ItemSourceMerger from './itemSourceMerger/merger';
+import {ICompletionItem} from './itemSources/completionItem';
+import {ISignatureHelp} from './itemSources/signatureHelp';
+import {SCARDocCompletionItemSource, LuaDocCompletionItemSource} from './itemSources/luaDocCompletionItem';
+import LuaConstsAutoCompletionItemSource from './itemSources/luaConstsAutoCompletionItem';
+import DocumentCompletionItemSource from './itemSources/documentCompletionItem';
+import WorkspaceCompletionItemSource from './itemSources/workspaceCompletionItem';
 
-import {SCARDocSignatureHelpSource, LuaDocSignatureHelpSource} from './itemSourceMerger/source/luaDocSignatureHelp';
+import {SCARDocSignatureHelpSource, LuaDocSignatureHelpSource} from './itemSources/luaDocSignatureHelp';
 
 const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
     comments: true,

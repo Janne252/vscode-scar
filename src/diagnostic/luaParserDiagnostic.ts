@@ -1,7 +1,7 @@
 'use strict';
 
 import {Diagnostic, Range, Position, DiagnosticSeverity} from 'vscode';
-import {ILuaParserError} from '../luaParser/luaParser';
+import {ILuaParserError} from 'luaparse';
 
 /**
  * Represents a Diagnostic for LuaParser errors.

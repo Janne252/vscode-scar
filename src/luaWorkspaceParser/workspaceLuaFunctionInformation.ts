@@ -1,18 +1,40 @@
 'use strict';
 
 import {ILuaFunctionDefinitionParameter} from '../scar';
-import {ILuaParserAstRootNode, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter} from '../luaParser/luaParser';
+import {ILuaParserAstRootNode, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter} from 'luaparse';
 
 import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
 
+/**
+ * Extracts relevant information of a Lua function from an AST.
+ */
 export default class WorkspaceLuaFunctionInformation
 {
+    /**
+     * The path to the file the Lua function originates from.
+     */
     public filepath: string;
+    /**
+     * Name of the funcction.
+     */
     public name: string;
+    /**
+     * Signature of the function.
+     */
     public signature: string;
+    /**
+     * Description of the function.
+     */
     public description: string;
+    /**
+     * Parameters of the function.
+     */
     public parameters: ILuaFunctionDefinitionParameter[];
-
+    /**
+     * Creates a new instance of WorkspaceLuaFunctionInformation.
+     * @param filepath Path to the file the function originates from.
+     * @
+     */
     constructor(filepath: string, ast: ILuaParserAstRootNode, node: ILuaParserFunctionDeclaration)
     {
         this.filepath = filepath;

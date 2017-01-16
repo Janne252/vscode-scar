@@ -1,7 +1,9 @@
 'use strict';
+
+import {ILuaParserTreeNode} from 'luaparse';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
-import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../luaParser/luaParser';
+import LuaParser, {LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from '../decorationType/decorationTypes';
@@ -28,7 +30,7 @@ export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeAp
     public update(textEditor: TextEditor): void
     {
         let blueprintRanges: Range[] = [];
-        let text = this.luaParser.textDocument.getText();
+        let text = textEditor.document.getText();
         let matchAllBlueprints = this.source.getMatchAllRegExp();
 
         let match: RegExpExecArray;

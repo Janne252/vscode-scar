@@ -1,8 +1,10 @@
 'use strict';
+
+import {ILuaParserTreeNode} from 'luaparse';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
-import WorkspaceCompletionItemSource from '../itemSourceMerger/source/workspaceCompletionItem';
-import LuaParser, {ILuaParserTreeNode, LuaParserTreeLocationToRange} from '../luaParser/luaParser';
+import WorkspaceCompletionItemSource from '../itemSources/workspaceCompletionItem';
+import LuaParser, {LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {WorkspaceFunctionDecorationType} from '../decorationType/decorationTypes';

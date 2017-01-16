@@ -1,6 +1,6 @@
 import {Position, Range} from 'vscode';
-
-import {LuaParserTreeLocationToRange, ILuaParserCallExpression, ILuaParserCallExpressionBase, ILuaParserTreeLocation, ILuaParserTreeRange, ILuaParserCallExpressionArgument} from './luaParser';
+import {ILuaParserCallExpression, ILuaParserCallExpressionBase, ILuaParserTreeLocation, ILuaParserTreeRange, ILuaParserCallExpressionArgument} from 'luaparse';
+import {LuaParserTreeLocationToRange} from './luaParser';
 
 /**
  * Represents a CallExpression parsed by luaparser.

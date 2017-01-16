@@ -1,27 +1,45 @@
 'use strict';
 
-import {ILuaParserCommentNode, ILuaParserAstRootNode} from '../luaParser/luaParser';
+import {ILuaParserCommentNode, ILuaParserAstRootNode} from 'luaparse';
 export const ENTRY_PARAM: string = '@param';
 export const ENTRY_RETURN: string = '@return';
 
+/**
+ * Documentation parser that supports LDoc format: https://github.com/stevedonovan/LDoc
+ */
 export default class WorkspaceLuaFunctionDocumentation
 {
+    /**
+     * List of description lines.
+     */
     protected descriptionLines: string[];
+    /**
+     * List of parameter definition lines.
+     */
     protected parameterLines: string[];
+    /**
+     * The description text.
+     */
     public get description(): string
     {
         return this.descriptionLines.join('\n');
     }
-
+    /**
+     * The @return text.
+     */
     public returns: string;
-
+    /**
+     * The @param entries.
+     */
     public parameters: {[key: string]: IWorkspaceLuaFunctionParameterDocumentation};
-
+    /**
+     * Whether or not documentation was found.
+     */
     public documentationFound: boolean;
-
     /**
      * Creates a new instance of WorkspaceLuaFunctionDocumentation.
-     * @param comments Array of comments. Expected to be in the correct oder.
+     * @param ast The AST containing the document comment entries.
+     * @param line The line the function is defined at.
      */
     constructor(ast: ILuaParserAstRootNode, line: number)
     {
@@ -89,8 +107,17 @@ export default class WorkspaceLuaFunctionDocumentation
     }
 }
 
+/**
+ * Represents parameter documentation extracted from LuaParser AST tree comments.
+ */
 export interface IWorkspaceLuaFunctionParameterDocumentation
 {
+    /**
+     * Name of the parameter.
+     */
     name: string;
+    /**
+     * Description text of the parameter.
+     */
     description: string;
 }

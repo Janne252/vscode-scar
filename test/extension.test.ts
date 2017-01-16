@@ -3,10 +3,10 @@ import * as assert from 'assert';
 
 
 import * as vscode from 'vscode';
-import ItemSourceMerger from '../src/itemSourceMerger/itemSourceMerger';
-import StaticItemSource from '../src/itemSourceMerger/source/static';
-import ActiveItemSource from '../src/itemSourceMerger/source/active';
-import Item from '../src/itemSourceMerger/item/item';
+import ItemSourceMerger from '../src/itemSourceMerger/merger';
+import StaticItemSource from '../src/itemSourceMerger/staticSource';
+import ActiveItemSource from '../src/itemSourceMerger/activeSource';
+import Item from '../src/itemSourceMerger/item';
 
 // Defines a Mocha test suite to group tests of similar kind together
 suite("Extension Tests", () => 

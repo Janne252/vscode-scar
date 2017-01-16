@@ -1,41 +1,69 @@
 import {Diagnostic, DiagnosticSeverity, Position, Range, TextDocument} from 'vscode';
 import ObjectIterator from '../helper/objectIterator';
 
-var parser = require('luaparse');
+import * as luaparse from 'luaparse';
 
 import LuaParserCallExpression from './luaParserCallExpression';
 import {DumpJSON} from '../scar';
 
+/**
+ * Wraps luaparser.
+ */
 export default class LuaParser
 {
+    /**
+     * Current text document to parse.
+     */
     public textDocument: TextDocument;
-    public options: ILuaParserOptions;
-    public ast: ILuaParserAstRootNode;
+    /**
+     * ILuaParserOptions used to parse.
+     */
+    public options: luaparse.ILuaParserOptions;
+    /**
+     * Result AST tree from the luaparser.
+     */
+    public ast: luaparse.ILuaParserAstRootNode;
+    /**
+     * Whether or not the most recent parse was completed without errors.
+     */
     public valid: boolean = true;
+    /**
+     * Last parsing error.
+     */
     public lastError: Error = undefined;
-
-    constructor(options: ILuaParserOptions)
+    /**
+     * Creates a new instance of LuaParser.
+     * @param options ILuaParserOptions used to parse.
+     */
+    constructor(options: luaparse.ILuaParserOptions)
     {
         this.options = options;
     }
-
-    public parse(): ILuaParserAstRootNode
+    /**
+     * Parses the current TextDocument.
+     */
+    protected parse(): luaparse.ILuaParserAstRootNode
     {
-        return (<ILuaParse>parser).parse(this.textDocument.getText(), this.options);
+        return luaparse.parse(this.textDocument.getText(), this.options);
     }
-
-    tryParseAstFromText(text: string): ILuaParserAstRootNode
+    /**
+     * Attempts to parse an AST tree from raw text.
+     * @param text The text to parse.
+     */
+    public tryParseAstFromText(text: string): luaparse.ILuaParserAstRootNode
     {
         try
         {
-            return (<ILuaParse>parser).parse(text, this.options);
+            return luaparse.parse(text, this.options);
         }
         catch (error)
         {
             return undefined;
         }
     }
-
+    /**
+     * Attempts to parse the current TextDocument.
+     */
     public tryParse(): void
     {
         try
@@ -56,12 +84,15 @@ export default class LuaParser
 
         }
     }
-
-    public getNodeAt(pos: Position): ILuaParserTreeNode
+    /**
+     * Gets the node at the provided Position.
+     * @param position The position to extract the node from.
+     */
+    public getNodeAt(pos: Position): luaparse.ILuaParserTreeNode
     {
-        let result: ILuaParserTreeNode;
+        let result: luaparse.ILuaParserTreeNode;
 
-        ObjectIterator.each(this.ast, function(key, item: ILuaParserTreeNode)
+        ObjectIterator.each(this.ast, function(key, item: luaparse.ILuaParserTreeNode)
         {
             if (item !== null && item.loc !== undefined)
             {
@@ -79,12 +110,15 @@ export default class LuaParser
 
         return result;
     }
-    
+    /**
+     * Gets the call epxression at the provided Position.
+     * @param position The position to extract the call expression from.
+     */
     public getCallExpressionAt(position: Position): LuaParserCallExpression
     {
         let result: LuaParserCallExpression;
 
-        ObjectIterator.each(this.ast, function(key, value: ILuaParserCallExpression)
+        ObjectIterator.each(this.ast, function(key, value: luaparse.ILuaParserCallExpression)
         {
             if (value !== null && value.type === 'CallExpression')
             {
@@ -106,137 +140,8 @@ export default class LuaParser
     }
 }
 
-export interface ILuaParserAstRootNode
-{
-    body: any[];
-    loc: ILuaParserTreeLocation;
-    range: ILuaParserTreeRange;
-    comments?: ILuaParserCommentNode[];
-}
 
-export interface ILuaParserCommentNode
-{
-    type: string;
-    value: string;
-    raw: string;
-    loc: ILuaParserTreeLocation;
-    range: ILuaParserTreeRange;
-}
-
-export interface ILuaParserOptions
-{
-    wait?: boolean;
-    comments?: boolean;
-    scope?: boolean;
-    locations?: boolean;
-    ranges?: boolean;
-    oncreateNode?: (node:any) => void;
-    oncreateScope?: (scope:any) => void;
-    ondestroyscope?: (scope:any) => void;
-    luaversion?: string;
-}
-
-export interface ILuaParse 
-{
-    defaultOptions: ILuaParserOptions;
-    parse: (input: string | ILuaParserOptions, options?: ILuaParserOptions) => ILuaParserAstRootNode;
-}
-
-export interface ILuaParser
-{
-    write: (input: string) => void;
-    end: (input: string) => Object;
-}
-
-export interface ILuaParserError
-{
-    line: number;
-    index: number;
-    column: number;
-    name: string;
-    message: string;
-    toString(): string;
-}
-
-export interface ILuaParserTreeNode
-{
-    type?: string;
-    loc?: ILuaParserTreeLocation;
-    range?: ILuaParserTreeRange;
-    name?: string;
-    value?: any;
-    raw?: string;
-}
-
-export interface ILuaParserTreeLocation
-{
-    start: ILuaParserTreePosition;
-    end: ILuaParserTreePosition;
-}
-
-export interface ILuaParserTreePosition
-{
-    line: number;
-    column: number;
-}
-
-export interface ILuaParserTreeRange
-{
-    [0]:number;
-    [1]:number;
-}
-
-export interface ILuaParserCallExpression
-{
-    type: string;
-    base: ILuaParserCallExpressionBase;
-    loc: ILuaParserTreeLocation;
-    range: ILuaParserTreeRange;
-    arguments: ILuaParserCallExpressionArgument[];
-}
-
-export interface ILuaParserCallExpressionBase
-{
-    type: string;
-    name: string;
-    loc: ILuaParserTreeLocation;
-    base?: ILuaParserCallExpressionBase;
-    identifier: ILuaParserCallExpressionBaseIdenfier;
-}
-export interface ILuaParserCallExpressionArgument
-{
-    type: string;
-    name: string;
-    loc: ILuaParserTreeLocation;
-    range: ILuaParserTreeRange;
-}
-
-export interface ILuaParserFunctionDeclaration
-{
-    type: string;
-    identifier: ILuaParserCallExpressionBaseIdenfier
-    isLocal: boolean;
-    parameters: ILuaParserFunctionDeclarationParameter[];
-    loc: ILuaParserTreeLocation;
-    range: ILuaParserTreeRange;
-}
-
-export interface ILuaParserCallExpressionBaseIdenfier
-{
-    type: string;
-    indexer?: string;
-    name?: string;
-}
-
-export interface ILuaParserFunctionDeclarationParameter
-{
-    type: string;
-    name: string;
-    loc: ILuaParserTreeLocation;
-    range: ILuaParserTreeRange;
-}
-
-export function LuaParserTreeLocationToRange(loc: ILuaParserTreeLocation): Range
+export function LuaParserTreeLocationToRange(loc: luaparse.ILuaParserTreeLocation): Range
 {
     return new Range(
         new Position(loc.start.line - 1, loc.start.column),

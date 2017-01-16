@@ -1,4 +1,4 @@
-import {ILuaParserCallExpressionArgument, ILuaParserTreeLocation, ILuaParserTreeRange} from './luaParser';
+import {ILuaParserCallExpressionArgument, ILuaParserTreeLocation, ILuaParserTreeRange} from 'luaparse';
 
 export default class LuaParserCallExpressionArgument implements ILuaParserCallExpressionArgument
 {
