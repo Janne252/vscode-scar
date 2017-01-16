@@ -84,7 +84,7 @@ export function activate(context: vscode.ExtensionContext)
         {
             signatureHelpSourceMerger.addActiveSource(workspaceParser.signatureHelpSource);
             completionItemMerger.addActiveSource(workspaceParser.completionItemSource);
-            
+
             context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));
 
             decorationTypeAppliers.addApplier(new WorkspaceDecorationTypeApplier(workspaceParser.completionItemSource, diagnosticProvider.luaParser));
@@ -95,19 +95,8 @@ export function activate(context: vscode.ExtensionContext)
         workspace.onDidSaveTextDocument((textDocument: TextDocument) =>
         {
             documentCompletionItemSource.update(textDocument);
-
-            let fileParsing: Thenable<boolean>;
-
-            if (workspaceParser.exists(textDocument.fileName))
-            {
-                fileParsing = workspaceParser.reparseFile(textDocument.fileName);
-            }
-            else
-            {
-                fileParsing = workspaceParser.registerNewFile(textDocument.fileName);
-            }
-
-            fileParsing.then((success) => 
+            
+            workspaceParser.resolveWorkspaceFileChanged(textDocument.fileName).then((success) => 
             {
                 if (success)
                 {

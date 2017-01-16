@@ -144,6 +144,18 @@ export default class LuaWorkspaceParser
         return this.files.indexOf(filepath) != -1;
     }
 
+    public resolveWorkspaceFileChanged(filepath: string): Thenable<boolean>
+    {
+        if (this.exists(filepath))
+        {
+            return this.reparseFile(filepath);
+        }
+        else
+        {
+            this.registerNewFile(filepath);
+        }
+    }
+
     public registerNewFile(filepath: string): Thenable<boolean>
     {
         filepath = filepath.toLowerCase();
