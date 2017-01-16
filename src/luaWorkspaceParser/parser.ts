@@ -16,12 +16,16 @@ import WorkspaceLuaFunctionInformation from './workspaceLuaFunctionInformation';
 
 import WorkspaceSignatureHelpSource from '../itemSources/workspaceSignatureHelp';
 import WorkspaceCompletionItemSource from '../itemSources/workspaceCompletionItem';
-
+import WorkspaceParserConfig from './parserConfig';
 /**
  * Represents a workspace lua parser.
  */
 export default class LuaWorkspaceParser
 {
+    /**
+     * Config read from workspace/user settings.
+     */
+    public config: WorkspaceParserConfig;
     /**
      * Root directory path of the workspace.
      */
@@ -34,26 +38,6 @@ export default class LuaWorkspaceParser
      * Registered files from the workspace.
      */
     protected files: string[];
-    /**
-     * Whether or not intermediate cache files should be skipped.
-     */
-    protected disallowIntermediateCacheFiles: boolean;
-    /**
-     * List of allowed file extensions.
-     */
-    protected allowedExtensions: string[];
-    /**
-     * List of disallowed files.
-     */
-    protected disallowedFiles: string[];
-    /**
-     * List of disallowed sub file extensions.
-     */
-    protected disallowedSubExtensions: string[];
-    /**
-     * Regex used to filter out disallowed files.
-     */
-    protected disallowedFilesRegex: RegExp;
     /**
      * Internal log used to report reasons why a file was not parsed.
      */
@@ -111,32 +95,8 @@ export default class LuaWorkspaceParser
         this.files = [];
         this._completionItemSource = new WorkspaceCompletionItemSource();
         this._signatureHelpSource = new WorkspaceSignatureHelpSource();
-        this.disallowIntermediateCacheFiles = <boolean>workspace.getConfiguration('scar').get('ignoreIntermediateCacheFiles');
-        this.allowedExtensions = <string[]>workspace.getConfiguration('scar').get('extensions');
-        this.disallowedFiles = <string[]>workspace.getConfiguration('scar').get('ignoreFiles');
-        this.disallowedSubExtensions = <string[]>workspace.getConfiguration('scar').get('ignoreFileSubExtensions');
 
-        let disallowedFilesRegexString = <string>workspace.getConfiguration('scar').get('ignoreFilesRegex');
-
-        if (disallowedFilesRegexString.length > 0)
-        {
-            this.disallowedFilesRegex = new RegExp(disallowedFilesRegexString);
-        }
-
-        for(let i = 0; i < this.allowedExtensions.length; i++)
-        {
-            this.allowedExtensions[i] = this.allowedExtensions[i].toLowerCase();
-        }         
-        
-        for(let i = 0; i < this.disallowedFiles.length; i++)
-        {
-            this.disallowedFiles[i] = this.disallowedFiles[i].toLowerCase();
-        }        
-        
-        for(let i = 0; i < this.disallowedSubExtensions.length; i++)
-        {
-            this.disallowedSubExtensions[i] = this.disallowedSubExtensions[i].toLowerCase();
-        }
+        this.config = new WorkspaceParserConfig();
 
         this.log = [];
     }
@@ -248,13 +208,15 @@ export default class LuaWorkspaceParser
     protected isFileAllowedToParse(filepath: string): boolean
     {
         let ext = path.extname(filepath);
+        let config = this.config;
+
         if 
         (
-            (!this.disallowIntermediateCacheFiles || filepath.indexOf('intermediate cache') == -1) &&
-            this.allowedExtensions.indexOf(ext) !== -1 &&
-            this.disallowedFiles.indexOf(filepath) == -1 &&
-            StringHelper.containsAny(filepath, this.disallowedSubExtensions) == false && 
-            (!this.disallowedFilesRegex || this.disallowedFilesRegex.test(filepath) == false)
+            (!config.disallowIntermediateCacheFiles || filepath.indexOf('intermediate cache') == -1) &&
+            config.allowedExtensions.indexOf(ext) !== -1 &&
+            config.disallowedFiles.indexOf(filepath) == -1 &&
+            StringHelper.containsAny(filepath, config.disallowedSubExtensions) == false && 
+            (!config.disallowedFilesRegex || config.disallowedFilesRegex.test(filepath) == false)
         )
         {
             return true;
@@ -306,7 +268,7 @@ export default class LuaWorkspaceParser
         {
             if (node !== null && node.type === 'FunctionDeclaration' && node.identifier != null)
             {
-                let info = new WorkspaceLuaFunctionInformation(filepath, ast, node);
+                let info = new WorkspaceLuaFunctionInformation(this.config, filepath, ast, node);
 
                 this._completionItemSource.parserAddItem(info);
                 this._signatureHelpSource.parserAddItem(info);
