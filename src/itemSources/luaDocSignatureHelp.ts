@@ -27,6 +27,7 @@ class DocSignatureHelpSource extends StaticItemSource<ISignatureHelp>
 
 			this.items.push(<ISignatureHelp>{
                 id: func.name,
+                name: func.name,
                 activeParameter: 0,
                 activeSignature: 0,
                 signatures: [

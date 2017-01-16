@@ -38,6 +38,7 @@ export default class SignatureHelpProvider implements ISignatureHelpProvider
 
             let help = this.merger.getItem((item) => item.name == name);
 
+
             help.activeParameter = callExpression.getArgumentIndex(position, 0);
 
             if (help.lastParameterIsList)
