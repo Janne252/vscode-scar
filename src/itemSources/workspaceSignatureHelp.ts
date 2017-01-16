@@ -4,7 +4,7 @@ import {CompletionItem, CompletionItemKind, ParameterInformation} from 'vscode';
 import {IItem} from '../itemSourceMerger/types';
 import ActiveItemSource from '../itemSourceMerger/activeSource';
 import {ISCARDoc, ILuaDoc, ILuaFunctionDefinition} from '../scar';
-import {ISignatureHelp} from './signatureHelp';
+import {IWorkspaceSignatureHelp} from './signatureHelp';
 import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/workspaceLuaFunctionInformation';
 import {LuaDocSignatureHelpSource} from './luaDocSignatureHelp';
 
@@ -65,13 +65,3 @@ export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWork
     }
 }
 
-/**
- * Base interface for workspace SignatureHelp items.
- */
-export interface IWorkspaceSignatureHelp extends ISignatureHelp
-{
-    /**
-     * The path to the file the SignatureHelp origintes from.
-     */
-    filepath: string;
-}

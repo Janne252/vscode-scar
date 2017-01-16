@@ -5,7 +5,7 @@ import {IItem} from '../itemSourceMerger/types';
 import ActiveItemSource from '../itemSourceMerger/activeSource';
 import {ICompletionItem} from './completionItem';
 import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/workspaceLuaFunctionInformation';
-import {IWorkspaceCompletionItem} from './workspaceCompletionItem';
+import {IWorkspaceCompletionItem} from './completionItem';
 /**
  * Represents an active source of workspace CompletionItems.
  */
@@ -34,15 +34,4 @@ export default class WorkspaceCompletionItemSource extends ActiveItemSource<IWor
             documentation: info.description
         });
     }
-}
-
-/**
- * Base interface for Workspace CompletionItems.
- */
-export interface IWorkspaceCompletionItem extends ICompletionItem
-{
-    /**
-     * Path to the source file the CompletionItem originates from.
-     */
-    filepath: string;
 }
