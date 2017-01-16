@@ -1,6 +1,6 @@
 'use strict';
 
-import {ILuaParserTreeNode} from 'luaparse';
+import {ILuaParseNode} from 'luaparse';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
 import WorkspaceCompletionItemSource from '../itemSources/workspaceCompletionItem';

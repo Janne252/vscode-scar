@@ -18,11 +18,11 @@ export default class LuaParser
     /**
      * ILuaParserOptions used to parse.
      */
-    public options: luaparse.ILuaParserOptions;
+    public options: luaparse.ILuaParseOptions;
     /**
      * Result AST tree from the luaparser.
      */
-    public ast: luaparse.ILuaParserAstRootNode;
+    public ast: luaparse.ILuaParseAstRootNode;
     /**
      * Whether or not the most recent parse was completed without errors.
      */
@@ -35,14 +35,14 @@ export default class LuaParser
      * Creates a new instance of LuaParser.
      * @param options ILuaParserOptions used to parse.
      */
-    constructor(options: luaparse.ILuaParserOptions)
+    constructor(options: luaparse.ILuaParseOptions)
     {
         this.options = options;
     }
     /**
      * Parses the current TextDocument.
      */
-    protected parse(): luaparse.ILuaParserAstRootNode
+    protected parse(): luaparse.ILuaParseAstRootNode
     {
         return luaparse.parse(this.textDocument.getText(), this.options);
     }
@@ -50,7 +50,7 @@ export default class LuaParser
      * Attempts to parse an AST tree from raw text.
      * @param text The text to parse.
      */
-    public tryParseAstFromText(text: string): luaparse.ILuaParserAstRootNode
+    public tryParseAstFromText(text: string): luaparse.ILuaParseAstRootNode
     {
         try
         {
@@ -88,11 +88,11 @@ export default class LuaParser
      * Gets the node at the provided Position.
      * @param position The position to extract the node from.
      */
-    public getNodeAt(pos: Position): luaparse.ILuaParserTreeNode
+    public getNodeAt(pos: Position): luaparse.ILuaParseNode
     {
-        let result: luaparse.ILuaParserTreeNode;
+        let result: luaparse.ILuaParseNode;
 
-        ObjectIterator.each(this.ast, function(key, item: luaparse.ILuaParserTreeNode)
+        ObjectIterator.each(this.ast, function(key, item: luaparse.ILuaParseNode)
         {
             if (item !== null && item.loc !== undefined)
             {
@@ -118,7 +118,7 @@ export default class LuaParser
     {
         let result: LuaParserCallExpression;
 
-        ObjectIterator.each(this.ast, function(key, value: luaparse.ILuaParserCallExpression)
+        ObjectIterator.each(this.ast, function(key, value: luaparse.ILuaParseCallExpressionNode)
         {
             if (value !== null && value.type === 'CallExpression')
             {
@@ -141,7 +141,7 @@ export default class LuaParser
 }
 
 
-export function LuaParserTreeLocationToRange(loc: luaparse.ILuaParserTreeLocation): Range
+export function LuaParserTreeLocationToRange(loc: luaparse.ILuaParseNodeLocation): Range
 {
     return new Range(
         new Position(loc.start.line - 1, loc.start.column),

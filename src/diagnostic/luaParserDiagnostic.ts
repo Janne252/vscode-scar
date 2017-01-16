@@ -1,7 +1,7 @@
 'use strict';
 
 import {Diagnostic, Range, Position, DiagnosticSeverity} from 'vscode';
-import {ILuaParserError} from 'luaparse';
+import {ILuaParseError} from 'luaparse';
 
 /**
  * Represents a Diagnostic for LuaParser errors.
@@ -12,7 +12,7 @@ export default class LuaParserDiagnostic extends Diagnostic
      * Creates a new instance of LuaParserDiagnostic.
      * @param error The error used for creating the Diagnostic item.
      */
-    constructor(error: ILuaParserError)
+    constructor(error: ILuaParseError)
     {
         let errorRange = new Range(
             new Position(error.line - 1, error.column),

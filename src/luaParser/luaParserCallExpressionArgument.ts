@@ -1,13 +1,13 @@
-import {ILuaParserCallExpressionArgument, ILuaParserTreeLocation, ILuaParserTreeRange} from 'luaparse';
+import {ILuaParseCallExpressionArgument, ILuaParseNodeLocation, ILuaParseNodeRange} from 'luaparse';
 
-export default class LuaParserCallExpressionArgument implements ILuaParserCallExpressionArgument
+export default class LuaParserCallExpressionArgument implements ILuaParseCallExpressionArgument
 {
     type: string;
     name: string;
-    loc: ILuaParserTreeLocation;
-    range: ILuaParserTreeRange;
+    loc: ILuaParseNodeLocation;
+    range: ILuaParseNodeRange;
 
-    constructor(data: ILuaParserCallExpressionArgument)
+    constructor(data: ILuaParseCallExpressionArgument)
     {
         this.type = data.type;
         this.name = data.name;

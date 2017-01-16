@@ -1,7 +1,7 @@
 'use strict';
 
 import {ILuaFunctionDefinitionParameter} from '../scar';
-import {ILuaParserAstRootNode, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter} from 'luaparse';
+import {ILuaParseAstRootNode, ILuaParseFunctionDeclaration, ILuaParseFunctionDeclarationParameter} from 'luaparse';
 
 import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
 import {} from '.'
@@ -35,13 +35,13 @@ export default class WorkspaceLuaFunctionInformation
      * @param filepath Path to the file the function originates from.
      * @
      */
-    constructor(config, filepath: string, ast: ILuaParserAstRootNode, node: ILuaParserFunctionDeclaration)
+    constructor(config, filepath: string, ast: ILuaParseAstRootNode, node: ILuaParseFunctionDeclaration)
     {
         this.filepath = filepath;
         this.parameters = [];
         let paramNames: string[] = [];
 
-        let param: ILuaParserFunctionDeclarationParameter;
+        let param: ILuaParseFunctionDeclarationParameter;
         for(let i = 0; i < node.parameters.length; i++)
         {
             param = node.parameters[i];

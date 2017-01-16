@@ -1,6 +1,6 @@
 'use strict';
 
-import {ILuaParserError} from 'luaparse';
+import {ILuaParseError} from 'luaparse';
 import {DiagnosticCollection, TextDocument, Uri} from 'vscode';
 import LuaParser from './luaParser/luaParser';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';
@@ -25,7 +25,7 @@ export default class DiagnosticProvider
 
         if (this.luaParser.lastError)
         {
-            this.diagnosticCollection.set(textDocument.uri, [new LuaParserDiagnostic(<ILuaParserError>this.luaParser.lastError)]);
+            this.diagnosticCollection.set(textDocument.uri, [new LuaParserDiagnostic(<ILuaParseError>this.luaParser.lastError)]);
         }
     }
 }

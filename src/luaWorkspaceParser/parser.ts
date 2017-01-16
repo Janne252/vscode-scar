@@ -2,7 +2,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {ILuaParserOptions, ILuaParserFunctionDeclaration, ILuaParserFunctionDeclarationParameter, ILuaParserAstRootNode, ILuaParserCommentNode} from 'luaparse';
+import {ILuaParseOptions, ILuaParseFunctionDeclaration, ILuaParseFunctionDeclarationParameter, ILuaParseAstRootNode, ILuaParseCommentNode} from 'luaparse';
 import {workspace, CompletionItem} from 'vscode';
 
 import LuaParser from '../luaParser/luaParser';
@@ -262,9 +262,9 @@ export default class LuaWorkspaceParser
      * @param filepath The path to the file the ast tree originates from.
      * @param ast The AST tree.
      */
-    protected parseAst(filepath: string, ast: ILuaParserAstRootNode): void
+    protected parseAst(filepath: string, ast: ILuaParseAstRootNode): void
     {
-        ObjectIterator.each(ast, (key, node: ILuaParserFunctionDeclaration) =>
+        ObjectIterator.each(ast, (key, node: ILuaParseFunctionDeclaration) =>
         {
             if (node !== null && node.type === 'FunctionDeclaration' && node.identifier != null)
             {

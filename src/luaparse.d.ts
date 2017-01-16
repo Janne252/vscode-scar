@@ -1,34 +1,39 @@
 
 declare module "luaparse"
 {
-    export function parse(input: string | ILuaParserOptions, options?: ILuaParserOptions): ILuaParserAstRootNode;
+    /**
+     * Parses the code and returns the Abstract Syntax Tree (AST).
+     * @param input The code to parse.
+     * @param options ILuaParseOptions used to parse the code.
+     */
+    export function parse(input: string, options?: ILuaParseOptions): ILuaParseAstRootNode;
 
     /**
      * The root node returned by luaparse.
      */
-    export interface ILuaParserAstRootNode
+    export interface ILuaParseAstRootNode
     {
         body: any[];
-        loc: ILuaParserTreeLocation;
-        range: ILuaParserTreeRange;
-        comments?: ILuaParserCommentNode[];
+        loc: ILuaParseNodeLocation;
+        range: ILuaParseNodeRange;
+        comments?: ILuaParseCommentNode[];
     }
 
     /**
      * Comment node.
      */
-    export interface ILuaParserCommentNode
+    export interface ILuaParseCommentNode
     {
         type: string;
         value: string;
         raw: string;
-        loc: ILuaParserTreeLocation;
-        range: ILuaParserTreeRange;
+        loc: ILuaParseNodeLocation;
+        range: ILuaParseNodeRange;
     }
     /**
-     * luaparser options.
+     * luaparse options.
      */
-    export interface ILuaParserOptions
+    export interface ILuaParseOptions
     {
         wait?: boolean;
         comments?: boolean;
@@ -45,11 +50,11 @@ declare module "luaparse"
      */
     export interface ILuaParse 
     {
-        defaultOptions: ILuaParserOptions;
-        parse: (input: string | ILuaParserOptions, options?: ILuaParserOptions) => ILuaParserAstRootNode;
+        defaultOptions: ILuaParseOptions;
+        parse: (input: string | ILuaParseOptions, options?: ILuaParseOptions) => ILuaParseAstRootNode;
     }
 
-    export interface ILuaParserError
+    export interface ILuaParseError
     {
         line: number;
         index: number;
@@ -59,81 +64,81 @@ declare module "luaparse"
         toString(): string;
     }
 
-    export interface ILuaParserTreeNode
+    export interface ILuaParseNode
     {
         type?: string;
-        loc?: ILuaParserTreeLocation;
-        range?: ILuaParserTreeRange;
+        loc?: ILuaParseNodeLocation;
+        range?: ILuaParseNodeRange;
         name?: string;
         value?: any;
         raw?: string;
     }
 
-    export interface ILuaParserTreeLocation
+    export interface ILuaParseNodeLocation
     {
-        start: ILuaParserTreePosition;
-        end: ILuaParserTreePosition;
+        start: ILuaParseNodePosition;
+        end: ILuaParseNodePosition;
     }
 
-    export interface ILuaParserTreePosition
+    export interface ILuaParseNodePosition
     {
         line: number;
         column: number;
     }
 
-    export interface ILuaParserTreeRange
+    export interface ILuaParseNodeRange
     {
         [0]:number;
         [1]:number;
     }
 
-    export interface ILuaParserCallExpression
+    export interface ILuaParseCallExpressionNode
     {
         type: string;
-        base: ILuaParserCallExpressionBase;
-        loc: ILuaParserTreeLocation;
-        range: ILuaParserTreeRange;
-        arguments: ILuaParserCallExpressionArgument[];
+        base: ILuaParseCallExpressionBase;
+        loc: ILuaParseNodeLocation;
+        range: ILuaParseNodeRange;
+        arguments: ILuaParseCallExpressionArgument[];
     }
 
-    export interface ILuaParserCallExpressionBase
+    export interface ILuaParseCallExpressionBase
     {
         type: string;
         name: string;
-        loc: ILuaParserTreeLocation;
-        base?: ILuaParserCallExpressionBase;
-        identifier: ILuaParserCallExpressionBaseIdenfier;
+        loc: ILuaParseNodeLocation;
+        base?: ILuaParseCallExpressionBase;
+        identifier: ILuaParseCallExpressionBaseIdenfier;
     }
-    export interface ILuaParserCallExpressionArgument
+    export interface ILuaParseCallExpressionArgument
     {
         type: string;
         name: string;
-        loc: ILuaParserTreeLocation;
-        range: ILuaParserTreeRange;
+        loc: ILuaParseNodeLocation;
+        range: ILuaParseNodeRange;
     }
 
-    export interface ILuaParserFunctionDeclaration
+    export interface ILuaParseFunctionDeclaration
     {
         type: string;
-        identifier: ILuaParserCallExpressionBaseIdenfier
+        identifier: ILuaParseCallExpressionBaseIdenfier
         isLocal: boolean;
-        parameters: ILuaParserFunctionDeclarationParameter[];
-        loc: ILuaParserTreeLocation;
-        range: ILuaParserTreeRange;
+        parameters: ILuaParseFunctionDeclarationParameter[];
+        loc: ILuaParseNodeLocation;
+        range: ILuaParseNodeRange;
     }
 
-    export interface ILuaParserCallExpressionBaseIdenfier
+    export interface ILuaParseCallExpressionBaseIdenfier
     {
         type: string;
         indexer?: string;
         name?: string;
     }
 
-    export interface ILuaParserFunctionDeclarationParameter
+    export interface ILuaParseFunctionDeclarationParameter
     {
         type: string;
         name: string;
-        loc: ILuaParserTreeLocation;
-        range: ILuaParserTreeRange;
+        loc: ILuaParseNodeLocation;
+        range: ILuaParseNodeRange;
     }
 }

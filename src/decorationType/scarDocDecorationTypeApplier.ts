@@ -1,6 +1,6 @@
 'use strict';
 
-import {ILuaParserTreeNode} from 'luaparse';
+import {ILuaParseNode} from 'luaparse';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
 import LuaParser, {LuaParserTreeLocationToRange} from '../luaParser/luaParser';
@@ -32,7 +32,7 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
         //console.log('highligting file (SCAR): ' + textEditor.document.uri.path);  
 
         let callExpressions: LuaParserCallExpression[] = [];
-        let identifiers: ILuaParserTreeNode[] = [];
+        let identifiers: ILuaParseNode[] = [];
         let scarDocFunctionRanges: Range[] = [];
         let scarDocEnumRanges: Range[] = [];
 

@@ -1,7 +1,7 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import {ILuaParserOptions, ILuaParserError, ILuaParserCallExpression} from 'luaparse';
+import {ILuaParseOptions, ILuaParseError, ILuaParseCallExpressionNode} from 'luaparse';
 import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit} from 'vscode';
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
@@ -30,7 +30,7 @@ import WorkspaceCompletionItemSource from './itemSources/workspaceCompletionItem
 import {SCARDocSignatureHelpSource, LuaDocSignatureHelpSource} from './itemSources/luaDocSignatureHelp';
 import QuickPickInsertCommand from './command/quickPickInsertCommand';
 
-const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
+const LUA_PARSER_OPTIONS: ILuaParseOptions  = {
     comments: true,
     locations: true,
     ranges: true

@@ -1,6 +1,6 @@
 'use strict';
 
-import {ILuaParserCommentNode, ILuaParserAstRootNode} from 'luaparse';
+import {ILuaParseCommentNode, ILuaParseAstRootNode} from 'luaparse';
 import WorkspaceParserConfig from './parserConfig';
 
 /**
@@ -40,7 +40,7 @@ export default class WorkspaceLuaFunctionDocumentation
      * @param ast The AST containing the document comment entries.
      * @param line The line the function is defined at.
      */
-    constructor(config: WorkspaceParserConfig, ast: ILuaParserAstRootNode, line: number)
+    constructor(config: WorkspaceParserConfig, ast: ILuaParseAstRootNode, line: number)
     {
         this.returns = '';
         this.descriptionLines = [];
@@ -55,8 +55,8 @@ export default class WorkspaceLuaFunctionDocumentation
         let comments = ast.comments;
         let targetLine = line; 
 
-        let commentsAboveFunction: ILuaParserCommentNode[] = [];
-        let comment: ILuaParserCommentNode;
+        let commentsAboveFunction: ILuaParseCommentNode[] = [];
+        let comment: ILuaParseCommentNode;
 
         // Lua parser ast tree contains comments in the order of occurrance. 
         // Iterate over the comments in reversed order and see how many comments can be found above the function delcaration.

@@ -1,19 +1,19 @@
 import {Position, Range} from 'vscode';
-import {ILuaParserCallExpression, ILuaParserCallExpressionBase, ILuaParserTreeLocation, ILuaParserTreeRange, ILuaParserCallExpressionArgument} from 'luaparse';
+import {ILuaParseCallExpressionNode, ILuaParseCallExpressionBase, ILuaParseNodeLocation, ILuaParseNodeRange, ILuaParseCallExpressionArgument} from 'luaparse';
 import {LuaParserTreeLocationToRange} from './luaParser';
 
 /**
  * Represents a CallExpression parsed by luaparser.
  */
-export default class LuaParserCallExpression implements ILuaParserCallExpression
+export default class LuaParserCallExpression implements ILuaParseCallExpressionNode
 {
     public type: string;
-    public base: ILuaParserCallExpressionBase;
-    public loc: ILuaParserTreeLocation;
-    public range: ILuaParserTreeRange;
-    public arguments: ILuaParserCallExpressionArgument[];
+    public base: ILuaParseCallExpressionBase;
+    public loc: ILuaParseNodeLocation;
+    public range: ILuaParseNodeRange;
+    public arguments: ILuaParseCallExpressionArgument[];
 
-    constructor(data: ILuaParserCallExpression)
+    constructor(data: ILuaParseCallExpressionNode)
     {
         this.type = data.type;
         this.base = data.base;
@@ -65,7 +65,7 @@ export default class LuaParserCallExpression implements ILuaParserCallExpression
      */
     public getArgumentIndex(pos: Position, defaultTo: number = -1)
     {
-        let arg: ILuaParserCallExpressionArgument;
+        let arg: ILuaParseCallExpressionArgument;
 
         for(let i = 0; i < this.arguments.length; i++)
         {
