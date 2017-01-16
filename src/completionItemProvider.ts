@@ -18,11 +18,8 @@ export default class CompletionItemProvider implements ICompletionItemProvider
         this.merger = merger;
     }
 
-    public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken): Thenable<CompletionList>
+    public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken): CompletionItem[]
     {
-        return new Promise((resolve, reject) => 
-        {
-            resolve(this.merger.getAllItems());
-        });
+        return this.merger.getAllItems();
     }
 }

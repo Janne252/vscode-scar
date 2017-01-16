@@ -19,59 +19,56 @@ export default class SignatureHelpProvider implements ISignatureHelpProvider
         this.luaParser = luaParser;
     }
 
-    public provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken): Thenable<ISignatureHelp>
+    public provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken): ISignatureHelp
     {
         //console.log(`Attempting to provide help at ${position.line}, ${position.character}`);
-        return new Promise((resolve, reject) => 
+        try
         {
-            try
+            let callExpression = this.luaParser.getCallExpressionAt(position);
+
+            if (this.luaParser.valid && callExpression === undefined)
             {
-                let callExpression = this.luaParser.getCallExpressionAt(position);
-
-                if (this.luaParser.valid && callExpression === undefined)
-                {
-                    this.lastSignatureHelp = undefined;
-                    this.lastSIgnatureHelpActiveParamIncremented = false;
-
-                    resolve(undefined);
-                }
-
-                let name = callExpression.base.name;
-
-                let help = this.merger.getItem((item) => item.id == name);
-
-                help.activeParameter = callExpression.getArgumentIndex(position, 0);
-
-                if (help.lastParameterIsList)
-                {
-                    if (help.activeParameter > help.parameterCount - 1)
-                    {
-                        help.activeParameter = help.parameterCount - 1;
-                        this.lastSIgnatureHelpActiveParamIncremented = true;
-                    }
-                }
-
-                this.lastSignatureHelp = help;
+                this.lastSignatureHelp = undefined;
                 this.lastSIgnatureHelpActiveParamIncremented = false;
 
-                resolve(help);
+                return undefined;
             }
-            catch(exception)
-            {
-                if (!this.luaParser.valid && this.lastSignatureHelp !== undefined)
-                {
-                    if (
-                        !this.lastSIgnatureHelpActiveParamIncremented && 
-                        (!this.lastSignatureHelp.lastParameterIsList || this.lastSignatureHelp.activeParameter < this.lastSignatureHelp.parameterCount - 1)
-                    )
-                    {
-                        this.lastSignatureHelp.activeParameter++;
-                        this.lastSIgnatureHelpActiveParamIncremented = true;
-                    }
 
-                    resolve(this.lastSignatureHelp);
+            let name = callExpression.base.name;
+
+            let help = this.merger.getItem((item) => item.name == name);
+
+            help.activeParameter = callExpression.getArgumentIndex(position, 0);
+
+            if (help.lastParameterIsList)
+            {
+                if (help.activeParameter > help.parameterCount - 1)
+                {
+                    help.activeParameter = help.parameterCount - 1;
+                    this.lastSIgnatureHelpActiveParamIncremented = true;
                 }
             }
-        });
+
+            this.lastSignatureHelp = help;
+            this.lastSIgnatureHelpActiveParamIncremented = false;
+
+            return help;
+        }
+        catch(exception)
+        {
+            if (!this.luaParser.valid && this.lastSignatureHelp !== undefined)
+            {
+                if (
+                    !this.lastSIgnatureHelpActiveParamIncremented && 
+                    (!this.lastSignatureHelp.lastParameterIsList || this.lastSignatureHelp.activeParameter < this.lastSignatureHelp.parameterCount - 1)
+                )
+                {
+                    this.lastSignatureHelp.activeParameter++;
+                    this.lastSIgnatureHelpActiveParamIncremented = true;
+                }
+
+                return this.lastSignatureHelp;
+            }
+        }
     } 
 }
