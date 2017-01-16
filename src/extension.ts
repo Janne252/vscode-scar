@@ -52,8 +52,7 @@ export function activate(context: vscode.ExtensionContext)
     luaDocParser = new LuaDocParser(path.join(__dirname, '../../data/luadoc.json'));
     luaConstsAutoParser = new LuaConstsAutoParser(path.join(__dirname, '../../data/luaconstsauto.scar'));
     documentCompletionItemSource = new DocumentCompletionItemSource();
-
-    let shouldUpdateCurrentDocumentCompletionItemSource = false;
+    documentCompletionItemSource.startAutoUpdate();
     
     diagnosticProvider = new DiagnosticProvider(new LuaParser(LUA_PARSER_OPTIONS), languages.createDiagnosticCollection());
     workspaceParser = new LuaWorkspaceParser(workspace.rootPath, diagnosticProvider.luaParser);
@@ -95,7 +94,7 @@ export function activate(context: vscode.ExtensionContext)
         workspace.onDidSaveTextDocument((textDocument: TextDocument) =>
         {
             documentCompletionItemSource.update(textDocument);
-            
+
             workspaceParser.resolveWorkspaceFileChanged(textDocument.fileName).then((success) => 
             {
                 if (success)
@@ -109,7 +108,7 @@ export function activate(context: vscode.ExtensionContext)
         {
             if (textEditor.document.languageId == 'scar')
             {
-                shouldUpdateCurrentDocumentCompletionItemSource = true;
+                documentCompletionItemSource.shouldUpdate = true;
                 diagnosticProvider.update(textEditor.document);
             }
 
@@ -162,15 +161,6 @@ export function activate(context: vscode.ExtensionContext)
         {
             diagnosticProvider.update(window.activeTextEditor.document);
         } 
-
-        setInterval(() => 
-        {
-            if (shouldUpdateCurrentDocumentCompletionItemSource && window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
-            {
-                shouldUpdateCurrentDocumentCompletionItemSource = false;
-                documentCompletionItemSource.update(window.activeTextEditor.document);
-            }
-        }, 1000);
     });
 }
 
