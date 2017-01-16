@@ -7,8 +7,8 @@ import {
 
 import * as fs from 'fs';
 import * as path from 'path';
-import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
-import {ICompletionItem} from './itemSourceMerger/item/completionItem';
+import ItemSourceMerger from './itemSourceMerger/merger';
+import {ICompletionItem} from './itemSources/completionItem';
 
 export default class CompletionItemProvider implements ICompletionItemProvider
 {

@@ -1,8 +1,8 @@
 'use strict';
 
 import {SignatureHelpProvider as ISignatureHelpProvider, TextDocument, Position, CancellationToken} from 'vscode';
-import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
-import {ISignatureHelp} from './itemSourceMerger/item/signatureHelp';
+import ItemSourceMerger from './itemSourceMerger/merger';
+import {ISignatureHelp} from './itemSources/signatureHelp';
 
 import LuaParser from './luaParser/luaParser';
 
