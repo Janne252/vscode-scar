@@ -17,7 +17,7 @@ import WorkspaceDecorationTypeApplier from './decorationType/workspaceDecoration
 import DecorationTypeApplierCollection from './decorationType/decorationTypeApplierCollection';
 
 import SignatureHelpProvider from './signatureHelpProvider';
-import LuaWorkspaceParser from './luaWorkspaceParser/luaWorkspaceParser';
+import LuaWorkspaceParser from './luaWorkspaceParser/parser';
 import {SCARDocParser, LuaDocParser, LuaConstsAutoParser, DumpJSON} from './scar';
 
 import ItemSourceMerger from './itemSourceMerger/merger';
