@@ -4,12 +4,12 @@ import {CompletionItem, CompletionItemKind, ParameterInformation} from 'vscode';
 import {IItem} from '../itemSourceMerger';
 import StaticItemSource from './static';
 import {ISCARDoc, ILuaDoc, ILuaFunctionDefinition} from '../../scar';
-import {ISourceSignatureHelp} from '../item/signatureHelp';
+import {ISignatureHelp} from '../item/signatureHelp';
 
 /**
  * Represents a static source of Lua/SCAR documentation SignatureHelp items.
  */
-class DocSignatureHelpSource extends StaticItemSource<ISourceSignatureHelp>
+class DocSignatureHelpSource extends StaticItemSource<ISignatureHelp>
 {
     /**
      * Creates a new instance of DocSignatureHelpSource.
@@ -25,7 +25,7 @@ class DocSignatureHelpSource extends StaticItemSource<ISourceSignatureHelp>
             let signature = this.getSignature(func);
             let parameters = this.getParameters(func);
 
-			this.items.push(<ISourceSignatureHelp>{
+			this.items.push(<ISignatureHelp>{
                 id: func.name,
                 activeParameter: 0,
                 activeSignature: 0,

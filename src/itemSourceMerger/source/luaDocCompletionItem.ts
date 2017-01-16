@@ -4,9 +4,9 @@ import {CompletionItem, CompletionItemKind} from 'vscode';
 import {IItem} from '../itemSourceMerger';
 import StaticItemSource from './static';
 import {ILuaDoc, ISCARDoc, ILuaFunctionDefinition, ILuaEnumDefinition, ISCADOCREnumDefinition} from '../../scar';
-import {ISourceCompletionItem} from '../item/completionItem';
+import {ICompletionItem} from '../item/completionItem';
 
-class DocCompletionItemSource extends StaticItemSource<ISourceCompletionItem>
+class DocCompletionItemSource extends StaticItemSource<ICompletionItem>
 {
 	constructor(id: string, doc: ILuaDoc | ISCARDoc)
 	{
@@ -14,7 +14,7 @@ class DocCompletionItemSource extends StaticItemSource<ISourceCompletionItem>
 
 		for (let func of doc.functions)
 		{
-			this.items.push(<ISourceCompletionItem>{
+			this.items.push(<ICompletionItem>{
 				id: func.name,
 				kind: CompletionItemKind.Function,
 				label: func.name,
@@ -27,7 +27,7 @@ class DocCompletionItemSource extends StaticItemSource<ISourceCompletionItem>
 		{	
 			let kind: CompletionItemKind;
 
-			this.items.push(<ISourceCompletionItem>{
+			this.items.push(<ICompletionItem>{
 				id: luaEnum.name,
 				kind: luaEnum.kind !== undefined ? luaEnum.kind : CompletionItemKind.Enum,
                 label: luaEnum.name,

@@ -3,7 +3,7 @@
 import {CompletionItem, CompletionItemKind} from 'vscode';
 import {IItem} from '../itemSourceMerger';
 import ActiveItemSource from './active';
-import {ISourceCompletionItem} from '../item/completionItem';
+import {ICompletionItem} from '../item/completionItem';
 import WorkspaceLuaFunctionInformation from '../../luaWorkspaceParser/workspaceLuaFunctionInformation';
 
 /**
@@ -38,7 +38,7 @@ export default class WorkspaceCompletionItemSource extends ActiveItemSource<IWor
 /**
  * Base interface for Workspace CompletionItems.
  */
-export interface IWorkspaceCompletionItem extends ISourceCompletionItem
+export interface IWorkspaceCompletionItem extends ICompletionItem
 {
     /**
      * Path to the source file the CompletionItem originates from.

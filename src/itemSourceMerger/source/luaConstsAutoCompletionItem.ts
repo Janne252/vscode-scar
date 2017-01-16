@@ -4,14 +4,14 @@ import {CompletionItem, CompletionItemKind} from 'vscode';
 import {IItem} from '../itemSourceMerger';
 import StaticItemSource from './static';
 import {ILuaConstsAutoDoc, ILuaFunctionDefinition} from '../../scar';
-import {ISourceCompletionItem} from '../item/completionItem';
+import {ICompletionItem} from '../item/completionItem';
 
 import * as fs from 'fs';
 
 /**
  * Represents a static source of LuaConstsAuto.scar CompletionItems.
  */
-export default class LuaConstsAutoCompletionItemSource extends StaticItemSource<ISourceCompletionItem>
+export default class LuaConstsAutoCompletionItemSource extends StaticItemSource<ICompletionItem>
 {
     /**
      * Creates a new instance of LuaConstsAutoCompletionItemSource.
@@ -23,7 +23,7 @@ export default class LuaConstsAutoCompletionItemSource extends StaticItemSource<
 
         for(let blueprint of luaConstsAutoDoc.blueprints)
         {
-            this.items.push(<ISourceCompletionItem>{
+            this.items.push(<ICompletionItem>{
                 id: blueprint,
                 kind: CompletionItemKind.Reference,
                 label: blueprint,

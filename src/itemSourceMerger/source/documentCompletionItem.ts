@@ -4,12 +4,12 @@ import {CompletionItem, CompletionItemKind, TextDocument} from 'vscode';
 import {IItem} from '../itemSourceMerger';
 import ActiveItemSource from './active';
 import {ISCARDoc, ILuaFunctionDefinition} from '../../scar';
-import {ISourceCompletionItem} from '../item/completionItem';
+import {ICompletionItem} from '../item/completionItem';
 
 /**
  * Represents an active source of document CompletionItems.
  */
-export default class DocumentDocCompletionItemSource extends ActiveItemSource<ISourceCompletionItem>
+export default class DocumentDocCompletionItemSource extends ActiveItemSource<ICompletionItem>
 {
     /**
      * Creates a new instance of DocumentDocCompletionItemSource.
@@ -28,7 +28,7 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IS
         let text = textDocument.getText();
 
         let words = text.match(/\w+/g);
-        let result: ISourceCompletionItem[] = [];
+        let result: ICompletionItem[] = [];
         
         let exists: boolean = false;
         for(let word of words)
@@ -45,7 +45,7 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IS
 
             if (!exists)
             {
-                result.push(<ISourceCompletionItem>{
+                result.push(<ICompletionItem>{
                     id: 'currentDocument_' + word,
                     kind: CompletionItemKind.Text,
                     label: word,

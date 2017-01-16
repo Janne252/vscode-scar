@@ -20,8 +20,8 @@ import LuaWorkspaceParser from './luaWorkspaceParser/luaWorkspaceParser';
 import {SCARDocParser, LuaDocParser, LuaConstsAutoParser, DumpJSON} from './scar';
 
 import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
-import {ISourceCompletionItem} from './itemSourceMerger/item/completionItem';
-import {ISourceSignatureHelp} from './itemSourceMerger/item/signatureHelp';
+import {ICompletionItem} from './itemSourceMerger/item/completionItem';
+import {ISignatureHelp} from './itemSourceMerger/item/signatureHelp';
 import {SCARDocCompletionItemSource, LuaDocCompletionItemSource} from './itemSourceMerger/source/luaDocCompletionItem';
 import LuaConstsAutoCompletionItemSource from './itemSourceMerger/source/luaConstsAutoCompletionItem';
 import DocumentCompletionItemSource from './itemSourceMerger/source/documentCompletionItem';
@@ -36,14 +36,14 @@ const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
 }
 
 let diagnosticProvider: DiagnosticProvider;
-let completionItemMerger = new ItemSourceMerger<ISourceCompletionItem>();
+let completionItemMerger = new ItemSourceMerger<ICompletionItem>();
 let scarDocParser: SCARDocParser;
 let luaDocParser: LuaDocParser;
 let luaConstsAutoParser: LuaConstsAutoParser;
 let documentCompletionItemSource: DocumentCompletionItemSource;
 
 let decorationTypeAppliers = new DecorationTypeApplierCollection('scar');
-let signatureHelpSourceMerger = new ItemSourceMerger<ISourceSignatureHelp>();
+let signatureHelpSourceMerger = new ItemSourceMerger<ISignatureHelp>();
 let workspaceParser: LuaWorkspaceParser;
 
 export function activate(context: vscode.ExtensionContext) 

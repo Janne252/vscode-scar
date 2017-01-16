@@ -3,7 +3,7 @@
 import {SignatureHelp} from 'vscode';
 import {IItem} from '../itemSourceMerger';
 
-export interface ISourceSignatureHelp extends SignatureHelp, IItem 
+export interface ISignatureHelp extends SignatureHelp, IItem 
 {
     parameterCount: number;
     lastParameterIsList: boolean;

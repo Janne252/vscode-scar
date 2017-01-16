@@ -2,24 +2,24 @@
 
 import {SignatureHelpProvider as ISignatureHelpProvider, TextDocument, Position, CancellationToken} from 'vscode';
 import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
-import {ISourceSignatureHelp} from './itemSourceMerger/item/signatureHelp';
+import {ISignatureHelp} from './itemSourceMerger/item/signatureHelp';
 
 import LuaParser from './luaParser/luaParser';
 
 export default class SignatureHelpProvider implements ISignatureHelpProvider
 {
-    protected merger: ItemSourceMerger<ISourceSignatureHelp>;
+    protected merger: ItemSourceMerger<ISignatureHelp>;
     protected luaParser:LuaParser;
-    protected lastSignatureHelp: ISourceSignatureHelp;
+    protected lastSignatureHelp: ISignatureHelp;
     protected lastSIgnatureHelpActiveParamIncremented: boolean = false;
 
-    constructor(merger: ItemSourceMerger<ISourceSignatureHelp>, luaParser: LuaParser)
+    constructor(merger: ItemSourceMerger<ISignatureHelp>, luaParser: LuaParser)
     {
         this.merger = merger;
         this.luaParser = luaParser;
     }
 
-    public provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken): Thenable<ISourceSignatureHelp>
+    public provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken): Thenable<ISignatureHelp>
     {
         //console.log(`Attempting to provide help at ${position.line}, ${position.character}`);
         return new Promise((resolve, reject) => 

@@ -8,12 +8,12 @@ import {
 import * as fs from 'fs';
 import * as path from 'path';
 import ItemSourceMerger from './itemSourceMerger/itemSourceMerger';
-import {ISourceCompletionItem} from './itemSourceMerger/item/completionItem';
+import {ICompletionItem} from './itemSourceMerger/item/completionItem';
 
 export default class CompletionItemProvider implements ICompletionItemProvider
 {
-    protected merger: ItemSourceMerger<ISourceCompletionItem>;
-    constructor(merger: ItemSourceMerger<ISourceCompletionItem>)
+    protected merger: ItemSourceMerger<ICompletionItem>;
+    constructor(merger: ItemSourceMerger<ICompletionItem>)
     {
         this.merger = merger;
     }
