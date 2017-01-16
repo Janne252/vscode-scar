@@ -27,8 +27,8 @@ import {SCARDocCompletionItemSource, LuaDocCompletionItemSource} from './itemSou
 import LuaConstsAutoCompletionItemSource from './itemSources/luaConstsAutoCompletionItem';
 import DocumentCompletionItemSource from './itemSources/documentCompletionItem';
 import WorkspaceCompletionItemSource from './itemSources/workspaceCompletionItem';
-
 import {SCARDocSignatureHelpSource, LuaDocSignatureHelpSource} from './itemSources/luaDocSignatureHelp';
+import QuickPickInsertCommand from './command/quickPickInsertCommand';
 
 const LUA_PARSER_OPTIONS: ILuaParserOptions  = {
     comments: true,
@@ -127,21 +127,7 @@ export function activate(context: vscode.ExtensionContext)
             decorationTypeAppliers.update(textEditor);
         });
 
-        context.subscriptions.push(commands.registerCommand('scar.findBlueprint', (args: any[]) => 
-        {
-            let result = window.showQuickPick(luaConstsAutoParser.blueprints);
-            result.then((value: string) =>
-            {
-                let textEditor = window.activeTextEditor;
-                if (textEditor)
-                {
-                    textEditor.edit((editBuilder: vscode.TextEditorEdit) => 
-                    {
-                        editBuilder.insert(textEditor.selection.start, value); 
-                    });
-                }
-            }); 
-        }));
+        context.subscriptions.push(new QuickPickInsertCommand('scar.findBlueprint', luaConstsAutoParser.blueprints));
 
         context.subscriptions.push(commands.registerCommand('scar.reloadWorkspace', (args: any[]) =>
         {

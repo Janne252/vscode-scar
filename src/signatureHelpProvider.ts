@@ -21,7 +21,6 @@ export default class SignatureHelpProvider implements ISignatureHelpProvider
 
     public provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken): ISignatureHelp
     {
-        //console.log(`Attempting to provide help at ${position.line}, ${position.character}`);
         try
         {
             let callExpression = this.luaParser.getCallExpressionAt(position);
