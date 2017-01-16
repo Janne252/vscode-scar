@@ -243,7 +243,7 @@ export enum ItemSourceType
  */
 export interface IItem
 {
-    id: string;
+    readonly id: string;
 }
 
 /**
@@ -255,7 +255,7 @@ export interface IItemSource<ItemType extends IItem>
     /**
      * The unique indentifier of the source.
      */
-    id: string;
+    readonly id: string;
     /**
      * Returs all the items of the source.
      */
