@@ -1,3 +1,4 @@
 out
 node_modules
 *.vsix
+demo_files/dump.txt
