@@ -31,38 +31,16 @@ export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBa
     {
         //console.log('highligting file (LuaDoc): ' + textEditor.document.uri.path);  
 
-        let callExpressions: LuaParserCallExpression[] = [];
-        let identifiers: ILuaParseNode[] = [];
         let luaDocFunctionRanges: Range[] = [];
         let luaDocEnumRanges: Range[] = [];
 
+
         if (this.luaParser.valid)
         {
-            ObjectIterator.each(this.luaParser.ast, (key: any, value: any) => 
-            {
-                if (value != null)
-                {
-                    if (value.type === 'CallExpression')
-                    {
-                        let expression = new LuaParserCallExpression(value);
-
-                        if (expression.base.name === undefined && expression.base.type == 'MemberExpression')
-                        {
-                            expression.base.name = expression.getMemberCallExpressionName();
-                        }
-
-                        callExpressions.push(expression);
-                    }
-                    else if (value.type == 'Identifier')
-                    {
-                        identifiers.push(value);
-                    }
-                }
-            });
-
+            console.time('LuaDocDecorationTypeApplier');
             for(let func of this.source.functions)
             {
-                for(let call of callExpressions)
+                for(let call of this.luaParser.callExpressions)
                 {
                     if (func.name == call.base.name)
                     {
@@ -73,7 +51,7 @@ export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBa
             
             for (let scarDocEnum of this.source.enums)
             {
-                for (let identifier of identifiers)
+                for (let identifier of this.luaParser.identifiers)
                 {
                     if (scarDocEnum.name == identifier.name)
                     {
@@ -84,6 +62,7 @@ export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBa
                                     
             textEditor.setDecorations(LuaDocFunctionDecorationType, luaDocFunctionRanges);
             textEditor.setDecorations(LuaDocEnumDecorationType, luaDocEnumRanges);
+            console.timeEnd('LuaDocDecorationTypeApplier');
         }
     }
 }

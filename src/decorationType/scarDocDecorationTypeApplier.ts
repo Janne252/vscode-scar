@@ -29,34 +29,15 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
      */
     public update(textEditor: TextEditor): void
     {
-        //console.log('highligting file (SCAR): ' + textEditor.document.uri.path);  
-
-        let callExpressions: LuaParserCallExpression[] = [];
-        let identifiers: ILuaParseNode[] = [];
         let scarDocFunctionRanges: Range[] = [];
         let scarDocEnumRanges: Range[] = [];
 
         if (this.luaParser.valid)
         {
-            ObjectIterator.each(this.luaParser.ast, (key: any, value: any) => 
-            {
-                if (value != null)
-                {
-                    if (value.type === 'CallExpression')
-                    {
-                        let expression = new LuaParserCallExpression(value);
-                        callExpressions.push(expression);
-                    }
-                    else if (value.type == 'Identifier')
-                    {
-                        identifiers.push(value);
-                    }
-                }
-            });
-
+            console.time('SCARDocDecorationTypeApplier');
             for(let func of this.source.functions)
             {
-                for(let call of callExpressions)
+                for(let call of this.luaParser.callExpressions)
                 {
                     if (func.name == call.base.name)
                     {
@@ -67,7 +48,7 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
             
             for (let scarDocEnum of this.source.enums)
             {
-                for (let identifier of identifiers)
+                for (let identifier of this.luaParser.identifiers)
                 {
                     if (scarDocEnum.name == identifier.name)
                     {
@@ -78,6 +59,7 @@ export default class SCARDocDecorationTypeApplier extends DecorationTypeApplierB
                                     
             textEditor.setDecorations(SCARDocFunctionDecorationType, scarDocFunctionRanges);
             textEditor.setDecorations(SCARDocEnumDecorationType, scarDocEnumRanges);
+            console.timeEnd('SCARDocDecorationTypeApplier');
         }
     }
 }

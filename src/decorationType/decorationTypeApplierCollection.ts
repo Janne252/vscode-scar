@@ -1,5 +1,6 @@
 'use strict';
 
+import * as async from 'async';
 import {TextEditor} from 'vscode';
 import {IDecorationTypeApplier} from './decorationTypeApplierBase';
 import ArrayHelpers from '../helper/arrayHelpers';
@@ -31,13 +32,15 @@ export default class DecorationTypeApplierCollection
      */
     public update(textEditor: TextEditor): void
     {
+        console.time('DecorationTypeAppliers');
         if (textEditor !== undefined && textEditor.document.languageId == this.languageId)
         {
             for(let applier of this.appliers)
             {
-                applier.update(textEditor);
+                applier.update(textEditor);          
             }
         }
+        console.timeEnd('DecorationTypeAppliers');
     }
     /**
      * Adds an applier to this collection.

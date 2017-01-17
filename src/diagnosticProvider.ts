@@ -18,14 +18,17 @@ export default class DiagnosticProvider
 
     public update(textDocument: TextDocument)
     {
+        console.time('DiagnosticProvider');
         this.luaParser.textDocument = textDocument;
         this.luaParser.tryParse();
-
+        this.luaParser.parseCallExpressionsAndDefinitions();
+        
         this.diagnosticCollection.clear();
 
         if (this.luaParser.lastError)
         {
             this.diagnosticCollection.set(textDocument.uri, [new LuaParserDiagnostic(<ILuaParseError>this.luaParser.lastError)]);
         }
+        console.timeEnd('DiagnosticProvider');
     }
 }

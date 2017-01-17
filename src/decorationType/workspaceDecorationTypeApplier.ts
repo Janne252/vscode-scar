@@ -21,28 +21,15 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
      */
     public update(textEditor: TextEditor): void
     {
-        let callExpressions: LuaParserCallExpression[] = [];
         let workspaceFunctionRanges: Range[] = [];
-
         if (this.luaParser.valid)
         {
-            ObjectIterator.each(this.luaParser.ast, (key: any, value: any) => 
-            {
-                if (value != null)
-                {
-                    if (value.type === 'CallExpression')
-                    {
-                        let expression = new LuaParserCallExpression(value);
-                        callExpressions.push(expression);
-                    }
-                }
-            });
-
+            console.time('WorkspaceDecorationTypeApplier');
             let functions = this.source.getAllItems();
 
             for(let func of functions)
             {
-                for(let call of callExpressions)
+                for(let call of this.luaParser.callExpressions)
                 {
                     if (func.label == call.base.name)
                     {
@@ -52,6 +39,7 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
             }
                  
             textEditor.setDecorations(WorkspaceFunctionDecorationType, workspaceFunctionRanges);
+            console.timeEnd('WorkspaceDecorationTypeApplier');
         }
     }
 }
