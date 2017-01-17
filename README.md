@@ -5,6 +5,7 @@
 ## Build & Install
  - Build: `vsce package`
  - Install: `code --install-extension scar-0.0.1.vsix`
+ 
 ## Features
  - [x] Lua syntax check (based on [oxyc/luaparse](https://github.com/oxyc/luaparse))
  - [x] Autocompletion
