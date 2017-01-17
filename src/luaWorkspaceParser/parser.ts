@@ -271,7 +271,6 @@ export default class LuaWorkspaceParser
         let completionItems: IWorkspaceCompletionItem[] = [];
         let signatureHelpitems: IWorkspaceSignatureHelp[] = [];
 
-        console.log('starting to iterate AST');
         ObjectIterator.each(ast, (key, node: ILuaParseFunctionDeclaration) =>
         {
             if (node !== null && node.type === 'FunctionDeclaration' && node.identifier != null)
@@ -285,7 +284,6 @@ export default class LuaWorkspaceParser
 
         this._completionItemSource.addItems(completionItems);
         this._signatureHelpSource.addItems(signatureHelpitems);
-        console.log('AST iteration complete');
     }
     /**
      * Re-parses a file.
