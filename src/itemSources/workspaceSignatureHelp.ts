@@ -21,14 +21,14 @@ export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWork
         super('workspaceSignatureHelpItems', []);
     }
     /**
-     * Add a new item from the workspace parser.
-     * @param info The info the workspace parser created.
+     * Creates SignatureHelp from WorkspaceLuaFunctionInformation.
+     * @param info The info used to create the SignatureHelp.
      */
-    public parserAddItem(info: WorkspaceLuaFunctionInformation): void
-    {   
+    public signatureHelpFromFunctionInfo(info: WorkspaceLuaFunctionInformation): IWorkspaceSignatureHelp
+    {
         let parameters = this.getParameters(info);
 
-        this.addItem(<IWorkspaceSignatureHelp>{
+        return <IWorkspaceSignatureHelp>{
             id: 'workspace_' + info.name,
             name: info.name,
             filepath: info.filepath,
@@ -43,8 +43,8 @@ export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWork
             ],
             parameterCount: parameters.length,
             lastParameterIsList: false
-        });
-    }
+        };
+    }   
     /**
      * Internally creates a parameter array of a parsed function.
      * @param info The parsed function information.

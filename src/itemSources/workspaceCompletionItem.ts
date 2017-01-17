@@ -19,12 +19,12 @@ export default class WorkspaceCompletionItemSource extends ActiveItemSource<IWor
         super('workspaceCompletioItems', []);
     }
     /**
-     * Add a new item from the workspace parser.
-     * @param info The info the workspace parser created.
+     * Create CompletionItem from WorkspaceLuaFunctionInformation.
+     * @param info The info used to create the CompletionItem.
      */
-    public parserAddItem(info: WorkspaceLuaFunctionInformation): void
+    public completionItemFromFunctionInfo(info: WorkspaceLuaFunctionInformation): IWorkspaceCompletionItem
     {
-        this.addItem(<IWorkspaceCompletionItem>{
+        return <IWorkspaceCompletionItem>{
             id: 'workspace_' + info.name,
             name: info.name,
             filepath: info.filepath,
@@ -32,6 +32,6 @@ export default class WorkspaceCompletionItemSource extends ActiveItemSource<IWor
             label: info.name,
             detail: info.signature,
             documentation: info.description
-        });
+        }
     }
 }

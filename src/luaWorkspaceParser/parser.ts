@@ -3,7 +3,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {ILuaParseOptions, ILuaParseFunctionDeclaration, ILuaParseFunctionDeclarationParameter, ILuaParseAstRootNode, ILuaParseCommentNode} from 'luaparse';
-import {workspace, CompletionItem} from 'vscode';
+import {workspace, CompletionItem, CompletionItemKind} from 'vscode';
 
 import LuaParser from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/luaParserCallExpression';
@@ -17,6 +17,9 @@ import WorkspaceLuaFunctionInformation from './workspaceLuaFunctionInformation';
 import WorkspaceSignatureHelpSource from '../itemSources/workspaceSignatureHelp';
 import WorkspaceCompletionItemSource from '../itemSources/workspaceCompletionItem';
 import WorkspaceParserConfig from './parserConfig';
+
+import {IWorkspaceCompletionItem} from '../itemSources/completionItem';
+import {IWorkspaceSignatureHelp} from '../itemSources/signatureHelp';
 /**
  * Represents a workspace lua parser.
  */
@@ -166,6 +169,8 @@ export default class LuaWorkspaceParser
      */
     public resolveWorkspaceFileChanged(filepath: string): Thenable<boolean>
     {
+        filepath = filepath.toLowerCase();
+
         if (this.exists(filepath))
         {
             return this.reparseFile(filepath);
@@ -179,7 +184,7 @@ export default class LuaWorkspaceParser
      * Registers a new file to the WorkspaceParser.
      * @param filepath The file to register.
      */
-    public registerNewFile(filepath: string): Thenable<boolean>
+    protected registerNewFile(filepath: string): Thenable<boolean>
     {
         filepath = filepath.toLowerCase();
 
@@ -246,7 +251,6 @@ export default class LuaWorkspaceParser
                 else
                 {         
                     let ast = this.luaParser.tryParseAstFromText(data);
-
                     if (ast !== undefined)
                     {
                         this.parseAst(filepath, ast);
@@ -264,23 +268,33 @@ export default class LuaWorkspaceParser
      */
     protected parseAst(filepath: string, ast: ILuaParseAstRootNode): void
     {
+        let completionItems: IWorkspaceCompletionItem[] = [];
+        let signatureHelpitems: IWorkspaceSignatureHelp[] = [];
+
+        console.log('starting to iterate AST');
         ObjectIterator.each(ast, (key, node: ILuaParseFunctionDeclaration) =>
         {
             if (node !== null && node.type === 'FunctionDeclaration' && node.identifier != null)
             {
                 let info = new WorkspaceLuaFunctionInformation(this.config, filepath, ast, node);
 
-                this._completionItemSource.parserAddItem(info);
-                this._signatureHelpSource.parserAddItem(info);
+                completionItems.push(this._completionItemSource.completionItemFromFunctionInfo(info));
+                signatureHelpitems.push(this._signatureHelpSource.signatureHelpFromFunctionInfo(info));
             }
         });
+
+        this._completionItemSource.addItems(completionItems);
+        this._signatureHelpSource.addItems(signatureHelpitems);
+        console.log('AST iteration complete');
     }
     /**
      * Re-parses a file.
      * @param filepath The path to the file to re-parse.
      */
-    public reparseFile(filepath: string): Thenable<boolean>
+    protected reparseFile(filepath: string): Thenable<boolean>
     {
+        console.log(filepath);
+
         let removedCompletionItems = 0;
         let removedSignatureHelpItems = 0;
 
