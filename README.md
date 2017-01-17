@@ -2,6 +2,9 @@
 # SCAR - Language support for [Relic](http://www.relic.com/)'s SCAR Scripting Language
 (Company of Heroes 2)
 
+## Build & Install
+ - Build: `vsce package`
+ - Install: `code --install-extension scar-0.0.1.vsix`
 ## Features
  - [x] Lua syntax check (based on [oxyc/luaparse](https://github.com/oxyc/luaparse))
  - [x] Autocompletion
