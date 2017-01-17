@@ -11,6 +11,9 @@ import {DumpJSON} from '../scar';
  */
 export default class LuaParser
 {
+    public callExpressions: LuaParserCallExpression[];
+
+    public identifiers: luaparse.ILuaParseNode[];
     /**
      * Current text document to parse.
      */
@@ -138,8 +141,34 @@ export default class LuaParser
 
         return result;
     }
-}
+    public parseCallExpressionsAndDefinitions(): void
+    {
+        this.callExpressions = [];
+        this.identifiers = [];
 
+        ObjectIterator.each(this.ast, (key: any, value: any) => 
+        {
+            if (value != null)
+            {
+                if (value.type === 'CallExpression')
+                {
+                    let expression = new LuaParserCallExpression(value);
+
+                    if (expression.base.name === undefined && expression.base.type == 'MemberExpression')
+                    {
+                        expression.base.name = expression.getMemberCallExpressionName();
+                    }
+
+                    this.callExpressions.push(expression);
+                }
+                else if (value.type == 'Identifier')
+                {
+                    this.identifiers.push(value);
+                }
+            }
+        });
+    }
+}
 
 export function LuaParserTreeLocationToRange(loc: luaparse.ILuaParseNodeLocation): Range
 {
