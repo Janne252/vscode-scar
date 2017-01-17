@@ -58,6 +58,19 @@ export function activate(context: vscode.ExtensionContext)
     diagnosticProvider = new DiagnosticProvider(new LuaParser(LUA_PARSER_OPTIONS), languages.createDiagnosticCollection());
     workspaceParser = new LuaWorkspaceParser(workspace.rootPath, diagnosticProvider.luaParser);
 
+    context.subscriptions.push(commands.registerCommand('scar.reloadWorkspace', (args: any[]) =>
+    {
+        workspaceParser.reload().then(() => 
+        {
+            decorationTypeAppliers.update(window.activeTextEditor);
+            console.log('Workspace reloaded!');
+        });
+    }));
+    context.subscriptions.push(commands.registerCommand('scar.dumpAst', (args: any[]) =>
+    {
+        DumpJSON(diagnosticProvider.luaParser.ast);
+    }));
+
     let parsers = [
         scarDocParser.load(),
         luaDocParser.load(),
@@ -79,6 +92,7 @@ export function activate(context: vscode.ExtensionContext)
         signatureHelpSourceMerger.addStaticSource(new LuaDocSignatureHelpSource(luaDocParser));
 
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger)));
+        context.subscriptions.push(new QuickPickInsertCommand('scar.findBlueprint', luaConstsAutoParser.blueprints));
 
         workspaceParser.load().then(() => 
         {
@@ -105,12 +119,12 @@ export function activate(context: vscode.ExtensionContext)
             });
         });
 
-        workspace.onDidChangeTextDocument((textEditor) => 
+        workspace.onDidChangeTextDocument((documentChanged) => 
         {
-            if (textEditor.document.languageId == 'scar')
+            if (documentChanged.document.languageId == 'scar')
             {
                 documentCompletionItemSource.autoUpdater.shouldUpdate = true;
-                diagnosticProvider.update(textEditor.document);
+                diagnosticProvider.update(documentChanged.document);
             }
 
             decorationTypeAppliers.update(window.activeTextEditor);
@@ -127,27 +141,20 @@ export function activate(context: vscode.ExtensionContext)
             decorationTypeAppliers.update(textEditor);
         });
 
-        context.subscriptions.push(new QuickPickInsertCommand('scar.findBlueprint', luaConstsAutoParser.blueprints));
-
-        context.subscriptions.push(commands.registerCommand('scar.reloadWorkspace', (args: any[]) =>
-        {
-            workspaceParser.reload().then(() => 
-            {
-                decorationTypeAppliers.update(window.activeTextEditor);
-                console.log('Workspace reloaded!');
-            });
-        }));
-
-        context.subscriptions.push(commands.registerCommand('scar.dumpAst', (args: any[]) =>
-        {
-            DumpJSON(diagnosticProvider.luaParser.ast);
-        }));
-
         // Kick-off
         if (window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
         {
             diagnosticProvider.update(window.activeTextEditor.document);
         } 
+
+        function textDocumentChanged(): void
+        {
+            let textEditor: TextEditor;
+            if ((textEditor = window.activeTextEditor) !== undefined)
+            {
+
+            }
+        }
     });
 }
 

@@ -125,8 +125,7 @@ export default class LuaWorkspaceParser
 
             let filepaths = FSHelpers.readDirSyncRecursive(this.rootpath);
             //console.log(filepaths.join('\n'));
-
-            console.log(`Starting to process ${filepaths.length} files. `);
+            
             this._fileCount = filepaths.length;
             let counter: number = 0;
 
@@ -144,9 +143,7 @@ export default class LuaWorkspaceParser
                     if (counter == this._fileCount)
                     {
                         resolve();
-                        console.log(`Checked ${this.fileCount} files, of which ${this.parsedFileCount} were parsed. Log:`);
-
-                        //console.log(this.log.join('\n'));
+                        //console.log(`Checked ${this.fileCount} files, of which ${this.parsedFileCount} were parsed. Log:`);
                     }
                 });
             }
@@ -291,8 +288,6 @@ export default class LuaWorkspaceParser
      */
     protected reparseFile(filepath: string): Thenable<boolean>
     {
-        console.log(filepath);
-
         let removedCompletionItems = 0;
         let removedSignatureHelpItems = 0;
 
@@ -318,7 +313,7 @@ export default class LuaWorkspaceParser
             return false;
         });
 
-        console.log(`reparsing file "${filepath}". Removed completion items: ${removedCompletionItems}, removed signatureHelpItems: ${removedSignatureHelpItems}`);
+        //console.log(`reparsing file "${filepath}". Removed completion items: ${removedCompletionItems}, removed signatureHelpItems: ${removedSignatureHelpItems}`);
         return this.parseFile(filepath);
     }
 }
