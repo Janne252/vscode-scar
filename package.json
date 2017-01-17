@@ -2,6 +2,10 @@
     "name": "scar",
     "displayName": "scar",
     "description": "Support for Relic's SCAR scripting language",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Janne252/vscode-scar.git"
+    },
     "license": "MIT",
     "version": "0.0.1",
     "publisher": "Janne252",
