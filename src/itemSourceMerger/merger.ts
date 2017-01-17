@@ -86,9 +86,9 @@ export default class ItemSourceMerger<ItemType extends IItem> implements IItemSo
 
         for(let i = this.items.length - 1; i >= 0; i--)
         {
-            for(let j = itemsToRemove.length; j < itemsToRemove.length; j++)
+            for(let toRemove of itemsToRemove)
             {
-                if (this.items[i] == itemsToRemove[j])
+                if (this.items[i] == toRemove)
                 {
                     this.items.splice(i, 1);
                 }

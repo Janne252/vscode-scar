@@ -20,6 +20,8 @@ export default class CompletionItemProvider implements ICompletionItemProvider
 
     public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken): CompletionItem[]
     {
-        return this.merger.getAllItems();
+        let result = this.merger.getAllItems();
+        console.log('Returning ' + result.length + ' CompletionItems');
+        return result;
     }
 }

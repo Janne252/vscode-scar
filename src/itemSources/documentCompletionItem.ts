@@ -1,6 +1,6 @@
 'use strict';
 
-import {CompletionItem, CompletionItemKind, TextDocument, window} from 'vscode';
+import {CompletionItem, CompletionItemKind, TextDocument, window, Range, Position} from 'vscode';
 import {IItem} from '../itemSourceMerger/types';
 import ActiveItemSource from '../itemSourceMerger/activeSource';
 import {ISCARDoc, ILuaFunctionDefinition} from '../scar';
@@ -71,18 +71,30 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IC
     {
         let text = textDocument.getText();
 
-        let words = text.match(/\w+/g);
+        let regex = new RegExp(/\w+/, 'g');
+
         let result: ICompletionItem[] = [];
-        
-        let exists: boolean = false;
-        for(let word of words)
+        let skipCount = 0;
+
+        let match;
+        while((match = regex.exec(text)))
         {
-            exists = false;
+            let word: string = match[0];
+            let pos = textDocument.positionAt(match.index);
+
+            let range = new Range(
+                pos,
+                new Position(pos.line, pos.character + match[0].length)
+            );
+
+            let exists: boolean = false;
+
             for (let existing of result)
             {
-                if (word == existing.label)
+                if (word == existing.name)
                 {
                     exists = true;
+                    skipCount++;
                     break;
                 }
             }
@@ -91,10 +103,11 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IC
             {
                 result.push(<ICompletionItem>{
                     id: 'currentDocument_' + word,
+                    name: word,
                     kind: CompletionItemKind.Text,
                     label: word,
-                    detail: 'word',
-                    documentation: 'current document word'
+                    detail: 'line ' + (range.start.line + 1),
+                    documentation: 'current document word at line ' + range.start.line + 1 + ', column ' + (range.start.character + 1)
                 });
             }
         }

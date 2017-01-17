@@ -113,7 +113,7 @@ export function activate(context: vscode.ExtensionContext)
                 diagnosticProvider.update(textEditor.document);
             }
 
-            decorationTypeAppliers.update(window.activeTextEditor);
+            //decorationTypeAppliers.update(window.activeTextEditor);
         });
 
         window.onDidChangeActiveTextEditor((textEditor) => 

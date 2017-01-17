@@ -49,11 +49,10 @@ export default class ActiveItemSource<ItemType extends IItem> extends StaticItem
      * Replaces the items with a set of new ones.
      * @param items The items to replce the old items.
      */
-    public updateItems(items: ItemType[]): void
+    public updateItems(newItems: ItemType[]): void
     {
-
         this.previousItems = this.items;
-        this.items = items;
+        this.items = newItems;
 
         this.notifyMerger();
     }
