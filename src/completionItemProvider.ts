@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import ItemSourceMerger from './itemSourceMerger/merger';
 import {ICompletionItem} from './itemSources/completionItem';
+import {DumpJSON} from './scar';
 
 export default class CompletionItemProvider implements ICompletionItemProvider
 {
@@ -22,6 +23,8 @@ export default class CompletionItemProvider implements ICompletionItemProvider
     {
         let result = this.merger.getAllItems();
         console.log('Returning ' + result.length + ' CompletionItems');
+
+        DumpJSON(result);
         return result;
     }
 }
