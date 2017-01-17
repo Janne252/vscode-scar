@@ -57,24 +57,48 @@ export default class ActiveItemSource<ItemType extends IItem> extends StaticItem
         this.notifyMerger();
     }
     /**
-     * Adds an item to the source.
-     * @param item The item to add.
+     * Adds a collection of items to the existing pool if items.
+     * @param itemsToAdd The items to add.
      */
-    public addItem(item: ItemType): void
+    public addItems(itemsToAdd: ItemType[]): void
     {
-        let existing = Array.from(this.items);
+        let newItems = Array.from(this.items);
+        let exists = false;
 
-        for(let i = existing.length - 1; i >= 0; i--)
+        for(let toAdd of itemsToAdd)
         {
-            if (existing[i].id == item.id)
+            for(let i = newItems.length - 1; i >= 0; i--)
             {
-                existing.splice(i, 1);
+                if (newItems[i].id == toAdd.id)
+                {
+                    newItems.splice(i, 1);
+                }
             }
         }
 
-        existing.push(item);
+        newItems = newItems.concat(itemsToAdd);
 
-        this.updateItems(existing);
+        this.updateItems(newItems);
+    }
+    /**
+     * Adds an item to the source.
+     * @param item The item to add.
+     */
+    public addItem(itemToAdd: ItemType): void
+    {
+        let newItems = Array.from(this.items);
+
+        for(let i = newItems.length - 1; i >= 0; i--)
+        {
+            if (newItems[i].id == itemToAdd.id)
+            {
+                newItems.splice(i, 1);
+            }
+        }
+
+        newItems.push(itemToAdd);
+
+        this.updateItems(newItems);
     }
     /**
      * Removes an item from the source.

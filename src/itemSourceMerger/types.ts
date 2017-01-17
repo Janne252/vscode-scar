@@ -74,6 +74,11 @@ export interface IActiveItemSource<ItemType extends IItem> extends IStaticItemSo
      */
     addItem(item: ItemType): void;
     /**
+     * Adds a collection of items to the existing pool if items.
+     * @param itemsToAdd The items to add.
+     */
+    addItems(itemsToAdd: ItemType[]): void;
+    /**
      * Removes an item from the source.
      * @param item The item to remove.
      */
