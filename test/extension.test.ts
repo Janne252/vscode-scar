@@ -11,6 +11,35 @@ import Item from '../src/itemSourceMerger/item';
 // Defines a Mocha test suite to group tests of similar kind together
 suite("Extension Tests", () => 
 {
+    test("ItemSourceMerger add to source", () =>
+    {   
+        let merger = new ItemSourceMerger<Item>();
+        let source = new ActiveItemSource<Item>('source01');
+
+        merger.addActiveSource(source);
+
+        let items = [
+            new Item('word_Msg', 'Msg'),
+            new Item('word_Foo', 'Foo'),
+            new Item('word_Bar', 'Bar'),
+            new Item('word_Zoo', 'Zoo'),
+        ]
+        source.updateItems(items);
+
+        let newItems = [
+            new Item('Lahey'),
+            new Item('Ricky'),
+            new Item('Julian'),
+            new Item('Bubbles'),
+        ]
+
+        source.addItems(newItems); 
+
+        assert.deepEqual(source.getAllItems(), items.concat(newItems));
+    });
+    /**
+     * Tests to make sure replacing items in an active source works.
+     */
     test("ItemSourceMerger add same items", () =>
     {
         let merger = new ItemSourceMerger<Item>();
@@ -109,8 +138,6 @@ suite("Extension Tests", () =>
         assert.deepEqual(merger.getAllItems(), items, 'items match after init');
         activeSource01.updateItems(newItems);
 
-        console.log(JSON.stringify(merger.getAllItems()));
-        
         assert.deepEqual(merger.getAllItems(), newItems, 'items match updated items after updateItems');
 
         activeSource01.updateItems(newItems.concat(items));
