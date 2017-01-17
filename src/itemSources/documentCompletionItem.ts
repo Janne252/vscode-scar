@@ -5,63 +5,25 @@ import {IItem} from '../itemSourceMerger/types';
 import ActiveItemSource from '../itemSourceMerger/activeSource';
 import {ISCARDoc, ILuaFunctionDefinition} from '../scar';
 import {ICompletionItem} from './completionItem';
-
+import AutoUpdater from '../autoUpdater';
 /**
  * Represents an active source of document CompletionItems.
  */
 export default class DocumentDocCompletionItemSource extends ActiveItemSource<ICompletionItem>
 {
-    /**
-     * Internal handle for keeping track of the auto update interval.
-     */
-    protected autoUpdateHandle: NodeJS.Timer;
-    /**
-     * Whether or not active TextEditor should be updated.
-     */
-    public shouldUpdate: boolean;
-    /**
-     * How often shouldUpdate is checked.
-     */
-    public updateInterval: number;
-    /**
-     * Creates a new instance of DocumentDocCompletionItemSource.
-     */
+    public autoUpdater: AutoUpdater;
+
     constructor(updateInteral: number = 1000)
     {
         super('documentCompletionItems', []);
-        this.shouldUpdate = false;
-        this.updateInterval = updateInteral;
-    }
-    /**
-     * Internally updates the active TextEditor.
-     */
-    protected autoUpdate = () =>
-    {
-        if (this.shouldUpdate && window.activeTextEditor !== undefined)
+        
+        this.autoUpdater = new AutoUpdater(() =>
         {
-            this.shouldUpdate = false;
-            this.update(window.activeTextEditor.document);
-        }
-    }
-    /**
-     * Enable auto update.
-     */
-    public startAutoUpdate(): void
-    {
-        if (this.autoUpdateHandle === undefined)
-        {
-            this.autoUpdateHandle = setInterval(this.autoUpdate, this.updateInterval);
-        }
-    }
-    /**
-     * Disable auto update.
-     */
-    public stopAutoUpdate(): void
-    {
-        if (this.autoUpdateHandle !== undefined)
-        {
-            clearInterval(this.autoUpdateHandle);
-        }
+            if (window.activeTextEditor !== undefined)
+            {
+                this.update(window.activeTextEditor.document);
+            }
+        },updateInteral);
     }
     /**
      * Updates the DocumentDocCompletionItemSource with words from a TextDocument.
@@ -106,8 +68,8 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IC
                     name: word,
                     kind: CompletionItemKind.Text,
                     label: word,
-                    detail: 'line ' + (range.start.line + 1),
-                    documentation: 'current document word at line ' + range.start.line + 1 + ', column ' + (range.start.character + 1)
+                    detail: `line ${range.start.line + 1}`,
+                    documentation: `current document word at line ${range.start.line + 1}, column ${range.start.character + 1}`,
                 });
             }
         }

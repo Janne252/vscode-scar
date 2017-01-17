@@ -53,7 +53,7 @@ export function activate(context: vscode.ExtensionContext)
     luaDocParser = new LuaDocParser(path.join(__dirname, '../../data/luadoc.json'));
     luaConstsAutoParser = new LuaConstsAutoParser(path.join(__dirname, '../../data/luaconstsauto.scar'));
     documentCompletionItemSource = new DocumentCompletionItemSource();
-    documentCompletionItemSource.startAutoUpdate();
+    documentCompletionItemSource.autoUpdater.start();
     
     diagnosticProvider = new DiagnosticProvider(new LuaParser(LUA_PARSER_OPTIONS), languages.createDiagnosticCollection());
     workspaceParser = new LuaWorkspaceParser(workspace.rootPath, diagnosticProvider.luaParser);
@@ -94,7 +94,7 @@ export function activate(context: vscode.ExtensionContext)
 
         workspace.onDidSaveTextDocument((textDocument: TextDocument) =>
         {
-            documentCompletionItemSource.update(textDocument);
+            documentCompletionItemSource.autoUpdater.shouldUpdate = true;
 
             workspaceParser.resolveWorkspaceFileChanged(textDocument.fileName).then((success) => 
             {
@@ -109,11 +109,11 @@ export function activate(context: vscode.ExtensionContext)
         {
             if (textEditor.document.languageId == 'scar')
             {
-                documentCompletionItemSource.shouldUpdate = true;
+                documentCompletionItemSource.autoUpdater.shouldUpdate = true;
                 diagnosticProvider.update(textEditor.document);
             }
 
-            //decorationTypeAppliers.update(window.activeTextEditor);
+            decorationTypeAppliers.update(window.activeTextEditor);
         });
 
         window.onDidChangeActiveTextEditor((textEditor) => 
@@ -121,7 +121,7 @@ export function activate(context: vscode.ExtensionContext)
             if (textEditor.document.languageId == 'scar')
             {
                 diagnosticProvider.update(textEditor.document);
-                documentCompletionItemSource.update(textEditor.document);
+                documentCompletionItemSource.autoUpdater.shouldUpdate = true;
             }
 
             decorationTypeAppliers.update(textEditor);
