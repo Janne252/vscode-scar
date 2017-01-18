@@ -2,38 +2,40 @@
 
 import {ILuaParseNode} from 'luaparse';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
-import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
+import {DecorationTypeApplierBase, IDecorationSet, DecorationSetCollection} from './decorationTypeApplierBase';
 import LuaParser, {LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/callExpression';
 import ObjectIterator from '../helper/objectIterator';
-import {LuaDocEnumDecorationType, LuaDocFunctionDecorationType} from '../decorationType/decorationTypes';
-import {LuaDocParser} from '../scar';
+import {LuaDocEnumDecorationType, LuaDocFunctionDecorationType, SCARDocFunctionDecorationType, SCARDocEnumDecorationType} from '../decorationType/decorationTypes';
+import {LuaDocParser, SCARDocParser} from '../scar';
 
 /**
- * Represents DecorationType applier for Lua standard library functions and enums.
- * Uses LuaDocParser as the source data type.
+ * Base DecorationTypeApplier for SCARDocParser and LuaDocParser.
+ * Uses LuaDocParser or SCARDocParser as the source data type.
  */
-export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocParser>
+class DocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocParser | SCARDocParser>
 {
+    protected functionDecoration: TextEditorDecorationType;
+    protected enumDecoration: TextEditorDecorationType;
     /**
      * Creates a new instance of LuaDocDecorationTypeApplier.
      * @param source The source of the entries to highlight.
      */
-    constructor(source: LuaDocParser, luaParser: LuaParser)
+    constructor(functionDecoration: TextEditorDecorationType, enumDecoration: TextEditorDecorationType, source: LuaDocParser | SCARDocParser, luaParser: LuaParser)
     {
         super(source, luaParser);
+
+        this.functionDecoration = functionDecoration;
+        this.enumDecoration = enumDecoration;
     }
     /**
      * Updates the TextEditor with highlights from this DecorationTypeApplier.
      * @param textEditor The text editor to add the decorations to.
      */
-    public update(textEditor: TextEditor): void
+    public update(textEditor: TextEditor, sets: DecorationSetCollection): void
     {
-        //console.log('highligting file (LuaDoc): ' + textEditor.document.uri.path);  
-
         let luaDocFunctionRanges: Range[] = [];
         let luaDocEnumRanges: Range[] = [];
-
 
         if (this.luaParser.valid)
         {
@@ -60,9 +62,26 @@ export default class LuaDocDecorationTypeApplier extends DecorationTypeApplierBa
                 }
             }
                                     
-            textEditor.setDecorations(LuaDocFunctionDecorationType, luaDocFunctionRanges);
-            textEditor.setDecorations(LuaDocEnumDecorationType, luaDocEnumRanges);
+            sets.add(<IDecorationSet>{decorationType: this.functionDecoration, ranges: luaDocFunctionRanges});
+            sets.add(<IDecorationSet>{decorationType: this.enumDecoration, ranges: luaDocEnumRanges});
+
             console.timeEnd('LuaDocDecorationTypeApplier');
         }
+    }
+}
+
+export class SCARDocDecorationTypeApplier extends DocDecorationTypeApplier
+{
+    constructor(source: SCARDocParser, luaParser: LuaParser)
+    {
+        super(SCARDocFunctionDecorationType, SCARDocEnumDecorationType,  source, luaParser);
+    }
+}
+
+export class LuaDocDecorationTypeApplier extends DocDecorationTypeApplier
+{
+    constructor(source: LuaDocParser, luaParser: LuaParser)
+    {
+        super(LuaDocFunctionDecorationType, LuaDocEnumDecorationType, source, luaParser);
     }
 }

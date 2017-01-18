@@ -2,7 +2,7 @@
 
 import {ILuaParseNode} from 'luaparse';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
-import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
+import {DecorationTypeApplierBase, IDecorationSet, DecorationSetCollection} from './decorationTypeApplierBase';
 import WorkspaceCompletionItemSource from '../itemSources/workspaceCompletionItem';
 import LuaParser, {LuaParserTreeLocationToRange} from '../luaParser/luaParser';
 import LuaParserCallExpression from '../luaParser/callExpression';
@@ -19,7 +19,7 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
      * Updates the TextEditor with highlights from this DecorationTypeApplier.
      * @param textEditor The text editor to add the decorations to.
      */
-    public update(textEditor: TextEditor): void
+    public update(textEditor: TextEditor, sets: DecorationSetCollection): void
     {
         let workspaceFunctionRanges: Range[] = [];
         if (this.luaParser.valid)
@@ -38,7 +38,7 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
                 }
             }
                  
-            textEditor.setDecorations(WorkspaceFunctionDecorationType, workspaceFunctionRanges);
+            sets.add(<IDecorationSet>{decorationType: WorkspaceFunctionDecorationType, ranges: workspaceFunctionRanges});
             console.timeEnd('WorkspaceDecorationTypeApplier');
         }
     }

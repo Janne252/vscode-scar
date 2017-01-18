@@ -2,7 +2,7 @@
 
 import * as async from 'async';
 import {TextEditor, TextEditorDecorationType, Range} from 'vscode';
-import {IDecorationTypeApplier, IDecorationSet} from './decorationTypeApplierBase';
+import {IDecorationTypeApplier, IDecorationSet, DecorationSetCollection} from './decorationTypeApplierBase';
 import ArrayHelpers from '../helper/arrayHelpers';
 
 /**
@@ -22,13 +22,13 @@ export default class DecorationTypeApplierCollection
      * Creates a new instance of DecorationTypeApplierCollection.
      */
 
-    protected decorations: IDecorationSet[];
+    protected decorationSets: DecorationSetCollection;
 
     constructor(languageId: string)
     {
         this.languageId = languageId;
         this.appliers = [];
-        this.decorations = [];
+        this.decorationSets = new DecorationSetCollection();
     }
     /**
      * Updates all the DecorationTypeAppliers.
@@ -37,14 +37,12 @@ export default class DecorationTypeApplierCollection
     public update(textEditor: TextEditor): void
     {
         console.time('DecorationTypeAppliers');
-        this.decorations = [];
+        this.decorationSets.clear();
 
         if (textEditor !== undefined && textEditor.document.languageId == this.languageId)
         {
-            for(let applier of this.appliers)
-            {
-                applier.update(textEditor, this.decorations);          
-            }
+            this.appliers.forEach(applier => applier.update(textEditor, this.decorationSets));
+            this.decorationSets.update(textEditor);
         }
         console.timeEnd('DecorationTypeAppliers');
     }

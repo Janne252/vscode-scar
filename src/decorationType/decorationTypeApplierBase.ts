@@ -31,7 +31,7 @@ export abstract class DecorationTypeApplierBase<T> implements IDecorationTypeApp
      * Updates the TextEditor with highlights from this DecorationTypeApplier.
      * @param textEditor The text editor to add the decorations to.
      */
-    public update(textEditor: TextEditor, collection: IDecorationSet[]): void
+    public update(textEditor: TextEditor, sets: DecorationSetCollection): void
     {
 
     }
@@ -45,11 +45,49 @@ export interface IDecorationTypeApplier
      * Updates the TextEditor with highlights from this DecorationTypeApplier.
      * @param textEditor The text editor to add the decorations to.
      */
-    update(textEditor: TextEditor, collection: IDecorationSet[]): void;
+    update(textEditor: TextEditor, sets: DecorationSetCollection): void;
 }
 
 export interface IDecorationSet
 {
     decorationType: TextEditorDecorationType;
     ranges: Range[];
+}
+
+export class DecorationSetCollection
+{
+    protected sets: IDecorationSet[];
+
+    constructor()
+    {
+        this.clear();
+    }
+
+    public clear(): void
+    {
+        this.sets = [];
+    }
+
+    public add(setToAdd: IDecorationSet): void
+    {
+        let exists = false;
+        for(let existingSet of this.sets)
+        {
+            if (existingSet.decorationType == setToAdd.decorationType)
+            {
+                exists = true;
+                existingSet.ranges = existingSet.ranges.concat(setToAdd.ranges);
+                break;
+            }
+        }
+        if (!exists)
+        {
+            this.sets.push(setToAdd);
+        }
+    }
+
+    public update(textEditor: TextEditor): void
+    {
+        this.sets.forEach(set => textEditor.setDecorations(set.decorationType, set.ranges));
+    }
 }

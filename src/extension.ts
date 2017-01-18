@@ -9,9 +9,8 @@ import LuaParser from './luaParser/luaParser';
 import LuaParserCallExpression from './luaParser/callExpression';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';
 import DiagnosticProvider from './diagnosticProvider';
-import SCARDocDecorationTypeApplier from './decorationType/scarDocDecorationTypeApplier';
 import LuaConstsAutoDecorationTypeApplier from './decorationType/luaConstsAutoDecorationTypeApplier';
-import LuaDocDecorationTypeApplier from './decorationType/luaDocDecorationTypeApplier';
+import {LuaDocDecorationTypeApplier, SCARDocDecorationTypeApplier} from './decorationType/luaDocDecorationTypeApplier';
 import WorkspaceDecorationTypeApplier from './decorationType/workspaceDecorationTypeApplier';
 import DecorationTypeApplierCollection from './decorationType/decorationTypeApplierCollection';
 
