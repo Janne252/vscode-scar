@@ -9,7 +9,7 @@ import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/luaFunctionIn
 import {LuaDocSignatureHelpSource} from './luaDocSignatureHelp';
 
 /**
- * Represents an active source of workspace SignatureHelp items.
+ * Active source of SignatureHelp items from a workspace.
  */
 export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWorkspaceSignatureHelp>
 {

@@ -3,6 +3,9 @@
 import {CompletionItem} from 'vscode';
 import {IItem} from '../itemSourceMerger/types';
 
+/**
+ * Base interface for CompletionItem in an item source.
+ */
 export interface ICompletionItem extends CompletionItem, IItem 
 {
 

@@ -6,18 +6,21 @@ import {IWorkspaceHover} from './hover';
 import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/luaFunctionInformation';
 import * as path from 'path';
 
+/**
+ * Active source of Hover items from a workspace.
+ */
 export default class WorkspaceHoverSource extends ActiveItemSource<IWorkspaceHover>
 {
     /**
-     * Creates a new instance of WorkspaceCompletionItemSource.
+     * Creates a new instance of WorkspaceHoverSource.
      */
     constructor()
     {
         super('workspaceHovers', []);
     }
     /**
-     * Create CompletionItem from WorkspaceLuaFunctionInformation.
-     * @param info The info used to create the CompletionItem.
+     * Create Hover from WorkspaceLuaFunctionInformation.
+     * @param info The info used to create the Hover.
      */
     public hoverFromFunctionInfo(info: WorkspaceLuaFunctionInformation): IWorkspaceHover
     {
