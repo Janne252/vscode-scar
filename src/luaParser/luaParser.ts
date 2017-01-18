@@ -3,7 +3,7 @@ import ObjectIterator from '../helper/objectIterator';
 
 import * as luaparse from 'luaparse';
 
-import LuaParserCallExpression from './luaParserCallExpression';
+import LuaParserCallExpression from './callExpression';
 import {DumpJSON} from '../scar';
 
 /**

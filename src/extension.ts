@@ -7,7 +7,7 @@ import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
 import CompletionItemProvider from './completionItemProvider';
 import LuaParser from './luaParser/luaParser';
-import LuaParserCallExpression from './luaParser/LuaParserCallExpression';
+import LuaParserCallExpression from './luaParser/callExpression';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';
 import DiagnosticProvider from './diagnosticProvider';
 import SCARDocDecorationTypeApplier from './decorationType/scarDocDecorationTypeApplier';
@@ -146,15 +146,6 @@ export function activate(context: vscode.ExtensionContext)
         {
             diagnosticProvider.update(window.activeTextEditor.document);
         } 
-
-        function textDocumentChanged(): void
-        {
-            let textEditor: TextEditor;
-            if ((textEditor = window.activeTextEditor) !== undefined)
-            {
-
-            }
-        }
     });
 }
 

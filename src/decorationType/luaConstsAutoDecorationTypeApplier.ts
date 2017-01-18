@@ -4,7 +4,7 @@ import {ILuaParseNode} from 'luaparse';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
 import LuaParser, {LuaParserTreeLocationToRange} from '../luaParser/luaParser';
-import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
+import LuaParserCallExpression from '../luaParser/callExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from '../decorationType/decorationTypes';
 import {LuaConstsAutoParser} from '../scar';

@@ -5,7 +5,7 @@ import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
 import {DecorationTypeApplierBase} from './decorationTypeApplierBase';
 import WorkspaceCompletionItemSource from '../itemSources/workspaceCompletionItem';
 import LuaParser, {LuaParserTreeLocationToRange} from '../luaParser/luaParser';
-import LuaParserCallExpression from '../luaParser/LuaParserCallExpression';
+import LuaParserCallExpression from '../luaParser/callExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {WorkspaceFunctionDecorationType} from '../decorationType/decorationTypes';
 

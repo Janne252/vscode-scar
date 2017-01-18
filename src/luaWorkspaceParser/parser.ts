@@ -6,7 +6,7 @@ import {ILuaParseOptions, ILuaParseFunctionDeclaration, ILuaParseFunctionDeclara
 import {workspace, CompletionItem, CompletionItemKind} from 'vscode';
 
 import LuaParser from '../luaParser/luaParser';
-import LuaParserCallExpression from '../luaParser/luaParserCallExpression';
+import LuaParserCallExpression from '../luaParser/callExpression';
 import ObjectIterator from '../helper/objectIterator';
 import {DumpJSON, ILuaFunctionDefinitionParameter} from '../scar';
 import FSHelpers from '../helper/fsHelpers';
