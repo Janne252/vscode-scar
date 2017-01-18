@@ -16,6 +16,7 @@ class DocCompletionItemSource extends StaticItemSource<ICompletionItem>
 		{
 			this.items.push(<ICompletionItem>{
 				id: func.name,
+				name: func.name,
 				kind: CompletionItemKind.Function,
 				label: func.name,
 				detail: func.signature,
@@ -29,6 +30,7 @@ class DocCompletionItemSource extends StaticItemSource<ICompletionItem>
 
 			this.items.push(<ICompletionItem>{
 				id: luaEnum.name,
+				name: luaEnum.name,
 				kind: luaEnum.kind !== undefined ? luaEnum.kind : CompletionItemKind.Enum,
                 label: luaEnum.name,
 				detail: luaEnum.description !== undefined ? luaEnum.description : luaEnum.type,

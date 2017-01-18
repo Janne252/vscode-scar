@@ -128,10 +128,12 @@ export default class ActiveItemSource<ItemType extends IItem> extends StaticItem
     }
     /**
      * Removes items from the source based on a comparer (arrow function).
+     * Returns the number of removed items.
      * @param comparer The comparer used to select the items to remove.
      */
-    public removeItems(comparer: IItemComparer<ItemType>): void
+    public removeItems(comparer: IItemComparer<ItemType>): number
     {
+        let removedCount = 0;
         let existing = Array.from(this.items);
 
         for(let i = existing.length - 1; i >= 0; i--)
@@ -139,10 +141,12 @@ export default class ActiveItemSource<ItemType extends IItem> extends StaticItem
             if (comparer(existing[i]))
             {
                 existing.splice(i, 1);
+                removedCount++;
             }
         }
        
        this.updateItems(existing);
+       return removedCount;
     }
     /**
      * Removes all items from the source.

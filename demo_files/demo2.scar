@@ -4,3 +4,6 @@ end
 
 g_stuff = {}
 
+function Kameli()
+
+end

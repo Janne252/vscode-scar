@@ -5,6 +5,7 @@ import {IItem} from '../itemSourceMerger/types';
 import StaticItemSource from '../itemSourceMerger/staticSource';
 import {ISCARDoc, ILuaDoc, ILuaFunctionDefinition} from '../scar';
 import {ISignatureHelp} from './signatureHelp';
+import {getLuaFunctionSignature, getLuaFUnctionParameterInfo} from '../scar';
 
 /**
  * Represents a static source of Lua/SCAR documentation SignatureHelp items.
@@ -22,8 +23,8 @@ class DocSignatureHelpSource extends StaticItemSource<ISignatureHelp>
 
 		for (let func of doc.functions)
 		{
-            let signature = this.getSignature(func);
-            let parameters = this.getParameters(func);
+            let signature = getLuaFunctionSignature(func);
+            let parameters = getLuaFUnctionParameterInfo(func);
 
 			this.items.push(<ISignatureHelp>{
                 id: func.name,
@@ -42,48 +43,7 @@ class DocSignatureHelpSource extends StaticItemSource<ISignatureHelp>
 			});
 		}
 	}
-    /**
-     * Internally generates an array of ParameterInformation based on a ILuaFunctionDefinition.
-     * @param func The function to generate the ParameterInformation[] for.
-     */
-    protected getParameters(func: ILuaFunctionDefinition): ParameterInformation[]
-    {
-        let result: ParameterInformation[] = [];
-        
-        for(let param of func.parameters)
-        {
-            result.push({
-                label: param.name,
-                documentation: `type: ${param.type}, optional: ${param.optional}`
-            });
-        }
 
-        return result;
-    }
-    /**
-     * Internally generates a signature string based on a ILuaFunctionDefinition.
-     * @param func The ILuaFunctionDefinition to create the signature string from.
-     */
-    protected getSignature(func: ILuaFunctionDefinition): string
-    {
-        let result = '';
-        let paramNames = [];
-        if (func.signature === undefined)
-        {
-            for(let param of func.parameters)
-            {
-                paramNames.push(param.name);
-            }
-
-            result = `${func.name}(${paramNames.join(', ')})`;
-        }
-        else
-        {
-            result = func.signature;
-        }
-
-        return result;
-    }
 }
 
 /**

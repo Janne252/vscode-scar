@@ -1,6 +1,6 @@
 'use strict';
 
-import {CompletionItemKind} from 'vscode';
+import {CompletionItemKind, ParameterInformation} from 'vscode';
 
 export interface ILuaDoc
 {
@@ -170,4 +170,48 @@ export class LuaConstsAutoParser extends Parser implements ILuaConstsAutoDoc
     {
         return new RegExp(this._matchAllRegexString, 'g');
     }
+}
+
+/**
+ * Internally generates a signature string based on a ILuaFunctionDefinition.
+ * @param func The ILuaFunctionDefinition to create the signature string from.
+ */
+export function getLuaFunctionSignature(func: ILuaFunctionDefinition): string
+{
+    let result = '';
+    let paramNames = [];
+    if (func.signature === undefined)
+    {
+        for(let param of func.parameters)
+        {
+            paramNames.push(param.name);
+        }
+
+        result = `${func.name}(${paramNames.join(', ')})`;
+    }
+    else
+    {
+        result = func.signature;
+    }
+
+    return result;
+}
+
+/**
+ * Internally generates an array of ParameterInformation based on a ILuaFunctionDefinition.
+ * @param func The function to generate the ParameterInformation[] for.
+ */
+export function getLuaFUnctionParameterInfo(func: ILuaFunctionDefinition): ParameterInformation[]
+{
+    let result: ParameterInformation[] = [];
+    
+    for(let param of func.parameters)
+    {
+        result.push({
+            label: param.name,
+            documentation: `type: ${param.type}, optional: ${param.optional}`
+        });
+    }
+
+    return result;
 }

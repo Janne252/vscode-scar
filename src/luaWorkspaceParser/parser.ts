@@ -16,10 +16,14 @@ import WorkspaceLuaFunctionInformation from './luaFunctionInformation';
 
 import WorkspaceSignatureHelpSource from '../itemSources/workspaceSignatureHelp';
 import WorkspaceCompletionItemSource from '../itemSources/workspaceCompletionItem';
+import WorkspaceHoverSource from '../itemSources/workspaceHover';
+
 import WorkspaceParserConfig from './parserConfig';
 
 import {IWorkspaceCompletionItem} from '../itemSources/completionItem';
 import {IWorkspaceSignatureHelp} from '../itemSources/signatureHelp';
+import {IWorkspaceHover} from '../itemSources/hover';
+
 /**
  * Represents a workspace lua parser.
  */
@@ -82,9 +86,17 @@ export default class LuaWorkspaceParser
      * SignatureHelp items parsed by the WorkspaceParser.
      */
     protected _signatureHelpSource: WorkspaceSignatureHelpSource;
+    /**
+     * SignatureHelp items parsed by the WorkspaceParser.
+     */
     public get signatureHelpSource(): WorkspaceSignatureHelpSource
     {
         return this._signatureHelpSource;
+    }
+    protected _hoverSource: WorkspaceHoverSource;
+    public get hoverSource(): WorkspaceHoverSource
+    {
+        return this._hoverSource;
     }
     /**
      * Creates a new instance of WorkspaceParser.
@@ -98,6 +110,7 @@ export default class LuaWorkspaceParser
         this.files = [];
         this._completionItemSource = new WorkspaceCompletionItemSource();
         this._signatureHelpSource = new WorkspaceSignatureHelpSource();
+        this._hoverSource = new WorkspaceHoverSource();
 
         this.config = new WorkspaceParserConfig();
 
@@ -267,6 +280,7 @@ export default class LuaWorkspaceParser
     {
         let completionItems: IWorkspaceCompletionItem[] = [];
         let signatureHelpitems: IWorkspaceSignatureHelp[] = [];
+        let hovers: IWorkspaceHover[] = [];
 
         ObjectIterator.each(ast, (key, node: ILuaParseFunctionDeclaration) =>
         {
@@ -276,11 +290,13 @@ export default class LuaWorkspaceParser
 
                 completionItems.push(this._completionItemSource.completionItemFromFunctionInfo(info));
                 signatureHelpitems.push(this._signatureHelpSource.signatureHelpFromFunctionInfo(info));
+                hovers.push(this._hoverSource.hoverFromFunctionInfo(info));
             }
         });
 
         this._completionItemSource.addItems(completionItems);
         this._signatureHelpSource.addItems(signatureHelpitems);
+        this._hoverSource.addItems(hovers);
     }
     /**
      * Re-parses a file.
@@ -291,27 +307,9 @@ export default class LuaWorkspaceParser
         let removedCompletionItems = 0;
         let removedSignatureHelpItems = 0;
 
-        this._completionItemSource.removeItems((item): boolean => 
-        {
-            if (item.filepath == filepath)
-            {
-                removedCompletionItems++;
-                return true;
-            }
-            
-            return false;
-        });
-        
-        this._signatureHelpSource.removeItems((item): boolean => 
-        {
-            if (item.filepath == filepath)
-            {
-                removedSignatureHelpItems++;
-                return true;
-            }
-            
-            return false;
-        });
+        this._completionItemSource.removeItems((item) => item.filepath == filepath);
+        this._signatureHelpSource.removeItems((item) => item.filepath == filepath);
+        this._hoverSource.removeItems((item) => item.filepath == filepath);
 
         //console.log(`reparsing file "${filepath}". Removed completion items: ${removedCompletionItems}, removed signatureHelpItems: ${removedSignatureHelpItems}`);
         return this.parseFile(filepath);

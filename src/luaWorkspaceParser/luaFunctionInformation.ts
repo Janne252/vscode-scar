@@ -1,5 +1,6 @@
 'use strict';
 
+import {Range, Position} from 'vscode';
 import {ILuaFunctionDefinitionParameter} from '../scar';
 import {ILuaParseAstRootNode, ILuaParseFunctionDeclaration, ILuaParseFunctionDeclarationParameter} from 'luaparse';
 
@@ -30,6 +31,8 @@ export default class WorkspaceLuaFunctionInformation
      * Parameters of the function.
      */
     public parameters: ILuaFunctionDefinitionParameter[];
+
+    public range: Range;
     /**
      * Creates a new instance of WorkspaceLuaFunctionInformation.
      * @param filepath Path to the file the function originates from.
@@ -40,6 +43,10 @@ export default class WorkspaceLuaFunctionInformation
         this.filepath = filepath;
         this.parameters = [];
         let paramNames: string[] = [];
+        this.range = new Range(
+            new Position(node.loc.start.line - 1, node.loc.start.column),
+            new Position(node.loc.end.line - 1, node.loc.end.column)
+        );
 
         let param: ILuaParseFunctionDeclarationParameter;
         for(let i = 0; i < node.parameters.length; i++)

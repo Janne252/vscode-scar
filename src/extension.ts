@@ -5,7 +5,6 @@ import {ILuaParseOptions, ILuaParseError, ILuaParseCallExpressionNode} from 'lua
 import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit} from 'vscode';
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
-import CompletionItemProvider from './completionItemProvider';
 import LuaParser from './luaParser/luaParser';
 import LuaParserCallExpression from './luaParser/callExpression';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';
@@ -16,13 +15,18 @@ import LuaDocDecorationTypeApplier from './decorationType/luaDocDecorationTypeAp
 import WorkspaceDecorationTypeApplier from './decorationType/workspaceDecorationTypeApplier';
 import DecorationTypeApplierCollection from './decorationType/decorationTypeApplierCollection';
 
+import CompletionItemProvider from './completionItemProvider';
 import SignatureHelpProvider from './signatureHelpProvider';
+import HoverProvider from './hoverProvider';
+import {LuaDocHoverSource, SCARDocHoverSource} from './itemSources/luaDocHover';
+
 import LuaWorkspaceParser from './luaWorkspaceParser/parser';
 import {SCARDocParser, LuaDocParser, LuaConstsAutoParser, DumpJSON} from './scar';
 
 import ItemSourceMerger from './itemSourceMerger/merger';
 import {ICompletionItem} from './itemSources/completionItem';
 import {ISignatureHelp} from './itemSources/signatureHelp';
+import {IHover} from './itemSources/hover';
 import {SCARDocCompletionItemSource, LuaDocCompletionItemSource} from './itemSources/luaDocCompletionItem';
 import LuaConstsAutoCompletionItemSource from './itemSources/luaConstsAutoCompletionItem';
 import DocumentCompletionItemSource from './itemSources/documentCompletionItem';
@@ -46,6 +50,8 @@ let documentCompletionItemSource: DocumentCompletionItemSource;
 let decorationTypeAppliers = new DecorationTypeApplierCollection('scar');
 let signatureHelpSourceMerger = new ItemSourceMerger<ISignatureHelp>();
 let workspaceParser: LuaWorkspaceParser;
+
+let hoverMerger = new ItemSourceMerger<IHover>();
 
 export function activate(context: vscode.ExtensionContext) 
 {
@@ -74,11 +80,13 @@ export function activate(context: vscode.ExtensionContext)
     let parsers = [
         scarDocParser.load(),
         luaDocParser.load(),
-        luaConstsAutoParser.load()
+        luaConstsAutoParser.load(),
+        workspaceParser.load(),
     ]
 
     Promise.all(parsers).then(() => 
     {
+        console.log('All loaded!');
         decorationTypeAppliers.addApplier(new SCARDocDecorationTypeApplier(scarDocParser, diagnosticProvider.luaParser));
         decorationTypeAppliers.addApplier(new LuaConstsAutoDecorationTypeApplier(luaConstsAutoParser, diagnosticProvider.luaParser));
         decorationTypeAppliers.addApplier(new LuaDocDecorationTypeApplier(luaDocParser, diagnosticProvider.luaParser));
@@ -91,20 +99,20 @@ export function activate(context: vscode.ExtensionContext)
         signatureHelpSourceMerger.addStaticSource(new SCARDocSignatureHelpSource(scarDocParser));
         signatureHelpSourceMerger.addStaticSource(new LuaDocSignatureHelpSource(luaDocParser));
 
+        hoverMerger.addStaticSource(new LuaDocHoverSource(luaDocParser));
+        hoverMerger.addStaticSource(new SCARDocHoverSource(scarDocParser));
+
+        signatureHelpSourceMerger.addActiveSource(workspaceParser.signatureHelpSource);
+        completionItemMerger.addActiveSource(workspaceParser.completionItemSource);
+        hoverMerger.addActiveSource(workspaceParser.hoverSource);
+
+        decorationTypeAppliers.addApplier(new WorkspaceDecorationTypeApplier(workspaceParser.completionItemSource, diagnosticProvider.luaParser));
+
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger)));
+        context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));
+        context.subscriptions.push(vscode.languages.registerHoverProvider('scar', new HoverProvider(hoverMerger)));
+ 
         context.subscriptions.push(new QuickPickInsertCommand('scar.findBlueprint', luaConstsAutoParser.blueprints));
-
-        workspaceParser.load().then(() => 
-        {
-            signatureHelpSourceMerger.addActiveSource(workspaceParser.signatureHelpSource);
-            completionItemMerger.addActiveSource(workspaceParser.completionItemSource);
-
-            context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));
-
-            decorationTypeAppliers.addApplier(new WorkspaceDecorationTypeApplier(workspaceParser.completionItemSource, diagnosticProvider.luaParser));
-
-            decorationTypeAppliers.update(window.activeTextEditor);
-        });
 
         workspace.onDidSaveTextDocument((textDocument: TextDocument) =>
         {
@@ -125,9 +133,8 @@ export function activate(context: vscode.ExtensionContext)
             {
                 documentCompletionItemSource.autoUpdater.shouldUpdate = true;
                 diagnosticProvider.update(documentChanged.document);
+                decorationTypeAppliers.update(window.activeTextEditor);
             }
-
-            decorationTypeAppliers.update(window.activeTextEditor);
         });
 
         window.onDidChangeActiveTextEditor((textEditor) => 
@@ -136,15 +143,15 @@ export function activate(context: vscode.ExtensionContext)
             {
                 diagnosticProvider.update(textEditor.document);
                 documentCompletionItemSource.autoUpdater.shouldUpdate = true;
+                decorationTypeAppliers.update(textEditor);
             }
-
-            decorationTypeAppliers.update(textEditor);
         });
 
         // Kick-off
         if (window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
         {
             diagnosticProvider.update(window.activeTextEditor.document);
+            decorationTypeAppliers.update(window.activeTextEditor);
         } 
     });
 }
