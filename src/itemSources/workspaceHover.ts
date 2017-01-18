@@ -14,9 +14,9 @@ export default class WorkspaceHoverSource extends ActiveItemSource<IWorkspaceHov
     /**
      * Creates a new instance of WorkspaceHoverSource.
      */
-    constructor()
+    constructor(rootpath: string)
     {
-        super('workspaceHovers', []);
+        super('workspaceHovers_' + rootpath, []);
     }
     /**
      * Create Hover from WorkspaceLuaFunctionInformation.

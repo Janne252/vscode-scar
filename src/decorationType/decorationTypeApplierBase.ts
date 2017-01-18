@@ -1,6 +1,6 @@
 'use strict';
 
-import {window, TextEditorDecorationType, TextEditor} from 'vscode';
+import {window, TextEditorDecorationType, TextEditor, Range} from 'vscode';
 import LuaParser from '../luaParser/luaParser';
 
 /**
@@ -31,7 +31,7 @@ export abstract class DecorationTypeApplierBase<T> implements IDecorationTypeApp
      * Updates the TextEditor with highlights from this DecorationTypeApplier.
      * @param textEditor The text editor to add the decorations to.
      */
-    public update(textEditor: TextEditor): void
+    public update(textEditor: TextEditor, collection: IDecorationSet[]): void
     {
 
     }
@@ -45,5 +45,11 @@ export interface IDecorationTypeApplier
      * Updates the TextEditor with highlights from this DecorationTypeApplier.
      * @param textEditor The text editor to add the decorations to.
      */
-    update(textEditor: TextEditor): void;
+    update(textEditor: TextEditor, collection: IDecorationSet[]): void;
+}
+
+export interface IDecorationSet
+{
+    decorationType: TextEditorDecorationType;
+    ranges: Range[];
 }

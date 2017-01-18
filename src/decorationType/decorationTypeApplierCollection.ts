@@ -1,8 +1,8 @@
 'use strict';
 
 import * as async from 'async';
-import {TextEditor} from 'vscode';
-import {IDecorationTypeApplier} from './decorationTypeApplierBase';
+import {TextEditor, TextEditorDecorationType, Range} from 'vscode';
+import {IDecorationTypeApplier, IDecorationSet} from './decorationTypeApplierBase';
 import ArrayHelpers from '../helper/arrayHelpers';
 
 /**
@@ -21,10 +21,14 @@ export default class DecorationTypeApplierCollection
     /**
      * Creates a new instance of DecorationTypeApplierCollection.
      */
+
+    protected decorations: IDecorationSet[];
+
     constructor(languageId: string)
     {
         this.languageId = languageId;
         this.appliers = [];
+        this.decorations = [];
     }
     /**
      * Updates all the DecorationTypeAppliers.
@@ -33,11 +37,13 @@ export default class DecorationTypeApplierCollection
     public update(textEditor: TextEditor): void
     {
         console.time('DecorationTypeAppliers');
+        this.decorations = [];
+
         if (textEditor !== undefined && textEditor.document.languageId == this.languageId)
         {
             for(let applier of this.appliers)
             {
-                applier.update(textEditor);          
+                applier.update(textEditor, this.decorations);          
             }
         }
         console.timeEnd('DecorationTypeAppliers');

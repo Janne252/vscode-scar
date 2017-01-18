@@ -71,6 +71,11 @@
                     "default": [".scar", ".events", ".lua"],
 					"description": "List of extensions of files to search function definitions from."
 				},
+                "scar.loadWorkspaces": {
+                    "type": "array",
+                    "default": [],
+                    "description": "List of additional workspaces (absolute directory path) to load (intellisense)."
+                },
                 "scar.ignoreFiles": {
                     "type": "array",
                     "default": [],

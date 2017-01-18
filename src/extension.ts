@@ -2,7 +2,7 @@
 
 import * as vscode from 'vscode';
 import {ILuaParseOptions, ILuaParseError, ILuaParseCallExpressionNode} from 'luaparse';
-import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit} from 'vscode';
+import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit, } from 'vscode';
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
 import LuaParser from './luaParser/luaParser';
@@ -33,6 +33,7 @@ import DocumentCompletionItemSource from './itemSources/documentCompletionItem';
 import WorkspaceCompletionItemSource from './itemSources/workspaceCompletionItem';
 import {SCARDocSignatureHelpSource, LuaDocSignatureHelpSource} from './itemSources/luaDocSignatureHelp';
 import QuickPickInsertCommand from './command/quickPickInsertCommand';
+import LuaWorkspaceParserCollection from './luaWorkspaceParser/parserCollection';
 
 const LUA_PARSER_OPTIONS: ILuaParseOptions  = {
     comments: true,
@@ -50,7 +51,7 @@ let documentCompletionItemSource: DocumentCompletionItemSource;
 let decorationTypeAppliers = new DecorationTypeApplierCollection('scar');
 let signatureHelpSourceMerger = new ItemSourceMerger<ISignatureHelp>();
 let workspaceParser: LuaWorkspaceParser;
-
+let additionalWorkspaces: LuaWorkspaceParserCollection = new LuaWorkspaceParserCollection();
 let hoverMerger = new ItemSourceMerger<IHover>();
 
 export function activate(context: vscode.ExtensionContext) 
@@ -77,16 +78,31 @@ export function activate(context: vscode.ExtensionContext)
         DumpJSON(diagnosticProvider.luaParser.ast);
     }));
 
+    let config = workspace.getConfiguration('scar');
+
+    let loadWorkspaces: string[] = <string[]>config.get('loadWorkspaces');
+    loadWorkspaces.forEach(parser => additionalWorkspaces.add(new LuaWorkspaceParser(parser, diagnosticProvider.luaParser)));
+    
     let parsers = [
         scarDocParser.load(),
         luaDocParser.load(),
         luaConstsAutoParser.load(),
         workspaceParser.load(),
-    ]
+        additionalWorkspaces.load(),
+    ];
 
     Promise.all(parsers).then(() => 
     {
         console.log('All loaded!');
+
+        function registerWorkspaceParser(newParser: LuaWorkspaceParser)
+        {
+            signatureHelpSourceMerger.addActiveSource(newParser.signatureHelpSource);
+            completionItemMerger.addActiveSource(newParser.completionItemSource);
+            hoverMerger.addActiveSource(newParser.hoverSource);
+            decorationTypeAppliers.addApplier(new WorkspaceDecorationTypeApplier(newParser.completionItemSource, diagnosticProvider.luaParser));
+        }
+
         decorationTypeAppliers.addApplier(new SCARDocDecorationTypeApplier(scarDocParser, diagnosticProvider.luaParser));
         decorationTypeAppliers.addApplier(new LuaConstsAutoDecorationTypeApplier(luaConstsAutoParser, diagnosticProvider.luaParser));
         decorationTypeAppliers.addApplier(new LuaDocDecorationTypeApplier(luaDocParser, diagnosticProvider.luaParser));
@@ -102,11 +118,8 @@ export function activate(context: vscode.ExtensionContext)
         hoverMerger.addStaticSource(new LuaDocHoverSource(luaDocParser));
         hoverMerger.addStaticSource(new SCARDocHoverSource(scarDocParser));
 
-        signatureHelpSourceMerger.addActiveSource(workspaceParser.signatureHelpSource);
-        completionItemMerger.addActiveSource(workspaceParser.completionItemSource);
-        hoverMerger.addActiveSource(workspaceParser.hoverSource);
-
-        decorationTypeAppliers.addApplier(new WorkspaceDecorationTypeApplier(workspaceParser.completionItemSource, diagnosticProvider.luaParser));
+        registerWorkspaceParser(workspaceParser);
+        additionalWorkspaces.parsers.forEach(additionalParser => registerWorkspaceParser(additionalParser));
 
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger)));
         context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));

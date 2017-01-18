@@ -14,9 +14,9 @@ export default class WorkspaceCompletionItemSource extends ActiveItemSource<IWor
     /**
      * Creates a new instance of WorkspaceCompletionItemSource.
      */
-    constructor()
+    constructor(rootpath: string)
     {
-        super('workspaceCompletioItems', []);
+        super('workspaceCompletioItems_' + rootpath, []);
     }
     /**
      * Create CompletionItem from WorkspaceLuaFunctionInformation.

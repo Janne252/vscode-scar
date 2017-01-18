@@ -16,9 +16,9 @@ export default class WorkspaceSignatureHelpSource extends ActiveItemSource<IWork
     /**
      * Creates a new instance of WorkspaceSignatureHelpSource.
      */
-    constructor()
+    constructor(rootpath: string)
     {
-        super('workspaceSignatureHelpItems', []);
+        super('workspaceSignatureHelpItems_' + rootpath, []);
     }
     /**
      * Creates SignatureHelp from WorkspaceLuaFunctionInformation.

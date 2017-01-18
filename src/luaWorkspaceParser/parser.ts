@@ -36,7 +36,7 @@ export default class LuaWorkspaceParser
     /**
      * Root directory path of the workspace.
      */
-    protected rootpath: string;
+    protected _rootpath: string;
     /**
      * Lua parser instance.
      */
@@ -59,6 +59,13 @@ export default class LuaWorkspaceParser
     public get fileCount(): number
     {
         return this._fileCount;
+    }
+    /**
+     * Root directory path of the workspace.
+     */
+    public get rootpath(): string
+    {
+        return this._rootpath;
     }
     /**
      * Total number of parsed files.
@@ -105,12 +112,12 @@ export default class LuaWorkspaceParser
      */
     constructor(rootpath: string, luaParser: LuaParser)
     {
-        this.rootpath = rootpath;
+        this._rootpath = rootpath;
         this.luaParser = luaParser;
         this.files = [];
-        this._completionItemSource = new WorkspaceCompletionItemSource();
-        this._signatureHelpSource = new WorkspaceSignatureHelpSource();
-        this._hoverSource = new WorkspaceHoverSource();
+        this._completionItemSource = new WorkspaceCompletionItemSource(rootpath);
+        this._signatureHelpSource = new WorkspaceSignatureHelpSource(rootpath);
+        this._hoverSource = new WorkspaceHoverSource(rootpath);
 
         this.config = new WorkspaceParserConfig();
 
@@ -136,7 +143,7 @@ export default class LuaWorkspaceParser
             this._parsedFileCount = 0;
             this.files = [];
 
-            let filepaths = FSHelpers.readDirSyncRecursive(this.rootpath);
+            let filepaths = FSHelpers.readDirSyncRecursive(this._rootpath);
             //console.log(filepaths.join('\n'));
             
             this._fileCount = filepaths.length;
