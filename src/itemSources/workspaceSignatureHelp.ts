@@ -5,7 +5,7 @@ import {IItem} from '../itemSourceMerger/types';
 import ActiveItemSource from '../itemSourceMerger/activeSource';
 import {ISCARDoc, ILuaDoc, ILuaFunctionDefinition} from '../scar';
 import {IWorkspaceSignatureHelp} from './signatureHelp';
-import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/workspaceLuaFunctionInformation';
+import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/luaFunctionInformation';
 import {LuaDocSignatureHelpSource} from './luaDocSignatureHelp';
 
 /**

@@ -11,8 +11,8 @@ import ObjectIterator from '../helper/objectIterator';
 import {DumpJSON, ILuaFunctionDefinitionParameter} from '../scar';
 import FSHelpers from '../helper/fsHelpers';
 import StringHelper from '../helper/string';
-import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
-import WorkspaceLuaFunctionInformation from './workspaceLuaFunctionInformation';
+import WorkspaceLuaFunctionDocumentation from './luaFunctionDocumentation';
+import WorkspaceLuaFunctionInformation from './luaFunctionInformation';
 
 import WorkspaceSignatureHelpSource from '../itemSources/workspaceSignatureHelp';
 import WorkspaceCompletionItemSource from '../itemSources/workspaceCompletionItem';

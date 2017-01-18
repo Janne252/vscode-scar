@@ -3,7 +3,7 @@
 import {ILuaFunctionDefinitionParameter} from '../scar';
 import {ILuaParseAstRootNode, ILuaParseFunctionDeclaration, ILuaParseFunctionDeclarationParameter} from 'luaparse';
 
-import WorkspaceLuaFunctionDocumentation from './workspaceLuaFunctionDocumentation';
+import WorkspaceLuaFunctionDocumentation from './luaFunctionDocumentation';
 import {} from '.'
 /**
  * Extracts relevant information of a Lua function from an AST.

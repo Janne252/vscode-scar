@@ -4,7 +4,7 @@ import {CompletionItem, CompletionItemKind} from 'vscode';
 import {IItem} from '../itemSourceMerger/types';
 import ActiveItemSource from '../itemSourceMerger/activeSource';
 import {ICompletionItem} from './completionItem';
-import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/workspaceLuaFunctionInformation';
+import WorkspaceLuaFunctionInformation from '../luaWorkspaceParser/luaFunctionInformation';
 import {IWorkspaceCompletionItem} from './completionItem';
 /**
  * Represents an active source of workspace CompletionItems.
