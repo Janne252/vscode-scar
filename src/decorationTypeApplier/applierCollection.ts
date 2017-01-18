@@ -2,8 +2,9 @@
 
 import * as async from 'async';
 import {TextEditor, TextEditorDecorationType, Range} from 'vscode';
-import {IDecorationTypeApplier, IDecorationSet, DecorationSetCollection} from './decorationTypeApplierBase';
+import {IDecorationTypeApplier, IDecorationSet, IDecorationSetCollection} from './types';
 import ArrayHelpers from '../helper/arrayHelpers';
+import DecorationSetCollection from './decorationSetCollection';
 
 /**
  * Represents a collection of DecorationTypeAppliers.
@@ -22,7 +23,7 @@ export default class DecorationTypeApplierCollection
      * Creates a new instance of DecorationTypeApplierCollection.
      */
 
-    protected decorationSets: DecorationSetCollection;
+    protected decorationSets: IDecorationSetCollection;
 
     constructor(languageId: string)
     {

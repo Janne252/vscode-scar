@@ -2,12 +2,13 @@
 
 import {ILuaParseNode} from 'luaparse';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
-import {DecorationTypeApplierBase, IDecorationSet, DecorationSetCollection} from './decorationTypeApplierBase';
-import LuaParser, {LuaParserTreeLocationToRange} from '../luaParser/luaParser';
-import LuaParserCallExpression from '../luaParser/callExpression';
-import ObjectIterator from '../helper/objectIterator';
-import {LuaDocEnumDecorationType, LuaDocFunctionDecorationType, SCARDocFunctionDecorationType, SCARDocEnumDecorationType} from '../decorationType/decorationTypes';
-import {LuaDocParser, SCARDocParser} from '../scar';
+import {IDecorationSet, IDecorationSetCollection} from '../../decorationTypeApplier/types';
+import {DecorationTypeApplierBase} from '../../decorationTypeApplier/applierBase';
+import LuaParser, {LuaParserTreeLocationToRange} from '../../luaParser/luaParser';
+import LuaParserCallExpression from '../../luaParser/callExpression';
+import ObjectIterator from '../../helper/objectIterator';
+import {LuaDocEnumDecorationType, LuaDocFunctionDecorationType, SCARDocFunctionDecorationType, SCARDocEnumDecorationType} from '../definitions';
+import {LuaDocParser, SCARDocParser} from '../../scar';
 
 /**
  * Base DecorationTypeApplier for SCARDocParser and LuaDocParser.
@@ -32,14 +33,13 @@ class DocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocParser | 
      * Updates the TextEditor with highlights from this DecorationTypeApplier.
      * @param textEditor The text editor to add the decorations to.
      */
-    public update(textEditor: TextEditor, sets: DecorationSetCollection): void
+    public update(textEditor: TextEditor, sets: IDecorationSetCollection): void
     {
         let luaDocFunctionRanges: Range[] = [];
         let luaDocEnumRanges: Range[] = [];
 
         if (this.luaParser.valid)
         {
-            console.time('LuaDocDecorationTypeApplier');
             for(let func of this.source.functions)
             {
                 for(let call of this.luaParser.callExpressions)
@@ -64,8 +64,6 @@ class DocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocParser | 
                                     
             sets.add(<IDecorationSet>{decorationType: this.functionDecoration, ranges: luaDocFunctionRanges});
             sets.add(<IDecorationSet>{decorationType: this.enumDecoration, ranges: luaDocEnumRanges});
-
-            console.timeEnd('LuaDocDecorationTypeApplier');
         }
     }
 }

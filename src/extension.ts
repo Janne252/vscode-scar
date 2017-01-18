@@ -9,10 +9,10 @@ import LuaParser from './luaParser/luaParser';
 import LuaParserCallExpression from './luaParser/callExpression';
 import LuaParserDiagnostic from './diagnostic/LuaParserDiagnostic';
 import DiagnosticProvider from './diagnosticProvider';
-import LuaConstsAutoDecorationTypeApplier from './decorationType/luaConstsAutoDecorationTypeApplier';
-import {LuaDocDecorationTypeApplier, SCARDocDecorationTypeApplier} from './decorationType/luaDocDecorationTypeApplier';
-import WorkspaceDecorationTypeApplier from './decorationType/workspaceDecorationTypeApplier';
-import DecorationTypeApplierCollection from './decorationType/decorationTypeApplierCollection';
+import LuaConstsAutoDecorationTypeApplier from './decorationTypes/appliers/luaConstsAuto';
+import {LuaDocDecorationTypeApplier, SCARDocDecorationTypeApplier} from './decorationTypes/appliers/luaDoc';
+import WorkspaceDecorationTypeApplier from './decorationTypes/appliers/workspace';
+import DecorationTypeApplierCollection from './decorationTypeApplier/applierCollection';
 
 import CompletionItemProvider from './completionItemProvider';
 import SignatureHelpProvider from './signatureHelpProvider';

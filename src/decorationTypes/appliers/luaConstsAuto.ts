@@ -2,12 +2,13 @@
 
 import {ILuaParseNode} from 'luaparse';
 import {TextEditorDecorationType, Range, Position, TextEditor} from 'vscode';
-import {DecorationTypeApplierBase, IDecorationSet, DecorationSetCollection} from './decorationTypeApplierBase';
-import LuaParser, {LuaParserTreeLocationToRange} from '../luaParser/luaParser';
-import LuaParserCallExpression from '../luaParser/callExpression';
-import ObjectIterator from '../helper/objectIterator';
-import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from '../decorationType/decorationTypes';
-import {LuaConstsAutoParser} from '../scar';
+import {IDecorationSet, IDecorationSetCollection} from '../../decorationTypeApplier/types';
+import {DecorationTypeApplierBase} from '../../decorationTypeApplier/applierBase';
+import LuaParser, {LuaParserTreeLocationToRange} from '../../luaParser/luaParser';
+import LuaParserCallExpression from '../../luaParser/callExpression';
+import ObjectIterator from '../../helper/objectIterator';
+import {SCARDocFunctionDecorationType, SCARDocEnumDecorationType, LuaConstsAutoBlueprintDecorationType} from '../../decorationTypes/definitions';
+import {LuaConstsAutoParser} from '../../scar';
 
 /**
  * Represents a DecorationType applier for LuaConstsAuto.scar blueprint entries.
@@ -27,7 +28,7 @@ export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeAp
      * Updates the TextEditor with highlights from this DecorationTypeApplier.
      * @param textEditor The text editor to add the decorations to.
      */
-    public update(textEditor: TextEditor, sets: DecorationSetCollection): void
+    public update(textEditor: TextEditor, sets: IDecorationSetCollection): void
     {
         let blueprintRanges: Range[] = [];
         let text = textEditor.document.getText();
@@ -45,7 +46,7 @@ export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeAp
 
             blueprintRanges.push(range);
         }
-
+        
         sets.add(<IDecorationSet>{decorationType: LuaConstsAutoBlueprintDecorationType, ranges: blueprintRanges});
     }
 }
