@@ -30,6 +30,7 @@ export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeAp
      */
     public update(textEditor: TextEditor, sets: IDecorationSetCollection): void
     {
+        console.time('LuaConstsAutoDecorationTypeApplier');
         let blueprintRanges: Range[] = [];
         let text = textEditor.document.getText();
         let matchAllBlueprints = this.source.getMatchAllRegExp();
@@ -48,5 +49,6 @@ export default class LuaConstsAutoDecorationTypeApplier extends DecorationTypeAp
         }
         
         sets.add(<IDecorationSet>{decorationType: LuaConstsAutoBlueprintDecorationType, ranges: blueprintRanges});
+        console.timeEnd('LuaConstsAutoDecorationTypeApplier');
     }
 }

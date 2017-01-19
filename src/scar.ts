@@ -180,6 +180,7 @@ export function getLuaFunctionSignature(func: ILuaFunctionDefinition): string
 {
     let result = '';
     let paramNames = [];
+
     if (func.signature === undefined)
     {
         for(let param of func.parameters)

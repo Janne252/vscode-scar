@@ -50,7 +50,6 @@ class DocDecorationTypeApplier extends DecorationTypeApplierBase<LuaDocParser | 
                     }
                 }
             }
-            
             for (let scarDocEnum of this.source.enums)
             {
                 for (let identifier of this.luaParser.identifiers)
@@ -74,6 +73,13 @@ export class SCARDocDecorationTypeApplier extends DocDecorationTypeApplier
     {
         super(SCARDocFunctionDecorationType, SCARDocEnumDecorationType,  source, luaParser);
     }
+
+    public update(textEditor: TextEditor, sets: IDecorationSetCollection): void
+    {
+        console.time('SCARDocDecorationTypeApplier');
+        super.update(textEditor, sets);
+        console.timeEnd('SCARDocDecorationTypeApplier');
+    }
 }
 
 export class LuaDocDecorationTypeApplier extends DocDecorationTypeApplier
@@ -81,5 +87,12 @@ export class LuaDocDecorationTypeApplier extends DocDecorationTypeApplier
     constructor(source: LuaDocParser, luaParser: LuaParser)
     {
         super(LuaDocFunctionDecorationType, LuaDocEnumDecorationType, source, luaParser);
+    }
+
+    public update(textEditor: TextEditor, sets: IDecorationSetCollection): void
+    {
+        console.time('LuaDocDecorationTypeApplier');
+        super.update(textEditor, sets);
+        console.timeEnd('LuaDocDecorationTypeApplier');
     }
 }

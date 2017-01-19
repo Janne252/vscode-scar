@@ -3,8 +3,8 @@
 import {SignatureHelpProvider as ISignatureHelpProvider, TextDocument, Position, CancellationToken} from 'vscode';
 import ItemSourceMerger from './itemSourceMerger/merger';
 import {ISignatureHelp} from './itemSources/signatureHelp';
-
 import LuaParser from './luaParser/luaParser';
+import {DumpJSON} from './scar';
 
 export default class SignatureHelpProvider implements ISignatureHelpProvider
 {
@@ -36,7 +36,6 @@ export default class SignatureHelpProvider implements ISignatureHelpProvider
             let name = callExpression.base.name;
 
             let help = this.merger.getItem((item) => item.name == name);
-
 
             help.activeParameter = callExpression.getArgumentIndex(position, 0);
 

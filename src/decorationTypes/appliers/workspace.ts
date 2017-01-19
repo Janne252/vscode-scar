@@ -22,6 +22,8 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
      */
     public update(textEditor: TextEditor, sets: IDecorationSetCollection): void
     {
+        let timeId = 'WorkspaceDecorationTypeApplier (' + this.source.id +')';
+        console.time(timeId);
         let workspaceFunctionRanges: Range[] = [];
         if (this.luaParser.valid)
         {
@@ -40,5 +42,6 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
                  
             sets.add(<IDecorationSet>{decorationType: WorkspaceFunctionDecorationType, ranges: workspaceFunctionRanges});
         }
+        console.timeEnd(timeId);
     }
 }
