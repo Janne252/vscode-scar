@@ -311,14 +311,12 @@ export default class LuaWorkspaceParser
      */
     protected reparseFile(filepath: string): Thenable<boolean>
     {
-        let removedCompletionItems = 0;
-        let removedSignatureHelpItems = 0;
 
-        this._completionItemSource.removeItems((item) => item.filepath == filepath);
-        this._signatureHelpSource.removeItems((item) => item.filepath == filepath);
+        let removedCompletionItems = this._completionItemSource.removeItems((item) => item.filepath == filepath);
+        let removedSignatureHelpItems = this._signatureHelpSource.removeItems((item) => item.filepath == filepath);
         this._hoverSource.removeItems((item) => item.filepath == filepath);
 
-        //console.log(`reparsing file "${filepath}". Removed completion items: ${removedCompletionItems}, removed signatureHelpItems: ${removedSignatureHelpItems}`);
+        console.log(`reparsing file "${filepath}". Removed completion items: ${removedCompletionItems}, removed signatureHelpItems: ${removedSignatureHelpItems}`);
         return this.parseFile(filepath);
     }
 }
