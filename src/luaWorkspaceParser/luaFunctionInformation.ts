@@ -61,6 +61,7 @@ export default class WorkspaceLuaFunctionInformation
         }
 
         this.name = node.identifier.name;
+
         this.signature = `${this.name}(${paramNames.join(', ')})`;
         this.description = `File: ${filepath}, line ${node.loc.start.line}`;
 
