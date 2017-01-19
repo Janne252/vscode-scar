@@ -59,7 +59,6 @@ export function activate(context: vscode.ExtensionContext)
     luaDocParser = new LuaDocParser(path.join(__dirname, '../../data/luadoc.json'));
     luaConstsAutoParser = new LuaConstsAutoParser(path.join(__dirname, '../../data/luaconstsauto.scar'));
     documentCompletionItemSource = new DocumentCompletionItemSource();
-    documentCompletionItemSource.autoUpdater.start();
     
     diagnosticProvider = new DiagnosticProvider(new LuaParser(LUA_PARSER_OPTIONS), languages.createDiagnosticCollection());
     workspaceParser = new LuaWorkspaceParser(workspace.rootPath, diagnosticProvider.luaParser);
@@ -68,7 +67,7 @@ export function activate(context: vscode.ExtensionContext)
     {
         workspaceParser.reload().then(() => 
         {
-            decorationTypeAppliers.update(window.activeTextEditor);
+            decorationTypeAppliers.autoUpdater.shouldUpdate = true;
             console.log('Workspace reloaded!');
         });
     }));
@@ -134,7 +133,7 @@ export function activate(context: vscode.ExtensionContext)
             {
                 if (success)
                 {
-                    decorationTypeAppliers.update(window.activeTextEditor);
+                    decorationTypeAppliers.autoUpdater.shouldUpdate = true;
                 }
             });
         });
@@ -145,7 +144,7 @@ export function activate(context: vscode.ExtensionContext)
             {
                 documentCompletionItemSource.autoUpdater.shouldUpdate = true;
                 diagnosticProvider.update(documentChanged.document);
-                decorationTypeAppliers.update(window.activeTextEditor);
+                decorationTypeAppliers.autoUpdater.shouldUpdate = true;
             }
         });
 
@@ -155,7 +154,7 @@ export function activate(context: vscode.ExtensionContext)
             {
                 diagnosticProvider.update(textEditor.document);
                 documentCompletionItemSource.autoUpdater.shouldUpdate = true;
-                decorationTypeAppliers.update(textEditor);
+                decorationTypeAppliers.autoUpdater.shouldUpdate = true;
             }
         });
 
@@ -163,7 +162,10 @@ export function activate(context: vscode.ExtensionContext)
         if (window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
         {
             diagnosticProvider.update(window.activeTextEditor.document);
-            decorationTypeAppliers.update(window.activeTextEditor);
+            decorationTypeAppliers.autoUpdater.shouldUpdate = true;
+
+            documentCompletionItemSource.autoUpdater.start();
+            decorationTypeAppliers.autoUpdater.start();
         } 
     });
 }

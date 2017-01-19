@@ -1,11 +1,11 @@
 'use strict';
 
 import * as async from 'async';
-import {TextEditor, TextEditorDecorationType, Range} from 'vscode';
+import {TextEditor, TextEditorDecorationType, Range, window} from 'vscode';
 import {IDecorationTypeApplier, IDecorationSet, IDecorationSetCollection} from './types';
 import ArrayHelpers from '../helper/arrayHelpers';
 import DecorationSetCollection from './decorationSetCollection';
-
+import AutoUpdater from '../autoUpdater';
 /**
  * Represents a collection of DecorationTypeAppliers.
  */
@@ -22,14 +22,23 @@ export default class DecorationTypeApplierCollection
     /**
      * Creates a new instance of DecorationTypeApplierCollection.
      */
+    public autoUpdater: AutoUpdater;
 
     protected decorationSets: IDecorationSetCollection;
 
-    constructor(languageId: string)
+    constructor(languageId: string, updateInterval: number = 1000)
     {
         this.languageId = languageId;
         this.appliers = [];
         this.decorationSets = new DecorationSetCollection();
+
+        this.autoUpdater = new AutoUpdater(() =>
+        {
+            if (window.activeTextEditor !== undefined)
+            {
+                this.update(window.activeTextEditor);
+            }
+        },updateInterval);
     }
     /**
      * Updates all the DecorationTypeAppliers.

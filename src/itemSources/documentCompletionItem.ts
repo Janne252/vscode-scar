@@ -13,7 +13,7 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IC
 {
     public autoUpdater: AutoUpdater;
 
-    constructor(updateInteral: number = 1000)
+    constructor(updateInterval: number = 1000)
     {
         super('documentCompletionItems', []);
         
@@ -23,7 +23,7 @@ export default class DocumentDocCompletionItemSource extends ActiveItemSource<IC
             {
                 this.update(window.activeTextEditor.document);
             }
-        },updateInteral);
+        },updateInterval);
     }
     /**
      * Updates the DocumentDocCompletionItemSource with words from a TextDocument.
