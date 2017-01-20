@@ -50,7 +50,7 @@ let documentCompletionItemSource: DocumentCompletionItemSource;
 let decorationTypeAppliers = new DecorationTypeApplierCollection('scar');
 let signatureHelpSourceMerger = new ItemSourceMerger<ISignatureHelp>();
 let workspaceParser: LuaWorkspaceParser;
-let additionalWorkspaces: LuaWorkspaceParserCollection = new LuaWorkspaceParserCollection();
+let additionalWorkspaces: LuaWorkspaceParserCollection;
 let hoverMerger = new ItemSourceMerger<IHover>();
 
 export function activate(context: vscode.ExtensionContext) 
@@ -79,7 +79,7 @@ export function activate(context: vscode.ExtensionContext)
     let config = workspace.getConfiguration('scar');
 
     let loadWorkspaces: string[] = <string[]>config.get('loadWorkspaces');
-    loadWorkspaces.forEach(parser => additionalWorkspaces.add(new LuaWorkspaceParser(parser, diagnosticProvider.luaParser)));
+    additionalWorkspaces = new LuaWorkspaceParserCollection(loadWorkspaces, diagnosticProvider.luaParser);
     
     let parsers = [
         scarDocParser.load(),
@@ -152,8 +152,8 @@ export function activate(context: vscode.ExtensionContext)
         {
             if (textEditor.document.languageId == 'scar')
             {
-                diagnosticProvider.update(textEditor.document);
                 documentCompletionItemSource.autoUpdater.shouldUpdate = true;
+                diagnosticProvider.update(textEditor.document);
                 decorationTypeAppliers.autoUpdater.shouldUpdate = true;
             }
         });

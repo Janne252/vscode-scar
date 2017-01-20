@@ -1,6 +1,7 @@
 'use strict';
 
 import LuaWorkspaceParser from './parser';
+import LuaParser from '../luaParser/luaParser';
 
 export default class LuaWorkspaceParserCollection
 {
@@ -15,9 +16,14 @@ export default class LuaWorkspaceParserCollection
         return this._parsers.length;
     }
 
-    constructor()
+    constructor(rootpaths: string[], luaParser: LuaParser)
     {
         this._parsers = [];
+
+        for(let rootpath of rootpaths)
+        {
+            this.add(new LuaWorkspaceParser(rootpath, luaParser));
+        }
     }
 
     public add(parser: LuaWorkspaceParser): void
