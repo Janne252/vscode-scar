@@ -24,11 +24,13 @@ export default class WorkspaceHoverSource extends ActiveItemSource<IWorkspaceHov
      */
     public hoverFromFunctionInfo(info: WorkspaceLuaFunctionInformation): IWorkspaceHover
     {
+        let line = info.range.start.line + 1;
+
         return <IWorkspaceHover>{
             id: 'workspace_' + info.name,
             name: info.name,
             filepath: info.filepath,
-            contents: [info.description, `[${path.basename(info.filepath)}](${Uri.file(info.filepath)}#L${info.range.start.line + 1})`],
+            contents: [info.description, `[${path.basename(info.filepath)}#L${line}](${Uri.file(info.filepath)}#L${line})`],
             range: info.range
         }
     }
