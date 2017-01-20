@@ -51,7 +51,11 @@ export default class DecorationTypeApplierCollection
 
         if (textEditor !== undefined && textEditor.document.languageId == this.languageId)
         {
-            this.appliers.forEach(applier => applier.update(textEditor, this.decorationSets));
+            for(let applier of this.appliers)
+            {
+                applier.update(textEditor, this.decorationSets);
+            }
+            
             this.decorationSets.update(textEditor);
         }
         console.timeEnd('DecorationTypeAppliers');
