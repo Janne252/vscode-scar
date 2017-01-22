@@ -1,4 +1,6 @@
-
+/**
+ * Type definitions for luaparse module.
+ */
 declare module "luaparse"
 {
     /**

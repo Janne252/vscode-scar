@@ -33,6 +33,7 @@ import WorkspaceCompletionItemSource from './itemSources/workspaceCompletionItem
 import {SCARDocSignatureHelpSource, LuaDocSignatureHelpSource} from './itemSources/luaDocSignatureHelp';
 import QuickPickInsertCommand from './command/quickPickInsertCommand';
 import LuaWorkspaceParserCollection from './luaWorkspaceParser/parserCollection';
+import LuaCallParser from './luaCallParser/parser' ;
 
 const LUA_PARSER_OPTIONS: ILuaParseOptions  = {
     comments: true,
@@ -52,6 +53,7 @@ let signatureHelpSourceMerger = new ItemSourceMerger<ISignatureHelp>();
 let workspaceParser: LuaWorkspaceParser;
 let additionalWorkspaces: LuaWorkspaceParserCollection;
 let hoverMerger = new ItemSourceMerger<IHover>();
+let luaCallParser = new LuaCallParser();
 
 export function activate(context: vscode.ExtensionContext) 
 {
@@ -120,7 +122,7 @@ export function activate(context: vscode.ExtensionContext)
         additionalWorkspaces.parsers.forEach(additionalParser => registerWorkspaceParser(additionalParser));
 
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider('scar', new CompletionItemProvider(completionItemMerger)));
-        context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, diagnosticProvider.luaParser), '('));
+        context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('scar', new SignatureHelpProvider(signatureHelpSourceMerger, luaCallParser), '('));
         context.subscriptions.push(vscode.languages.registerHoverProvider('scar', new HoverProvider(hoverMerger)));
  
         context.subscriptions.push(new QuickPickInsertCommand('scar.findBlueprint', luaConstsAutoParser.blueprints));
@@ -144,6 +146,7 @@ export function activate(context: vscode.ExtensionContext)
             {
                 documentCompletionItemSource.autoUpdater.shouldUpdate = true;
                 diagnosticProvider.update(documentChanged.document);
+                luaCallParser.parseFromTextDocument(documentChanged.document);
                 decorationTypeAppliers.autoUpdater.shouldUpdate = true;
             }
         });
@@ -154,6 +157,7 @@ export function activate(context: vscode.ExtensionContext)
             {
                 documentCompletionItemSource.autoUpdater.shouldUpdate = true;
                 diagnosticProvider.update(textEditor.document);
+                luaCallParser.parseFromTextDocument(textEditor.document);
                 decorationTypeAppliers.autoUpdater.shouldUpdate = true;
             }
         });
@@ -162,6 +166,7 @@ export function activate(context: vscode.ExtensionContext)
         if (window.activeTextEditor !== undefined && window.activeTextEditor.document.languageId == 'scar')
         {
             diagnosticProvider.update(window.activeTextEditor.document);
+            luaCallParser.parseFromTextDocument(window.activeTextEditor.document);
             decorationTypeAppliers.autoUpdater.shouldUpdate = true;
 
             documentCompletionItemSource.autoUpdater.start();

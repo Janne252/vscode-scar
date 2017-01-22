@@ -10,8 +10,9 @@ function Map_OnInit()
     Squad_CreateAndSpawnToward(
         sbp,
         player,
-        d,
-        a
+        3,
+        pos,
+        toward
     )
     local mapCenterPos = World_Pos(0, 0, 0)
 
