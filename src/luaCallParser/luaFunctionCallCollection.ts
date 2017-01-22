@@ -19,7 +19,7 @@ export default class LuaFunctionCallCollection
     
     public open(name:string, startIndex:number):LuaFunctionCall
     {
-        var call:LuaFunctionCall = new LuaFunctionCall(name, startIndex);
+        let call:LuaFunctionCall = new LuaFunctionCall(name, startIndex);
         
         this.items.push(call);
         this.openCount++;
@@ -29,7 +29,7 @@ export default class LuaFunctionCallCollection
     
     public close(endIndex:number):void
     {
-        var existingCall:LuaFunctionCall = this.findOpen();
+        let existingCall:LuaFunctionCall = this.findOpen();
         if (existingCall != null && existingCall.isOpen)
         {
             this.closeParameter(endIndex);
@@ -41,12 +41,12 @@ export default class LuaFunctionCallCollection
     
     public closeParameter(endIndex:number)
     {
-        var existingCall:LuaFunctionCall = this.findOpen();
+        let existingCall:LuaFunctionCall = this.findOpen();
             
         if (existingCall != null && existingCall.isOpen)
         {
-            var startIndex:number;
-            var paramCount = existingCall.getParameterCount();
+            let startIndex:number;
+            let paramCount = existingCall.getParameterCount();
             if (paramCount > 0)
             {
                 startIndex = existingCall.parameters[paramCount - 1].endIndex + 1;
@@ -62,9 +62,9 @@ export default class LuaFunctionCallCollection
     
     public findOpen():LuaFunctionCall
     {
-        var existingCall:LuaFunctionCall;
+        let existingCall:LuaFunctionCall;
         
-        for (var i = this.items.length - 1; i >= 0; i--)
+        for (let i = this.items.length - 1; i >= 0; i--)
         {
             existingCall = this.items[i];
             

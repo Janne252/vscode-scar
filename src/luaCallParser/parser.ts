@@ -71,16 +71,13 @@ export default class LuaCallParser
     private parseLine(line:string, lineIndex:number)
     {
         this.isFunctionDefinitionLine = false;
-        var lastIndex = line.length - 1;
-        /*
-            In my experience it is clearer to have long, repeating if statements than trying to group them.
-        */
+        let lastIndex = line.length - 1;
         
         for (this.lineCharIndex = 0; this.lineCharIndex <= lastIndex; this.lineCharIndex++)
         {
-            var c:string = line.charAt(this.lineCharIndex);
-            var prev = (this.lineCharIndex > 0 ? line.charAt(this.lineCharIndex -1) : "");
-            var next = (this.lineCharIndex < lastIndex ? line.charAt(this.lineCharIndex + 1) : "");
+            let c:string = line.charAt(this.lineCharIndex);
+            let prev = (this.lineCharIndex > 0 ? line.charAt(this.lineCharIndex -1) : "");
+            let next = (this.lineCharIndex < lastIndex ? line.charAt(this.lineCharIndex + 1) : "");
             
             if (!this.doubleQuote && !this.doubleBracket && !this.doubleBracketSpecial && !this.multiLineComment && c == "'" && prev != "\\")
             {
@@ -99,10 +96,10 @@ export default class LuaCallParser
                 else if (!this.multiLineCommentSpecial && this.lineCharIndex <= lastIndex - 3 && line.charAt(this.lineCharIndex + 2) == '[' && line.charAt(this.lineCharIndex + 3) == '=')
                 {
                     this.multiLineCommentSpecialLength = 0;
-                    var isValid = false;
-                    for (var j = this.lineCharIndex + 3; j <= lastIndex; j++)
+                    let isValid = false;
+                    for (let j = this.lineCharIndex + 3; j <= lastIndex; j++)
                     {
-                        var _c = line.charAt(j);
+                        let _c = line.charAt(j);
                         if (_c == '=')
                         {
                             this.multiLineCommentSpecialLength++;
@@ -134,11 +131,11 @@ export default class LuaCallParser
             }
             else if (!this.singleQuote && !this.doubleQuote && !this.doubleBracket && !this.doubleBracketSpecial && this.multiLineComment && this.multiLineCommentSpecial && c == ']' && next == '=')
             {
-                var checkMultiLineComemntSPecialLength = 0;
-                var isValid = false;
-                for (var j = this.lineCharIndex + 1; j <= lastIndex; j++)
+                let checkMultiLineComemntSPecialLength = 0;
+                let isValid = false;
+                for (let j = this.lineCharIndex + 1; j <= lastIndex; j++)
                 {
-                    var _c = line.charAt(j);
+                    let _c = line.charAt(j);
                     if (_c == '=')
                     {
                         checkMultiLineComemntSPecialLength++;
@@ -155,7 +152,7 @@ export default class LuaCallParser
                     this.multiLineComment = false;
                     this.multiLineCommentSpecial = false;
                     this.multiLineCommentSpecialLength = 0;
-                    var jump = checkMultiLineComemntSPecialLength + 1;
+                    let jump = checkMultiLineComemntSPecialLength + 1;
                     this.lineCharIndex = this.lineCharIndex + jump;
                     this.offset = this.offset + jump;
                 }
@@ -173,10 +170,10 @@ export default class LuaCallParser
             else if (!this.singleQuote && !this.doubleQuote && !this.doubleBracket && !this.doubleBracketSpecial && !this.multiLineComment && c == '[' && next == '=')
             {
                 this.doubleBracketSpecialLength = 0;
-                var isValid:boolean = false;
-                for (var j = this.lineCharIndex + 1; j <= lastIndex; j++)
+                let isValid:boolean = false;
+                for (let j = this.lineCharIndex + 1; j <= lastIndex; j++)
                 {
-                    var _c = line.charAt(j);
+                    let _c = line.charAt(j);
                     if (_c == '=')
                     {
                         this.doubleBracketSpecialLength++;
@@ -195,11 +192,11 @@ export default class LuaCallParser
             }
             else if (!this.singleQuote && !this.doubleQuote && !this.doubleBracket && this.doubleBracketSpecial && !this.multiLineComment && c == ']' && next == '=')
             {
-                var checkDoubleBracketSpecialLength = 0;
-                var isValid = false;
-                for (var j = this.lineCharIndex + 1; j <= lastIndex; j++)
+                let checkDoubleBracketSpecialLength = 0;
+                let isValid = false;
+                for (let j = this.lineCharIndex + 1; j <= lastIndex; j++)
                 {
-                    var _c = line.charAt(j);
+                    let _c = line.charAt(j);
                     if (_c == '=')
                     {
                         checkDoubleBracketSpecialLength++;
@@ -214,14 +211,14 @@ export default class LuaCallParser
                 if (isValid && checkDoubleBracketSpecialLength == this.doubleBracketSpecialLength)
                 {
                     this.doubleBracketSpecial = false;
-                    var jump = checkDoubleBracketSpecialLength + 1;
+                    let jump = checkDoubleBracketSpecialLength + 1;
                     this.lineCharIndex = this.lineCharIndex + jump;
                     this.offset = this.offset + jump;
                 }
             }
             else if (!this.singleQuote && !this.doubleQuote && !this.doubleBracket && !this.doubleBracketSpecial && !this.multiLineComment)
             {
-                var isValidChar = (c.match(/[a-z0-9]/i) || c == '_' || c == ':' || c == '.') && !/\s/.test(c); // "/\s/" = whitespace
+                let isValidChar = (c.match(/[a-z0-9]/i) || c == '_' || c == ':' || c == '.') && !/\s/.test(c); // "/\s/" = whitespace
                 if (isValidChar)
                 {
                     this.namebuilder = this.namebuilder + c;
@@ -231,7 +228,7 @@ export default class LuaCallParser
                 {
                     if (this.namebuilder.length > 0)
                     {
-                        var name = this.namebuilder;
+                        let name = this.namebuilder;
 
                         if (this.isFunctionDefinitionLine)
                         {
@@ -330,7 +327,7 @@ export default class LuaCallParser
         console.time('luaCallParser');
         this.reset();
         
-        for (var i = 0; i < document.lineCount; i++)
+        for (let i = 0; i < document.lineCount; i++)
         {
             this.parseLine(document.lineAt(i).text, i);
             this.offset = this.offset + 2;
@@ -342,20 +339,20 @@ export default class LuaCallParser
     */
     public getFunctionInfoAt(offset:number):LuaFunctionCallInfo
     {
-        var call:LuaFunctionCall;
+        let call:LuaFunctionCall;
         
-        var paramIndex = 0;
-        var lastIndex = this.luaFunctionCallCollection.items.length - 1;
+        let paramIndex = 0;
+        let lastIndex = this.luaFunctionCallCollection.items.length - 1;
 
-        for (var i = lastIndex; i >= 0; i--)
+        for (let i = lastIndex; i >= 0; i--)
         {
             call = this.luaFunctionCallCollection.items[i];
             paramIndex = call.getParameterCount() - 1;
             if (offset >= call.startIndex && offset <= call.endIndex)
             {
-                var param:LuaFunctionCallParameter;
-                var paramIndexFound = false;
-                for (var j = 0; j < call.getParameterCount(); j++)
+                let param:LuaFunctionCallParameter;
+                let paramIndexFound = false;
+                for (let j = 0; j < call.getParameterCount(); j++)
                 {
                     param = call.parameters[j];
 
