@@ -1,7 +1,7 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import {ILuaParseOptions, ILuaParseError, ILuaParseCallExpressionNode} from 'luaparse';
+import {ILuaParseOptions} from 'luaparse';
 import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit, } from 'vscode';
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
