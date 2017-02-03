@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @todo 
+ * @bug
+ * Jos funktion kutsu on mallia FuntionNimi()(), eli sen perässä on toinen kutsu (funktio palauttaa funktion),
+ * syntax highlight sekoaa ja värittää koko kutsun määritellyllä värillä.
+ * 
+ * Lisää oma loading-ikoni taskbariin CSS-lisäosan tyyliin?
+ */
 import * as vscode from 'vscode';
 import {ILuaParseOptions} from 'luaparse';
 import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit, } from 'vscode';
