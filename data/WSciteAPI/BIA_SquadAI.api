@@ -1,0 +1,15 @@
+ACTION_WAIT_PRECISE( Real delay_seconds ) RETURNS: Action =>A wait action for a precise time in seconds. 
+ACTION_WAIT_RANDOM( Real min_delay_seconds, Real max_delay_seconds ) RETURNS: Action =>A wait action for a random time in seconds.
+ACTION_SET_POSTURE( String posture_name, Real duration_seconds ) RETURNS: Action =>An action to set a posture. 
+ACTION_MOVE_POSTURE( Real distance_from, Real distance_percentage, Real cover_search_radius, Real cover_search_angle, String formation_name, PaceType desired_pace, PaceType desired_min_pace, PostureType destination_posture, PostureType destination_min_posture, Real max_order_delay ) RETURNS: Action =>A move action with pace and posture. 
+ACTION_MOVE_POSTURE_EXT( Real distance_from, Real distance_percentage, Real cover_search_radius, Real cover_search_angle, String formation_name, PaceType desired_pace, PaceType desired_min_pace, PostureType destination_posture, PostureType destination_min_posture, Real max_order_delay, Boolean allow_backwards, Boolean allow_leave_los, Boolean always_move ) RETURNS: Action =>A move action with pace and posture and some extra tunable flags. 
+ACTION_MOVE_VEHICLE( Real distance_from, Real distance_percentage, Real cover_search_radius, Real cover_search_angle, String formation_name, Real max_order_delay ) RETURNS: Action =>A move action without pace and posture. 
+ACTION_MOVE_VEHICLE_EXT( Real distance_from, Real distance_percentage, Real cover_search_radius, Real cover_search_angle, String formation_name, Real max_order_delay, Boolean allow_backwards, Boolean allow_leave_los, Boolean always_move ) RETURNS: Action =>A move action, without pace and posture, but with some extra tunable flags. 
+ACTION_MOVE_LOS( Real max_order_delay ) RETURNS: Action =>A move to LOS action. 
+ACTION_DO_ABILITY( String ability_name, Integer max_casters ) RETURNS: Action =>An action to do an ability.
+ACTION_DO_CRITICAL( String critical_name, String id_name ) RETURNS: Action =>An action to do a critical. Give an id name if you want to remove the critical later.
+ACTION_UNDO_CRITICAL( String id_name ) RETURNS: Action =>An action to remove a critical.
+ACTION_UNDO_ALL_CRITICALS() RETURNS: Action =>An action to remove all criticals.
+PHASE_WAIT_PRECISE( Real delay_seconds ) RETURNS: Phase =>A wait phase for a precise time in seconds.
+PHASE_LEAP_FROG_ABILITY( String phase_name, Real distance_type, Real distance_percentage_start, Real distance_percentage_end, Real cover_search_radius, Real cover_search_angle, String formation_name, PaceType desired_pace, PostureType destination_posture, Real max_order_delay, String ability_name, Elements ability_casters, Integer casters_per_element, Integer num_leap_frogs ) RETURNS: Phase =>A leap frog phase. 
+PHASE_GOTO( String phase_name, String target_phase_name ) RETURNS: Phase =>A goto phase.
