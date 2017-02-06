@@ -65,7 +65,7 @@ let luaCallParser = new LuaCallParser();
 
 export function activate(context: vscode.ExtensionContext) 
 {
-    scarDocParser = new SCARDocParser(path.join(__dirname, '../../data/scardoc.json'));
+    scarDocParser = new SCARDocParser(path.join(__dirname, '../../data/scardoc_new.json'));
     luaDocParser = new LuaDocParser(path.join(__dirname, '../../data/luadoc.json'));
     luaConstsAutoParser = new LuaConstsAutoParser(path.join(__dirname, '../../data/luaconstsauto.scar'));
     documentCompletionItemSource = new DocumentCompletionItemSource();

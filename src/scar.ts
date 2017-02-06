@@ -31,7 +31,7 @@ export interface ILuaFunctionDefinition
 export interface ILuaFunctionDefinitionParameter
 {
     name: string;
-    optional: boolean;
+    optional?: boolean;
     type: string;
     description?: string;
 }
@@ -210,7 +210,7 @@ export function getLuaFUnctionParameterInfo(func: ILuaFunctionDefinition): Param
     {
         result.push({
             label: param.name,
-            documentation: `type: ${param.type}, optional: ${param.optional}`
+            documentation: `type: ${param.type}${(param.optional !== undefined ? `, optional: ${param.optional}` : '')}`
         });
     }
 
