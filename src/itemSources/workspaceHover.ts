@@ -26,11 +26,20 @@ export default class WorkspaceHoverSource extends ActiveItemSource<IWorkspaceHov
     {
         let line = info.range.start.line + 1;
 
+        let examples = info.examples;
+        let contents = [
+            info.signature,
+            info.rawDescription, 
+            examples.length > 0 ? `**Examples**\n${examples}` : '', 
+            `Defined: [${path.basename(info.filepath)}, Line ${line}](${Uri.file(info.filepath)}#L${line})`
+        ];
+
+
         return <IWorkspaceHover>{
             id: 'workspace_' + info.name,
             name: info.name,
             filepath: info.filepath,
-            contents: [info.description, `[${path.basename(info.filepath)}#L${line}](${Uri.file(info.filepath)}#L${line})`],
+            contents: contents,
             range: info.range
         }
     }

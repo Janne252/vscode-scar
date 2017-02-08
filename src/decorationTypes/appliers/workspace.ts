@@ -38,6 +38,14 @@ export default class WorkspaceDecorationTypeApplier extends DecorationTypeApplie
                         workspaceFunctionRanges.push(call.getIdentifierRange());
                     }
                 }
+
+                for (let identifier of this.luaParser.identifiers)
+                {
+                    if (func.label == identifier.name)
+                    {
+                        workspaceFunctionRanges.push(LuaParserTreeLocationToRange(identifier.loc));
+                    }
+                }
             }
                  
             sets.add(<IDecorationSet>{decorationType: WorkspaceFunctionDecorationType, ranges: workspaceFunctionRanges});

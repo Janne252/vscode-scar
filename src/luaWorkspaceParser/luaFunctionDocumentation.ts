@@ -8,6 +8,10 @@ import WorkspaceParserConfig from './parserConfig';
  */
 export default class WorkspaceLuaFunctionDocumentation
 {
+    public examplePrefix: string = '```scar\n';
+    public exampleSuffix: string = '```\n';
+
+    protected exampleLines: string[];
     /**
      * List of description lines.
      */
@@ -22,6 +26,11 @@ export default class WorkspaceLuaFunctionDocumentation
     public get description(): string
     {
         return this.descriptionLines.join('\n');
+    }
+
+    public get examples(): string
+    {
+        return this.exampleLines.length > 0 ? `${this.examplePrefix}${this.exampleLines.join('\n')}${this.exampleSuffix}` : '';
     }
     /**
      * The @return text.
@@ -44,6 +53,7 @@ export default class WorkspaceLuaFunctionDocumentation
     {
         this.returns = '';
         this.descriptionLines = [];
+        this.exampleLines = [];
         this.parameters = {};
         
         if (ast.comments === undefined)
@@ -74,22 +84,37 @@ export default class WorkspaceLuaFunctionDocumentation
         this.documentationFound = commentsAboveFunction.length > 0;
 
         commentsAboveFunction.reverse();
-        
+        let parsingExample = false;
+
         for(let comment of commentsAboveFunction)
         {
             let ENTRY_PARAM = config.lDocParameterDefinition;
             let ENTRY_RETURN = config.lDocFunctionReturnDefinition;
+            let ENTRY_EXAMPLE = config.lDocExampleDefinition;
 
-            let paramIndex = comment.value.indexOf(ENTRY_PARAM);
-            let returnIndex = comment.value.indexOf(ENTRY_RETURN);
+            let paramDefIndex = comment.value.indexOf(ENTRY_PARAM);
+            let returnDefIndex = comment.value.indexOf(ENTRY_RETURN);
+            let exampleDefIndex = comment.value.indexOf(ENTRY_EXAMPLE);
 
-            if (comment.value.indexOf(ENTRY_PARAM) == -1 && comment.value.indexOf(ENTRY_RETURN) == -1)
+            if (paramDefIndex != -1 || returnDefIndex != -1)
             {
-                this.descriptionLines.push(comment.value);
+                parsingExample = false;
+            }
+
+            if (paramDefIndex == -1 && returnDefIndex == -1 && exampleDefIndex == -1)
+            {
+                if (parsingExample)
+                {
+                    this.exampleLines.push(comment.value);
+                }
+                else
+                {
+                    this.descriptionLines.push(comment.value);
+                }
             }   
-            else if(paramIndex != -1)
+            else if(paramDefIndex != -1)
             {
-                let entry = comment.value.substring(paramIndex + ENTRY_PARAM.length + 1);
+                let entry = comment.value.substring(paramDefIndex + ENTRY_PARAM.length + 1);
                 let firstSpaceIndex = entry.indexOf(' ');
                 firstSpaceIndex = firstSpaceIndex > -1 ? firstSpaceIndex : entry.length;
 
@@ -101,9 +126,13 @@ export default class WorkspaceLuaFunctionDocumentation
                     description: description
                 };
             }   
-            else if (returnIndex != -1)
+            else if (returnDefIndex != -1)
             {   
-                this.returns = comment.value.substring(returnIndex + ENTRY_RETURN.length + 1);
+                this.returns = comment.value.substring(returnDefIndex + ENTRY_RETURN.length + 1);
+            }
+            else if (exampleDefIndex != -1)
+            {
+                parsingExample = true;
             }
         }
     }

@@ -107,6 +107,11 @@
                     "type": "string",
                     "default": "@return",
                     "description": "LDoc notation for function return type, e.g. -- @return Returns a number."
+                },
+                "scar.lDocExampleDefinition": {
+                    "type": "string",
+                    "default": "@example",
+                    "description": "LDoc notation for example code."
                 }
 			}
 		}

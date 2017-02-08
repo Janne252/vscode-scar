@@ -28,6 +28,12 @@ export default class WorkspaceLuaFunctionInformation
      */
     public description: string;
     /**
+     * Description without filepath.
+     */
+    public rawDescription: string;
+
+    public examples: string;
+    /**
      * Parameters of the function.
      */
     public parameters: ILuaFunctionDefinitionParameter[];
@@ -64,6 +70,8 @@ export default class WorkspaceLuaFunctionInformation
 
         this.signature = `${this.name}(${paramNames.join(', ')})`;
         this.description = `File: ${filepath}, line ${node.loc.start.line}`;
+        this.rawDescription = '';
+        this.examples = '';
 
         let doc = new WorkspaceLuaFunctionDocumentation(config, ast, node.loc.start.line - 1);
 
@@ -78,6 +86,8 @@ export default class WorkspaceLuaFunctionInformation
             }
 
             this.description = `${doc.description} ${doc.returns} ${this.description}`;
+            this.rawDescription = `${doc.description} ${doc.returns}`;
+            this.examples = doc.examples;
         }
     }
 }

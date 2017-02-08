@@ -26,6 +26,7 @@ export default class WorkspaceParserConfig
     public disallowedFilesRegex: RegExp;
     public lDocParameterDefinition: string;
     public lDocFunctionReturnDefinition: string;
+    public lDocExampleDefinition: string;
 
     constructor()
     {
@@ -33,6 +34,7 @@ export default class WorkspaceParserConfig
 
         this.lDocParameterDefinition = <string>config.get('lDocParameterDefinition');
         this.lDocFunctionReturnDefinition = <string>config.get('lDocFunctionReturnDefinition');
+        this.lDocExampleDefinition = <string>config.get('lDocExampleDefinition');
         this.disallowIntermediateCacheFiles = <boolean>config.get('ignoreIntermediateCacheFiles');
         this.allowedExtensions = <string[]>config.get('extensions');
         this.disallowedFiles = <string[]>config.get('ignoreFiles');
