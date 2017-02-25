@@ -2,15 +2,11 @@
 
 /**
  * @todo 
- * @bug
- * Jos funktion kutsu on mallia FuntionNimi()(), eli sen perässä on toinen kutsu (funktio palauttaa funktion),
- * syntax highlight sekoaa ja värittää koko kutsun määritellyllä värillä.
  * 
- * Lisää oma loading-ikoni taskbariin CSS-lisäosan tyyliin?
  */
 import * as vscode from 'vscode';
 import {ILuaParseOptions} from 'luaparse';
-import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit, } from 'vscode';
+import {window, workspace, languages, TextDocument, DiagnosticCollection, Range, Position, TextEditor, commands, WorkspaceEdit, StatusBarAlignment} from 'vscode';
 import * as path from 'path';
 import {ILuaFunctionDefinition} from './scar';
 import LuaParser from './luaParser/luaParser';
@@ -65,6 +61,12 @@ let luaCallParser = new LuaCallParser();
 
 export function activate(context: vscode.ExtensionContext) 
 {
+    let loading = window.createStatusBarItem(StatusBarAlignment.Left, -1);
+    loading.text = '[SCAR Loading...]';
+    loading.tooltip = 'Loading APIs and scanning workspace...';
+    loading.color = 'yellow';
+    loading.show();
+
     scarDocParser = new SCARDocParser(path.join(__dirname, '../../data/scardoc_new.json'));
     luaDocParser = new LuaDocParser(path.join(__dirname, '../../data/luadoc.json'));
     luaConstsAutoParser = new LuaConstsAutoParser(path.join(__dirname, '../../data/luaconstsauto.scar'));
@@ -102,6 +104,11 @@ export function activate(context: vscode.ExtensionContext)
     Promise.all(parsers).then(() => 
     {
         console.log('All loaded!');
+        
+        setTimeout(() =>
+        {
+            loading.hide();
+        }, 3000);
 
         function registerWorkspaceParser(newParser: LuaWorkspaceParser)
         {
