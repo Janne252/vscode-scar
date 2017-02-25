@@ -1,0 +1,24 @@
+--[[
+
+
+--]]
+
+function DD()
+            if this.ControlType == CT_Button and this.RawText and 
+            
+            (
+                (
+                    string.find(this.RawText, "old") and
+                    string.find(this.RawText, "ine") 
+                ) 
+                or
+                (
+                    string.find(this.RawText, "olition") and
+                    string.find(this.RawText, "ecialists")
+                )
+            )
+            
+            then
+
+            end
+end
