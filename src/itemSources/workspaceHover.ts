@@ -34,7 +34,6 @@ export default class WorkspaceHoverSource extends ActiveItemSource<IWorkspaceHov
             `Defined: [${path.basename(info.filepath)}, Line ${line}](${Uri.file(info.filepath)}#L${line})`
         ];
 
-
         return <IWorkspaceHover>{
             id: 'workspace_' + info.name,
             name: info.name,
