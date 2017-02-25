@@ -134,6 +134,7 @@ declare module "luaparse"
         type: string;
         indexer?: string;
         name?: string;
+        loc?: ILuaParseNodeLocation;
     }
 
     export interface ILuaParseFunctionDeclarationParameter
