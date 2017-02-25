@@ -82,3 +82,8 @@ function Player_GetRaceIndex(player, fallbackIndex)
 end
 
 Player_GetRaceIndex(player, 0) 
+
+
+Player_GetRaceIndex(player, 1)()
+
+local task = loadfile(ExtAPIConfig.taskFile)()
