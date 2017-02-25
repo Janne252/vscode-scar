@@ -129,7 +129,7 @@ export default class LuaParser
                 
                 if (item.base.name === undefined && item.base.type == 'MemberExpression')
                 {
-                    item.base.name = item.getMemberCallExpressionName();
+                    item.parseMemberCallExpressionName();
                 }
                 
                 if (item.isPositionInArgumentsRange(position))
@@ -156,7 +156,7 @@ export default class LuaParser
 
                     if (expression.base.name === undefined && expression.base.type == 'MemberExpression')
                     {
-                        expression.base.name = expression.getMemberCallExpressionName();
+                        expression.parseMemberCallExpressionName();                        
                     }
 
                     this.callExpressions.push(expression);

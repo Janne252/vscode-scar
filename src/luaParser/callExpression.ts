@@ -85,16 +85,24 @@ export default class LuaParserCallExpression implements ILuaParseCallExpressionN
         return defaultTo;
     }
 
-    public getMemberCallExpressionName(): string
+    public parseMemberCallExpressionName(): void
     {
         let base = this.base;
-        let parts = [];
+        let parts: string[] = [];
 
+        let start = base.loc.start;
+        let end = undefined;
+        
         while(true)
         {
             if (base.base !== undefined)
             {
                 parts.push(base.identifier.name);
+                
+                if (end === undefined)
+                {
+                    end = base.identifier.loc.end;
+                }
             }
             else
             {
@@ -106,7 +114,9 @@ export default class LuaParserCallExpression implements ILuaParseCallExpressionN
         }
 
         parts.reverse();
-
-        return parts.join('.');
+        //this.base = base;
+        this.base = base;
+        this.base.name = parts.join('.');
+        this.base.loc = {start: start, end: end};
     }
 }
