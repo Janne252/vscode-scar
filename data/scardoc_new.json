@@ -4539,6 +4539,14 @@
 			"description": "Unreveals a territory sector."
 		}, 
 		{
+			"name": "Game_GetLocalPlayer",
+			"returnType": "Player",
+			"parameters": [
+				{"name": "Void", "type": "any"}
+			],
+			"description": "Get the local player. (should only be used for UI purpose) (not strict)"
+		}, 
+		{
 			"name": "Game_DefaultGameRestore",
 			"returnType": "Void",
 			"parameters": [
@@ -12423,6 +12431,221 @@
 			"parameters": [
 			],
 			"description": "Stop tracking all real-time changes in Company Strength and Experience."
+		}, 
+		{
+			"name": "UI_GetViewportWidth",
+			"returnType": "Float",
+			"parameters": [
+				{"name": "Void", "type": "any"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_GetViewportHeight",
+			"returnType": "Float",
+			"parameters": [
+				{"name": "Void", "type": "any"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ButtonAdd",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "name", "type": "const char*"}, 
+				{"name": "x", "type": "float"}, 
+				{"name": "y", "type": "float"}, 
+				{"name": "width", "type": "float"}, 
+				{"name": "height", "type": "float"}, 
+				{"name": "callback", "type": "const char*"}, 
+				{"name": "enabled", "type": "bool"}, 
+				{"name": "icon", "type": "const char*"}, 
+				{"name": "style", "type": "ButtonIconStyle"}, 
+				{"name": "tag", "type": "const char*"}, 
+				{"name": "text", "type": "LocString"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ButtonSetCallback",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "callback", "type": "const char*"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ButtonSetEnabled",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "enabled", "type": "bool"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ButtonSetIcon",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "icon", "type": "const char*"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ButtonSetTag",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "tag", "type": "const char*"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ButtonSetText",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "text", "type": "LocString"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_LabelAdd",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "name", "type": "const char*"}, 
+				{"name": "x", "type": "float"}, 
+				{"name": "y", "type": "float"}, 
+				{"name": "width", "type": "float"}, 
+				{"name": "height", "type": "float"}, 
+				{"name": "alignHorizontal", "type": "LabelAlignHorizontal"}, 
+				{"name": "alignVertical", "type": "LabelAlignVertical"}, 
+				{"name": "bold", "type": "bool"}, 
+				{"name": "italic", "type": "bool"}, 
+				{"name": "size", "type": "float"}, 
+				{"name": "text", "type": "LocString"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_LabelSetText",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "text", "type": "LocString"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_IconAdd",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "name", "type": "const char*"}, 
+				{"name": "x", "type": "float"}, 
+				{"name": "y", "type": "float"}, 
+				{"name": "width", "type": "float"}, 
+				{"name": "height", "type": "float"}, 
+				{"name": "icon", "type": "const char*"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_IconSetIcon",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "icon", "type": "const char*"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_PanelAdd",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "name", "type": "const char*"}, 
+				{"name": "x", "type": "float"}, 
+				{"name": "y", "type": "float"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_StatusIndicatorAdd",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "name", "type": "const char*"}, 
+				{"name": "x", "type": "float"}, 
+				{"name": "y", "type": "float"}, 
+				{"name": "width", "type": "float"}, 
+				{"name": "height", "type": "float"}, 
+				{"name": "value", "type": "float"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_StatusIndicatorSetValue",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "value", "type": "float"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ControlSetColour",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "red", "type": "int"}, 
+				{"name": "green", "type": "int"}, 
+				{"name": "blue", "type": "int"}, 
+				{"name": "alpha", "type": "int"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ControlSetPosition",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "x", "type": "float"}, 
+				{"name": "y", "type": "float"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ControlSetRect",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}, 
+				{"name": "x", "type": "float"}, 
+				{"name": "y", "type": "float"}, 
+				{"name": "width", "type": "float"}, 
+				{"name": "height", "type": "float"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ControlRemove",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}
+			],
+			"description": ""
+		}, 
+		{
+			"name": "UI_ControlClear",
+			"returnType": "Void",
+			"parameters": [
+				{"name": "path", "type": "const char*"}
+			],
+			"description": ""
 		}
 	],
 	"enums": [
@@ -13004,8 +13227,18 @@
 		{"name": "UI_Cinematic", "type": "UIMode"}, 
 		{"name": "UI_Fullscreen", "type": "UIMode"}, 
 		{"name": "UI_Normal", "type": "UIMode"}, 
-		{"name": "UOT_Player", "type": "Unknown type"}, 
-		{"name": "UOT_Self", "type": "Unknown type"}, 
-		{"name": "UOT_None", "type": "Unknown type"}
+		{"name": "UOT_Player", "type": "UpgradeOwnerType"}, 
+		{"name": "UOT_Self", "type": "UpgradeOwnerType"}, 
+		{"name": "UOT_None", "type": "UpgradeOwnerType"}, 
+		{"name": "BIS_Icon", "type": "ButtonIconStyle"}, 
+		{"name": "BIS_IconState", "type": "ButtonIconStyle"}, 
+		{"name": "LAH_Justify", "type": "LabelAlignHorizontal"}, 
+		{"name": "LAH_Left", "type": "LabelAlignHorizontal"}, 
+		{"name": "LAH_Center", "type": "LabelAlignHorizontal"}, 
+		{"name": "LAH_Right", "type": "LabelAlignHorizontal"}, 
+		{"name": "LAV_None", "type": "LabelAlignVertical"}, 
+		{"name": "LAV_Top", "type": "LabelAlignVertical"}, 
+		{"name": "LAV_Center", "type": "LabelAlignVertical"}, 
+		{"name": "LAV_Bottom", "type": "LabelAlignVertical"}
 	]
 }
