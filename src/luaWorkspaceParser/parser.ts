@@ -291,7 +291,7 @@ export default class LuaWorkspaceParser
 
         ObjectIterator.each(ast, (key, node: ILuaParseFunctionDeclaration) =>
         {
-            if (node !== null && node.type === 'FunctionDeclaration' && node.identifier != null)
+            if (node !== null && node.type === 'FunctionDeclaration' && node.identifier != null && node.identifier.name != null)
             {
                 let info = new WorkspaceLuaFunctionInformation(this.config, filepath, ast, node);
 
